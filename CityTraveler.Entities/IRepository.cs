@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Entities
 {
-    public enum UserRole
+    public interface IRepository
     {
-        user,
-        contentmanager,
-        admin
+        void RunQuery();
+        void OpenConnection();
     }
 }

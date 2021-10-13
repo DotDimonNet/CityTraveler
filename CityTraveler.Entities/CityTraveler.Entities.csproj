@@ -4,4 +4,13 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Base\" />
+    <Folder Include="Trip\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CityTraveler.Infrastructure\CityTraveler.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
