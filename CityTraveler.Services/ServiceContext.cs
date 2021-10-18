@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
-using CityTraveler.Services.Interfaces;
+﻿using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace CityTraveler.Services
 
         public IServiceMetadata GetService(string serviceName)
         {
-            return Services.FirstOrDefault(x =>x.Title == serviceName);
+            return Services.FirstOrDefault();
         }
 
         public void SetServices(IEnumerable<IServiceMetadata> services)

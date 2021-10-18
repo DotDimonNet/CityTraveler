@@ -1,4 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Repository.DbContext
 {
-    public class DbCollection<T> : IDbCollection<T> where T : IDbData
+    /*public class DbCollection<T> : IDbCollection<T> where T : IDbData
     {
         public IDbRequestManager<T> RequestManager { get; set; }
         public List<T> Collection { get; set; } = new List<T>();
@@ -25,5 +25,5 @@ namespace CityTraveler.Repository.DbContext
                 Collection = (await RequestManager.SendQueryAsync(query, null, false)).ToList();
             }
         }
-    }
+    }*/
 }

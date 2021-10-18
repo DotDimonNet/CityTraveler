@@ -1,6 +1,4 @@
-﻿using CityTraveler.Infrastructure.Enums;
-using CityTraveler.Infrastructure.Interfaces;
-using CityTraveler.Repository.DbContext;
+﻿using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +10,7 @@ namespace CityTraveler.Services
 {
     public class SocialMediaService : ISocialMediaService
     {
-        private readonly IServiceContext _serviceContext;
+        /*private readonly IServiceContext _serviceContext;
         private readonly IDbContext _dbContext;
         public SocialMediaService(IServiceContext serviceContext, IDbContext dbContext)
         {
@@ -86,6 +84,6 @@ namespace CityTraveler.Services
 
             var affectedReviews = await _dbContext.Reviews.RequestManager.SendRequestAsync(query, null, false);
             return affectedReviews > 0;
-        }
+        }*/
     }
 }

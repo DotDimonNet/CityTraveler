@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Repository.DbContext
 {
-    public class DbSyncManager : IDbSyncManager
+    /*public class DbSyncManager : IDbSyncManager
     {
         public bool IsSynchronized => SyncTables.All(x => x.IsSynchronized);
 
         public bool IsFirst { get; set; }
-        private IDbRequestManager<IDbData> RequestManager { get; set; }
+        //private IDbRequestManager<IDbData> RequestManager { get; set; }
         private IEnumerable<ISyncModel> SyncTables { get; set; } = new List<SyncModel>();
 
         public DbSyncManager(string connectionString)
         {
-            RequestManager = new DbRequestManager<IDbData>(connectionString);
+            //RequestManager = new DbRequestManager<IDbData>(connectionString);
             var tables = new List<SyncModel>();
             tables.Add(new SyncModel()
             {
@@ -91,5 +90,5 @@ namespace CityTraveler.Repository.DbContext
                     MissedFields = x.MissedFields
                 });
         }
-    }
+    }*/
 }

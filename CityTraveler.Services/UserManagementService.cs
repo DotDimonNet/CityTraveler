@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
-using CityTraveler.Services.Interfaces;
+﻿using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace CityTraveler.Services
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public IUser GetUserByEmail(string email)
+        /*public IUser GetUserByEmail(string email)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +45,6 @@ namespace CityTraveler.Services
         public bool UpdateUserData(IUser user)
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

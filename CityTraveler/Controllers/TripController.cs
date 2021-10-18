@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace CityTraveler.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class TripController : ControllerBase
+    [Route("api/trip")]
+    public class TripController : Controller
     {
         private readonly ILogger<TripController> _logger;
 
-        public TripController(ILogger<TripController> logger, IDbContext context)
+        public TripController(ILogger<TripController> logger)
         {
             
             _logger = logger;
@@ -23,10 +23,6 @@ namespace CityTraveler.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var conn = "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=CityTraveler;Integrated Security=SSPI;";
-            var syncManager = new DbSyncManager(conn);
-            var context = new DbContext(conn, syncManager);
-            await context.InitializeContext();
             return new JsonResult(1);
         }
     }

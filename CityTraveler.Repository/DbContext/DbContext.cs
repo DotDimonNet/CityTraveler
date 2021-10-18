@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Repository.DbContext
 {
-    public class DbContext : IDbContext
+    public class DbContext //: IDbContext
     {
-        private readonly string _connectionString;
+        /*private readonly string _connectionString;
         private readonly IDbSyncManager _dbSync;
 
         public DbContext(string connectionString, IDbSyncManager dbSync)
@@ -26,7 +25,7 @@ namespace CityTraveler.Repository.DbContext
             if (_dbSync.IsFirst)
             {
                 await _dbSync.CreateTables("dbo");
-            }*/
+            }
 
             Trips = new DbCollection<ITrip>(_connectionString);
             Users = new DbCollection<IUser>(_connectionString);
@@ -81,6 +80,6 @@ namespace CityTraveler.Repository.DbContext
         public IDbCollection<IComment> Comments { get; set; }
         public IDbCollection<IAddress> Addresses { get; set; }
         public IDbCollection<ILandskape> Landskapes { get; set; }
-        public IDbCollection<IInstitution> Institutions { get; set; }
+        public IDbCollection<IInstitution> Institutions { get; set; }*/
     }
 }

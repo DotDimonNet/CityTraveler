@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace CityTraveler.Infrastructure.Interfaces
+namespace CityTraveler.Domain.Entities
 {
-    public interface IDescribable
+    public class StreetModel : Entity, IDescribable
     {
+        public virtual ICollection<StreetAddressModel> Addresses { get; set; } = new List<StreetAddressModel>();
         public string Title { get; set; }
         public string Description { get; set; }
     }

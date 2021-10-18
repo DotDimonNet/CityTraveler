@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Infrastructure
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Common", "CityTraveler.Common\CityTraveler.Common.csproj", "{0A1F62FC-9D6C-4435-8A3E-9F6296F93E82}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Entities", "CityTraveler.Entities\CityTraveler.Entities.csproj", "{AC157FAC-FBA9-4283-95BC-B4D0F3F15E19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Repository", "CityTraveler.Repository\CityTraveler.Repository.csproj", "{89688E83-73A5-4780-BE7F-829E0501CC45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityTraveler.Repository", "CityTraveler.Repository\CityTraveler.Repository.csproj", "{89688E83-73A5-4780-BE7F-829E0501CC45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Services", "CityTraveler.Services\CityTraveler.Services.csproj", "{3297D975-9C77-4BC7-B72C-75AA1ECA2771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityTraveler.Services", "CityTraveler.Services\CityTraveler.Services.csproj", "{3297D975-9C77-4BC7-B72C-75AA1ECA2771}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityTraveler.Domain", "CityTraveler.Domain\CityTraveler.Domain.csproj", "{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{0A1F62FC-9D6C-4435-8A3E-9F6296F93E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A1F62FC-9D6C-4435-8A3E-9F6296F93E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A1F62FC-9D6C-4435-8A3E-9F6296F93E82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC157FAC-FBA9-4283-95BC-B4D0F3F15E19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC157FAC-FBA9-4283-95BC-B4D0F3F15E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC157FAC-FBA9-4283-95BC-B4D0F3F15E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC157FAC-FBA9-4283-95BC-B4D0F3F15E19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89688E83-73A5-4780-BE7F-829E0501CC45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89688E83-73A5-4780-BE7F-829E0501CC45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89688E83-73A5-4780-BE7F-829E0501CC45}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{3297D975-9C77-4BC7-B72C-75AA1ECA2771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3297D975-9C77-4BC7-B72C-75AA1ECA2771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3297D975-9C77-4BC7-B72C-75AA1ECA2771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

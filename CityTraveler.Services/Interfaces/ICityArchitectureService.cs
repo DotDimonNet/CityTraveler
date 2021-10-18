@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Enums;
-using CityTraveler.Infrastructure.Interfaces;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface ICityArchitectureService : IServiceMetadata
     {
-        public Task<bool> AddObjectToCity(IInstitution institution);
+        /*public Task<bool> AddObjectToCity(IInstitution institution);
         public Task<bool> AddObjectToCity(IEvent ev);
         public Task<bool> AddObjectToCity(ILandskape landskape);
         public Task<bool> UpdateCityObject(IInstitution institution);
@@ -21,7 +20,7 @@ namespace CityTraveler.Services.Interfaces
         public Task<bool> UpdateStreet(IStreet street);
         public Task<bool> RemoveStreet(Guid streetId);
         public Task<bool> BuildCityMap();
-        public Task<bool> ValidateCityMap();
+        public Task<bool> ValidateCityMap();*/
     }   
 }
 

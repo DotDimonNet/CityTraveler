@@ -1,4 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Repository.DbContext
 {
-    public interface IDbContext
+    /*public interface IDbContext
     {
         public Task InitializeContext();
 
@@ -24,6 +24,6 @@ namespace CityTraveler.Repository.DbContext
         public IDbCollection<IRoute> Routes { get; set; }
         public IDbCollection<IRating> Ratings { get; set; }
         public IDbCollection<IReview> Reviews { get; set; }
-
-    }
+    
+    }*/
 }

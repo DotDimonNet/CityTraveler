@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
-using Dapper;
+﻿using Dapper;
 using DapperExtensions;
 using DapperExtensions.Predicate;
 using Microsoft.Data.SqlClient;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Repository
 {
-    public class DbRequestManager<T> : IDbRequestManager<T> where T : IDbData
+    public class DbRequestManager<T> : IDbRequestManager<T> where T : class
     {
         private readonly string _connectionString;
 
