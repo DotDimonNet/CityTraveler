@@ -23,7 +23,7 @@ namespace CityTraveler.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var conn = "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=CityTraveler;Integrated Security=SSPI;";
+            var conn = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=CityTraveler;Integrated Security=SSPI;";
             var syncManager = new DbSyncManager(conn);
             var context = new DbContext(conn, syncManager);
             await context.InitializeContext();
