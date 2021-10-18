@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Entities
 {
-    class Events :IEvent
+    public class Event :IEvent
     {
         public DateTime Start { get; set ; }
         public DateTime End { get; set; }
@@ -22,7 +22,7 @@ namespace CityTraveler.Entities
         public DateTime Modified { get; set; }
         public string Title { get ; set; }
         public string Description { get; set; }
-        public Events(DateTime start,DateTime end, IEnumerable<IImage> images, IEnumerable<IReview> reviews, IAddress address, 
+        public Event(DateTime start,DateTime end, IEnumerable<IImage> images, IEnumerable<IReview> reviews, IAddress address, 
             Dictionary<DayOfWeek, DateTime> open, Dictionary<DayOfWeek, DateTime> closed, IEnumerable<IPrice> prices, Guid ID,
             DateTime created, string title, string description)
         {
@@ -39,6 +39,11 @@ namespace CityTraveler.Entities
             Modified = created;
             Title = title;
             Description = description;
+        }
+
+        public Event()
+        {
+
         }
     }
 }

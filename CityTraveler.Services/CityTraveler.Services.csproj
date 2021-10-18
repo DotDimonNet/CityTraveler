@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CityTraveler.Entities\CityTraveler.Entities.csproj" />
+    <ProjectReference Include="..\CityTraveler.Infrastructure\CityTraveler.Infrastructure.csproj" />
+    <ProjectReference Include="..\CityTraveler.Repository\CityTraveler.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

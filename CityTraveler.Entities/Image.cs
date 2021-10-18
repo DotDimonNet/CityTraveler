@@ -27,5 +27,10 @@ namespace CityTraveler.Entities
             Title = title;
             Description = descriptiom;
         }
+
+        public Image()
+        {
+
+        }
     }
 }

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CityTraveler.Entities
+namespace CityTraveler.Entities.DTO
 {
-    public class AuthorizationService
+    public class LogoutModel
     {
+        public string UserName { get; set; }
     }
 }

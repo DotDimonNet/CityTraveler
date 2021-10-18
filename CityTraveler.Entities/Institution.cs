@@ -26,8 +26,7 @@ namespace CityTraveler.Entities
         public string Description { get ; set ; }
 
         public Institution(InstitutionType type, IEnumerable<IImage> images, IEnumerable<IReview> reviews, IAddress address, IEnumerable<Price> prices, Guid guid,
-            Dictionary<DayOfWeek, DateTime> open, Dictionary<DayOfWeek, DateTime> close, DateTime created,
-            DateTime modified, string title, string description)
+            Dictionary<DayOfWeek, DateTime> open, Dictionary<DayOfWeek, DateTime> close, string title, string description)
         {
             Type = type;
             Images = images;
@@ -37,10 +36,14 @@ namespace CityTraveler.Entities
             Closed = close;
             Prices = prices;
             Id = guid;
-            Created = created;
-            Modified = modified;
+            Created = DateTime.Now;
+            Modified = DateTime.Now;
             Title = title;
             Description = description;
+        }
+
+        public Institution()
+        {
 
         }
     }

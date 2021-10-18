@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CityTraveler.Entities
+namespace CityTraveler.Infrastructure.Enums
 {
-    public enum UserRole
+    public enum PlaceType
     {
-        User,
-        ContentManager,
-        Admin
+        Event,
+        Institution,
+        Landscape
     }
 }

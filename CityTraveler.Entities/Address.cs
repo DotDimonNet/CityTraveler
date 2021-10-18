@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CityTravel.Entities
+namespace CityTraveler.Entities
 { 
     public class Address :IAddress
     {
@@ -29,5 +29,9 @@ namespace CityTravel.Entities
             Street = street;
         }
 
+        public Address()
+        {
+
+        }
     }
 }

@@ -13,12 +13,19 @@ namespace CityTraveler.Entities
         public Guid Id { get; set; }
         public DateTime Created { get; set ; }
         public DateTime Modified { get; set; }
-        public Rating(double value, Guid ID, DateTime created) 
+        public Guid OwnerId { get; set; }
+
+        public Rating(double value) 
         {
+            Id = Guid.NewGuid();
             Value = value;
-            Id = ID;
-            created = Created;
-            Modified = created;
+            Created = DateTime.Now;
+            Modified = DateTime.Now;
+        }
+
+        public Rating()
+        {
+
         }
     }
 }

@@ -29,6 +29,10 @@ namespace CityTraveler.Entities
             Modified = modified;
             Title = title;
             Description = description;
+        }
+
+        public Landskape()
+        {
 
         }
     }

@@ -18,6 +18,6 @@ namespace CityTraveler.Infrastructure.Interfaces
         public Guid TemplateId { get; set; }
         public ConcurrentDictionary<Guid, IRoute> RoutesDictionary { get; set; }
         public IPrice Price { get; set; }
-        public double AverageRaiting { get; set; }
+        public double AverageRating { get; set; }
     }
 }

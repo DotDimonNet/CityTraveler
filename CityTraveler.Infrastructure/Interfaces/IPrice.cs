@@ -5,12 +5,9 @@ using System.Collections.Concurrent;
 
 namespace CityTraveler.Infrastructure.Interfaces
 {
-    public interface IPrice : IDbData, IDescribable
+    public interface IPrice : IDbData
     {
-        public double Price { get; set; }
-        public double Tax { get; set; }
-        public double VAT { get; set; }
-        public double Total => Price * (1 + VAT) + Tax;
-        public bool IsValid => Price >= 0 && VAT >= 0 && VAT <= 3;
+        public string Title { get; set; }
+        public double Value { get; set; }
     }
 }

@@ -19,8 +19,10 @@ namespace CityTraveler.Entities
         public IEnumerable<ITrip> HistoryTrips { get; set; }
         public IEnumerable<ITrip> ActiveTrips { get; set; }
         public bool Blocked { get; set; }
+        public UserRole Role { get; set; }
         public Guid Id { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
+        public bool IsOnline { get; set; }
     }
 }

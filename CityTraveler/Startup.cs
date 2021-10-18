@@ -20,6 +20,8 @@ namespace CityTraveler
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ScopedDIContainer.AddAllScopedPairs(ref services);
+            services.AddSwaggerGen();
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -49,8 +51,14 @@ namespace CityTraveler
                 app.UseSpaStaticFiles();
             }
 
-            app.UseRouting();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => 
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CityTraveler API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

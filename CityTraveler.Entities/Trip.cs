@@ -26,5 +26,7 @@ namespace CityTraveler.Entities
         public DateTime Modified { get ; set ; }
         public string Title { get ; set ; }
         public string Description { get; set; }
+        public Guid TemplateId { get; set; }
+        public double AverageRating { get; set; }
     }
 }

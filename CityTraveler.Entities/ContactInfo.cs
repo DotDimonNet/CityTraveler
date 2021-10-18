@@ -20,5 +20,10 @@ namespace CityTraveler.Entities
             Email = email;
             Links = links;
         }
+
+        public ContactInfo()
+        {
+
+        }
     }
 }

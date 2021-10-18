@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CityTraveler.Infrastructure.Interfaces
+namespace CityTraveler.Services.Interfaces
 {
     public interface IServiceContext
     { 

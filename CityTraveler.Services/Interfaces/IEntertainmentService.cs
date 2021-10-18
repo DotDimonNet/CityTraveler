@@ -1,14 +1,14 @@
-﻿using System;
+﻿using CityTraveler.Infrastructure.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CityTraveler.Infrastructure.Interfaces.Service
+namespace CityTraveler.Services.Interfaces
 {
     public interface IEntertainmentService
     {
-        IEnumerable<IEntertaiment> Entertainments { get; set; }
         public bool SetEntertaiment(IEnumerable<IEntertaiment> entertaiments);
         public bool UpdateEntertainment(IEntertaiment entertaiments);
         public bool RemoveEntertainment(Guid id);
