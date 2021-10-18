@@ -1,6 +1,4 @@
-﻿using CityTraveler.Entities.DTO;
-using CityTraveler.Infrastructure.Interfaces;
-using CityTraveler.Repository.DbContext;
+﻿using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    public class AuthService : IAuthService
+    /*public class AuthService : IAuthService
     {
-        private readonly IDbContext _context;
-        public AuthService(IDbContext context)
+        private readonly DbContext _context;
+        public AuthService(DbContext context)
         {
             _context = context;
         }
@@ -56,5 +54,5 @@ namespace CityTraveler.Services
 
             return affectedUsers > 0;
         }
-    }
+    }*/
 }

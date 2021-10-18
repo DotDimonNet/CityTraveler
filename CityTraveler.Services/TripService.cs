@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CityTraveler.Infrastructure.Interfaces;
 using CityTraveler.Services.Interfaces;
 
 namespace CityTraveler.Services
@@ -18,7 +17,7 @@ namespace CityTraveler.Services
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public bool AddNewTrip(ITrip newTrip)
+        /*public bool AddNewTrip(ITrip newTrip)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +45,6 @@ namespace CityTraveler.Services
         public IEnumerable<ITrip> GetTrips(int skip = 0, int take = 10)
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

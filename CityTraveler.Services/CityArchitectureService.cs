@@ -1,6 +1,4 @@
-﻿using CityTraveler.Infrastructure.Enums;
-using CityTraveler.Infrastructure.Interfaces;
-using CityTraveler.Repository.DbContext;
+﻿using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    public class CityArchitectureService : ICityArchitectureService
+    public class CityArchitectureService //: ICityArchitectureService
     {
-        private readonly IServiceContext _serviceContext;
-        private readonly IDbContext _dbContext;
+        /*private readonly IServiceContext _serviceContext;
+        private readonly DbContext _dbContext;
         public bool IsActive { get; set; }
         public string Version { get; set; }
         public Guid Id { get; set; }
@@ -22,7 +20,7 @@ namespace CityTraveler.Services
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public CityArchitectureService(IServiceContext serviceContext, IDbContext dbContext)
+        public CityArchitectureService(IServiceContext serviceContext, DbContext dbContext)
         {
             _dbContext = dbContext;
             _serviceContext = serviceContext;
@@ -119,6 +117,6 @@ namespace CityTraveler.Services
         public async Task<bool> ValidateCityMap()
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

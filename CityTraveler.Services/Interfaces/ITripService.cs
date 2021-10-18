@@ -1,5 +1,4 @@
-﻿using CityTraveler.Infrastructure.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface ITripService : IServiceMetadata
     {
-        public bool AddNewTrip(ITrip newTrip);
+        /*public bool AddNewTrip(ITrip newTrip);
 
         public bool DeleteTrip(Guid tripId);
 
@@ -19,7 +18,7 @@ namespace CityTraveler.Services.Interfaces
 
         public IEnumerable<ITrip> GetTripByPlace(Guid placeId);
 
-        public Dictionary<Guid, Guid> GetTripByRating(Guid ratingId, Guid tripId);
+        public Dictionary<Guid, Guid> GetTripByRating(Guid ratingId, Guid tripId);*/
 
 
 

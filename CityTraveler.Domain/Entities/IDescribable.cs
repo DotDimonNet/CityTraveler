@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace CityTraveler.Infrastructure.Interfaces
+namespace CityTraveler.Domain.Entities
 {
-    public interface IPrice : IDbData
+    public interface IDescribable
     {
         public string Title { get; set; }
-        public double Value { get; set; }
+        public string Description { get; set; }
     }
 }

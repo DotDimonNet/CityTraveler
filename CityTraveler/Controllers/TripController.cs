@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace CityTraveler.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class TripController : ControllerBase
+    [Route("api/trip")]
+    public class TripController : Controller
     {
         private readonly ILogger<TripController> _logger;
 
-        public TripController(ILogger<TripController> logger, IDbContext context)
+        public TripController(ILogger<TripController> logger)
         {
             
             _logger = logger;
