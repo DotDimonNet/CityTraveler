@@ -83,7 +83,7 @@ namespace CityTraveler.Services
             {
                 ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
                 _dbContext.Reviews.Remove(re);
-                re.Rating = rating;
+               // re.Rating = rating;
                 re.RatingId = rating.Id;
                 _dbContext.Reviews.Add(re);
                 return re;
@@ -176,6 +176,28 @@ namespace CityTraveler.Services
                 throw new SocialMediaServiceException("Failed to remove image");
                 //return false;
             }
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByTitle(string title)
+        {
+            return _dbContext.Reviews.Where(x => x.Title.Contains(title ?? ""));
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting)
+        {
+
+            //return _dbContext.Reviews.Where(x=>x.Rating == raiting);
+            return null;
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment)
+        {
+            return _dbContext.Reviews.Where(x=>x.Comments.Contains(comment));
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByDescription(string description)
+        {
+            return _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
         }
     }
 }
