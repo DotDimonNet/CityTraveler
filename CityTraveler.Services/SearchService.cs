@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
 using System;
@@ -13,13 +14,15 @@ namespace CityTraveler.Services
     public class SearchService : ISearchService
     {
         private readonly ApplicationContext _dbContext;
+        private readonly ServiceContext _svContext;
 
         public bool IsActive { get; set; }
         public string Version { get; set; }
 
-        public SearchService(ApplicationContext dbContext)
+        public SearchService(ApplicationContext dbContext, ServiceContext sc)
         {
             _dbContext = dbContext;
+            _svContext = sc;
         }
 
         //assuming that if user didn`t give priceLess, priceMore, raitingMore, raitingLess, default values will be given
@@ -62,15 +65,16 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                return null;
+                throw new SearchServiceException("Couldn`t filter entertainments");
+               // return null;
             }
         }
 
         public IEnumerable<TripModel> FilterTrips(FilterTrips filter)
         {
-            EntertainmentService es = new EntertainmentService(_dbContext);
-            TripService ts = new TripService(_dbContext);
-            UserManagementService us = new UserManagementService(_dbContext);
+            EntertainmentService es = _svContext.EntertainmentService;
+            TripService ts = _svContext.TripService;
+            UserManagementService us = _svContext.UserManagementService;
 
             try
             {
@@ -115,14 +119,15 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                return null;
+                throw new SearchServiceException("Couldn`t filter trips");
+                //return null;
             }
         }
 
         public IEnumerable<ApplicationUserModel> FilterUsers(FilterUsers filter)
         {
-            TripService ts = new TripService(_dbContext);
-            EntertainmentService es = new EntertainmentService(_dbContext);
+            TripService ts = _svContext.TripService;
+            EntertainmentService es = _svContext.EntertainmentService;
             try
             {
                 IEnumerable<TripModel> trips = null; // ts.getTripsByName(filter.TripName)
@@ -137,7 +142,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                return null;
+                throw new SearchServiceException("Couldn`t filter users");
+                //return null;
             }
         }
 
@@ -150,7 +156,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                return null;
+                throw new SearchServiceException("Couldn`t get alike users");
+                //return null;
             }
         }
 
@@ -169,7 +176,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                return null;
+                throw new SearchServiceException("Couldn`t get alike trips");
+               // return null;
             }
         }
 
@@ -185,7 +193,8 @@ namespace CityTraveler.Services
                             );
             } catch (Exception)
             {
-                return null;
+                throw new SearchServiceException("Couldn`t get alike entertainmens");
+                //return null;
             }
         }
     }
