@@ -83,7 +83,7 @@ namespace CityTraveler.Services
             {
                 ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
                 _dbContext.Reviews.Remove(re);
-                re.Rating = rating;
+               // re.Rating = rating;
                 re.RatingId = rating.Id;
                 _dbContext.Reviews.Add(re);
                 return re;
@@ -186,33 +186,13 @@ namespace CityTraveler.Services
         public IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting)
         {
 
-            return _dbContext.Reviews.Where(x=>GetAverageRating(x).Result == raiting);
+            //return _dbContext.Reviews.Where(x=>x.Rating == raiting);
+            return null;
         }
 
         public IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment)
         {
             return _dbContext.Reviews.Where(x=>x.Comments.Contains(comment));
-        }
-
-        public async Task<double> GetAverageRating(ReviewModel model)
-        {
-            /*if (model.Rating.Count > 0)
-            {
-                int count = 0;
-                double raitings = 0;
-                foreach (var raiting in model.Rating)
-                {
-                    raitings += raiting.Value;
-                    count += 1;
-                }
-                return raitings / count;
-            }
-            else
-            {
-                return 0;
-            }*/
-            //need change in Review
-            return 0;
         }
 
         public IEnumerable<ReviewModel> GetReviewsByDescription(string description)

@@ -24,7 +24,6 @@ namespace CityTraveler.Services.Interfaces
         IEnumerable<ReviewModel> GetReviewsByDescription(string description);
         IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting);
         IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment);
-        Task<double> GetAverageRating(ReviewModel model);
 
     }
 }
