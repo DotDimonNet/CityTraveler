@@ -177,5 +177,47 @@ namespace CityTraveler.Services
                 //return false;
             }
         }
+
+        public IEnumerable<ReviewModel> GetReviewsByTitle(string title)
+        {
+            return _dbContext.Reviews.Where(x => x.Title.Contains(title ?? ""));
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting)
+        {
+
+            return _dbContext.Reviews.Where(x=>GetAverageRating(x).Result == raiting);
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment)
+        {
+            return _dbContext.Reviews.Where(x=>x.Comments.Contains(comment));
+        }
+
+        public async Task<double> GetAverageRating(ReviewModel model)
+        {
+            /*if (model.Rating.Count > 0)
+            {
+                int count = 0;
+                double raitings = 0;
+                foreach (var raiting in model.Rating)
+                {
+                    raitings += raiting.Value;
+                    count += 1;
+                }
+                return raitings / count;
+            }
+            else
+            {
+                return 0;
+            }*/
+            //need change in Review
+            return 0;
+        }
+
+        public IEnumerable<ReviewModel> GetReviewsByDescription(string description)
+        {
+            return _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
+        }
     }
 }

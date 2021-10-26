@@ -141,26 +141,52 @@ namespace CityTraveler.Services
             }
         }
 
-        /*public IEnumerable<ApplicationUserModel> FilterUsersAlike(UserProfileModel u)
+        public IEnumerable<ApplicationUserModel> FilterUsersAlike(UserProfileModel u)
         {
             try
             {
-                return _dbContext.Users.Where(x => x.);
+                return _dbContext.Users.Where(x => x.Profile.Gender == u.Gender 
+                && x.Profile.Name.Contains(u.Name));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 return null;
             }
-        }*/
+        }
 
         public IEnumerable<TripModel> FilterTripsAlike(TripModel t)
         {
-            throw new NotImplementedException();
+            try
+            {
+                    return _dbContext.Trips.Where(x =>
+                        x.Description.Contains(t.Description ?? "")
+                        && x.TripEnd == t.TripEnd
+                        && x.TripStart == t.TripStart
+                        && x.RealSpent == t.RealSpent
+                        && x.OptimalSpent == t.OptimalSpent
+                        && x.TripStatus == t.TripStatus
+                        );
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public IEnumerable<EntertaimentModel> FilterEntertainmentsAlike(EntertaimentModel e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _dbContext.Entertaiments.Where(x =>
+                               x.Title.Contains(e.Title ?? "")
+                            && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
+                            && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? "")
+                            && x.Type == e.Type
+                            );
+            } catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

@@ -20,6 +20,11 @@ namespace CityTraveler.Services.Interfaces
         Task<bool> RemoveComment(Guid commentId, Guid reviewId);
         Task<bool> AddImage(ReviewImageModel comment, Guid reviewId);
         Task<bool> RemoveImage(Guid reviewImageId, Guid reviewId);
+        IEnumerable<ReviewModel> GetReviewsByTitle(string title);
+        IEnumerable<ReviewModel> GetReviewsByDescription(string description);
+        IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting);
+        IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment);
+        Task<double> GetAverageRating(ReviewModel model);
 
     }
 }
