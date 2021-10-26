@@ -11,6 +11,7 @@ namespace CityTraveler.Domain.Entities
         public virtual Guid AddressId { get; set; }
         public virtual AddressModel Address { get; set; }
         public virtual EntertainmentType Type { get; set; }
+        public virtual IEnumerable<RatingEntertainmentModel> Rating { get; set; }
         public virtual ICollection<TripModel> Trips { get; set; } = new List<TripModel>();
         public virtual ICollection<EntertaimentPriceModel> Prices { get; set; } = new List<EntertaimentPriceModel>();
         public virtual ICollection<EntertaimentImageModel> Images { get; set; } = new List<EntertaimentImageModel>();

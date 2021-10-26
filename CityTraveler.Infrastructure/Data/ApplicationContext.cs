@@ -29,7 +29,7 @@ namespace CityTraveler.Infrastucture.Data
         public DbSet<TripModel> Trips { get; set; }
         public DbSet<PriceModel> Prices { get; set; }
         public DbSet<TripStatus> Statuses { get; set; }
-        public DbSet<TripImageModel> TripImages { get; set; }
+        
 
         // enums tables
 
@@ -47,7 +47,8 @@ namespace CityTraveler.Infrastucture.Data
             builder.Entity<StreetModel>().HasMany(x => x.Addresses).WithOne(x => x.Street).HasForeignKey(x => x.StreetId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<ReviewModel>().HasMany(x => x.Comments).WithOne(x => x.Review).HasForeignKey(x => x.ReviewId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<ReviewModel>().HasMany(x => x.Images).WithOne(x => x.Review).HasForeignKey(x => x.ReviewId).OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<RatingModel>().HasOne(x => x.Review).WithOne(x => x.Rating).HasForeignKey<ReviewModel>(x => x.RatingId).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Entity<RatingReviewModel>().HasOne(x => x.Review).WithMany(x => x.Rating).HasForeignKey(x => x.ReviewId).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Entity<RatingEntertainmentModel>().HasOne(x => x.Entertaiment).WithMany(x => x.Rating).HasForeignKey(x => x.EntertainmentId).OnDelete(DeleteBehavior.ClientSetNull);
             builder.Entity<AddressModel>().HasOne(x => x.Coordinates).WithOne(x => x.Address).HasForeignKey<AddressModel>(x => x.CoordinatesId).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<EntertaimentModel>().HasOne(x => x.Address).WithOne(x => x.Entertaiment).HasForeignKey<EntertaimentModel>(x => x.AddressId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<EntertaimentModel>().HasMany(x => x.Reviews).WithOne(x => x.Entertaiment).HasForeignKey(x => x.EntertaimentId).OnDelete(DeleteBehavior.Cascade);

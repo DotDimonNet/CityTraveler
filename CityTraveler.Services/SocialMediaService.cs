@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
@@ -32,7 +33,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                return rev;
+                 throw new SocialMediaServiceException("Failed to add review to entertainment");
+                //return rev;
             }
             return rev;
         }
@@ -47,7 +49,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                return rev;
+                throw new SocialMediaServiceException("Failed to add review to trip");
+                //return rev;
             }
             return rev;
         }
@@ -61,7 +64,7 @@ namespace CityTraveler.Services
             else if (t != null)
                 return t.Reviews;
             else
-                return null;
+                throw new SocialMediaServiceException("Object not found");
         }
 
         public IEnumerable<ReviewModel> GetReviews(int skip = 0, int take = 10)
@@ -87,7 +90,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                return null;
+                throw new SocialMediaServiceException("Failed to post raiting");
+                //return null;
             }
 
         }
@@ -97,13 +101,16 @@ namespace CityTraveler.Services
             try
             {
                 ReviewModel re =await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                if(re==null)
+                    throw new SocialMediaServiceException("Review not found");
                 _dbContext.Reviews.Remove(re);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                return false;
+                throw new SocialMediaServiceException("Failed to remove review");
+                //return false;
             }
         }
         public async Task<bool> AddComment(CommentModel comment, Guid reviewId) 
@@ -117,7 +124,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                return false;
+                throw new SocialMediaServiceException("Failed to add comment");
+                //return false;
             }
         }
         public async Task<bool> RemoveComment(Guid commentId, Guid reviewId)
@@ -125,13 +133,16 @@ namespace CityTraveler.Services
             try
             {
                 CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=>x.ReviewId == reviewId && x.Id == commentId);
+                if(comment == null)
+                    throw new SocialMediaServiceException("Comment not found");
                 _dbContext.Comments.Remove(comment);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                return false;
+                throw new SocialMediaServiceException("Failed to remove comment");
+                //return false;
             }
         }
         public async Task<bool> AddImage(ReviewImageModel image, Guid reviewId) 
@@ -145,7 +156,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                return false;
+                throw new SocialMediaServiceException("Failed to add image");
+                //return false;
             }
         }
         public async Task<bool> RemoveImage(Guid reviewImageId, Guid reviewId) 
@@ -153,13 +165,16 @@ namespace CityTraveler.Services
             try
             {
                 ReviewImageModel image = (ReviewImageModel) await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
+                if(image == null)
+                    throw new SocialMediaServiceException("Image not found");
                 _dbContext.Images.Remove(image);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                return false;
+                throw new SocialMediaServiceException("Failed to remove image");
+                //return false;
             }
         }
     }

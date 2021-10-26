@@ -9,7 +9,6 @@ namespace CityTraveler.Domain.Entities
     {
         public string Source { get; set; }
         public bool IsMain { get; set; }
-        //public IEnumerable<string> Tags { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
     }
