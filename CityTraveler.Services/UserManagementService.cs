@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace CityTraveler.Services
 {
     public class UserManagementService : IUserManagementService
@@ -29,18 +30,12 @@ namespace CityTraveler.Services
         
         public async Task<UserProfileModel> GetUserById(Guid userId)
         {
-           
                 return await _context.UserProfiles.FirstOrDefaultAsync(x => x.Id == userId);
-                              
-                       
         }
 
         public IEnumerable<UserProfileModel> GetUsersByBirthday (DateTime userbirthday)
         {
-            
                 return _context.UserProfiles.Where(x => x.Birthday.Date == userbirthday.Date);
-                     
-           
         }
 
         public IEnumerable<UserProfileModel> GetUsersByName (string name)
@@ -63,24 +58,14 @@ namespace CityTraveler.Services
             return _context.UserProfiles.Where(x => guids.Contains(x.Id));
         }
 
-        public async Task<bool> RemoveUser(Guid userId)
+        public async Task<UserProfileModel> GetUserByEmail(string email)
         {
-            try
-            {
-                _context.UserProfiles.Where(x => x.Id != userId);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            
-        }
-
-        
+            return await _context.UserProfiles.FirstOrDefaultAsync(x => x.User.Email == email); 
         }
 
         
     }
+
+        
+    
 }

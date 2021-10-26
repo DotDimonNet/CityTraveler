@@ -64,7 +64,8 @@ namespace CityTraveler.Services
                 throw new Exception("User was not registered.");
             }
         }
-      
+
+           
         
         public async Task<UserDTO> UpdateUserData(UpdateUserDTO updateUser)
         {
@@ -105,6 +106,22 @@ namespace CityTraveler.Services
 
             }
         }
+        
+        public async Task<bool> SignInUser(SignInDTO signInDTO)
+        {
+            try
+            {
+                var result = await _signInManager.PasswordSignInAsync(signInDTO.UserName, signInDTO.Password, false, false);
+
+                return result.Succeeded; 
+            }
+               
+            catch(Exception)
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> DeleteUserProfile(Guid userId)
         {
             try

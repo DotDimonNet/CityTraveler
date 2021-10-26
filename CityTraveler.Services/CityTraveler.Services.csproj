@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="VisioForge.DotNet.Core.TRIAL" Version="14.4.16" />
   </ItemGroup>
 
   <ItemGroup>

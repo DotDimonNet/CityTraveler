@@ -22,5 +22,9 @@ namespace CityTraveler.Domain.Entities
         public TimeSpan OptimalSpent { get; set; }
         public TimeSpan RealSpent { get; set; }
         public virtual TripStatus TripStatus { get; set; }
+        public bool DafaultTrip { get; set; }
+        public string TagSting { get; set; }
+
+
     }
 }
