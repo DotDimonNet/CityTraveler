@@ -24,7 +24,7 @@ namespace CityTraveler.Services.Interfaces
         IEnumerable<ReviewModel> GetReviewsByDescription(string description);
         IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting);
         IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment);
-        Task<ReviewModel> GetReviewGyId(Guid Id);
+        Task<ReviewModel> GetReviewById(Guid Id);
 
     }
 }

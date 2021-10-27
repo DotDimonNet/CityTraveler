@@ -52,7 +52,7 @@ namespace CityTraveler.Infrastucture.Data
             //was no action
             builder.Entity<ReviewModel>().HasMany(x => x.Images).WithOne(x => x.Review).HasForeignKey(x => x.ReviewId).OnDelete(DeleteBehavior.Cascade);
             //was client set null
-            builder.Entity<RatingModel>().HasOne(x => x.Review).WithOne(x => x.Rating).HasForeignKey<RatingModel>(x => x.ReviewId).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<ReviewModel>().HasOne(x => x.Rating).WithOne(x => x.Review).HasForeignKey<ReviewModel>(x => x.RatingId).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<AddressModel>().HasOne(x => x.Coordinates).WithOne(x => x.Address).HasForeignKey<AddressModel>(x => x.CoordinatesId).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<EntertaimentModel>().HasOne(x => x.Address).WithOne(x => x.Entertaiment).HasForeignKey<EntertaimentModel>(x => x.AddressId).OnDelete(DeleteBehavior.Cascade);

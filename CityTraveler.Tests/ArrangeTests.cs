@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Infrastucture.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -33,6 +34,8 @@ namespace CityTraveler.Tests
             await dbInitializer.Initialize();
             await GenerateData();
             await GenerateReviews();
+            await GenerateComment();
+            await GenerateImage();
         }
 
         private static void SetupManagementMocks()
@@ -93,6 +96,41 @@ namespace CityTraveler.Tests
                 reviews.Add(review);
             }
             await ApplicationContext.Reviews.AddRangeAsync(reviews);
+            await ApplicationContext.SaveChangesAsync();
+        }
+        private static async Task GenerateComment()
+        {
+            var comments = new List<CommentModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var comment = new CommentModel()
+                {
+                    Status = CommentStatus.Liked,
+                    Review = new ReviewModel { Rating = new RatingModel { Value = 3 } }
+                };
+
+                comments.Add(comment);
+            }
+            await ApplicationContext.Comments.AddRangeAsync(comments);
+            await ApplicationContext.SaveChangesAsync();
+        }
+        private static async Task GenerateImage()
+        {
+            var images = new List<ImageModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var image = new ReviewImageModel()
+                {
+                    Review = new ReviewModel {
+                        User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
+                        Rating = new RatingModel { Value = 5 }
+                    }
+
+                };
+
+                images.Add(image);
+            }
+            await ApplicationContext.Images.AddRangeAsync(images);
             await ApplicationContext.SaveChangesAsync();
         }
     }
