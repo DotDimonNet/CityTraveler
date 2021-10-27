@@ -74,7 +74,7 @@ namespace CityTraveler.Services
 
         public IEnumerable<ReviewModel> GetUserReviews(Guid userId)
         {
-            if (_dbContext.Users.Where(x => x.Id == userId) == null)
+            if (_dbContext.Users.Where(x => x.Id == userId).Count() == 0)
                 throw new SocialMediaServiceException("User not found");
             IEnumerable<ReviewModel> reviews = _dbContext.Reviews.Where(x => x.UserId == userId);
             if (reviews != null)
@@ -104,17 +104,18 @@ namespace CityTraveler.Services
 
         public async Task<bool> RemoveReview(Guid reviewId)
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
             try
             {
-                ReviewModel re =await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
-                if(re==null)
-                    throw new SocialMediaServiceException("Review not found");
+                ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
                 _dbContext.Reviews.Remove(re);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw new SocialMediaServiceException("Failed to remove review");
                 //return false;
             }

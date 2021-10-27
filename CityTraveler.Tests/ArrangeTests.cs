@@ -32,6 +32,7 @@ namespace CityTraveler.Tests
 
             await dbInitializer.Initialize();
             await GenerateData();
+            await GenerateReviews();
         }
 
         private static void SetupManagementMocks()
@@ -75,6 +76,23 @@ namespace CityTraveler.Tests
                 entertainments.Add(entertainment);
             }
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.SaveChangesAsync();
+        }
+        private static async Task GenerateReviews()
+        {
+            var reviews = new List<ReviewModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var review = new TripReviewModel()
+                {
+                    User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
+                    Trip = new TripModel { },
+                    Rating = new RatingModel { Value = 5}
+                };
+
+                reviews.Add(review);
+            }
+            await ApplicationContext.Reviews.AddRangeAsync(reviews);
             await ApplicationContext.SaveChangesAsync();
         }
     }

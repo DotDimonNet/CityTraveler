@@ -38,9 +38,10 @@ namespace CityTraveler.Tests
             var initial = ArrangeTests.ApplicationContext.Reviews;
             Assert.IsNotNull(review);
             Assert.True(review.Count() == 5);
+            List<ReviewModel> l1 = review.ToList();
             for (int i = 0; i < 5; i++)
             {
-                Assert.True(review.ElementAt(i) == initial.ElementAt(i));
+                Assert.True(l1.ElementAt(i) == initial.ToList().ElementAt(i));
             }
         }
         [Test]
@@ -78,11 +79,12 @@ namespace CityTraveler.Tests
             Assert.True(res);
             Assert.True(!ArrangeTests.ApplicationContext.Reviews.Contains(review));
         }
+
         [Test]
         public void RemoveReviewThrowsTest()
         {
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var ex = Assert.Throws<SocialMediaServiceException>(async () => await service.RemoveReview(Guid.NewGuid()));
+            var ex = Assert.ThrowsAsync<SocialMediaServiceException>( () =>  service.RemoveReview(Guid.NewGuid()));
             Assert.That(ex.Message, Is.EqualTo("Review not found")); 
         }
         [Test]
@@ -93,7 +95,7 @@ namespace CityTraveler.Tests
             Assert.That(ex.Message, Is.EqualTo("User not found"));
         }
         [Test]
-        public async void GetUserReviewsTest()
+        public async Task GetUserReviewsTest()
         {
             var user = await ArrangeTests.ApplicationContext.Users.FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
@@ -101,13 +103,13 @@ namespace CityTraveler.Tests
             Assert.NotNull(reviews);
         }
         [Test]
-        public async void GetObjectReviewsTest()
+        public async Task GetObjectReviewsTest()
         {
             var trip = await ArrangeTests.ApplicationContext.Trips
               .FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var reviews = service.GetObjectReviews(trip.Id);
-            
+            Assert.NotNull(reviews);
         }
         [Test]
         public void GetObjectReviewsThrowsTest()
