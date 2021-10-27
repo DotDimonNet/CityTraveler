@@ -43,7 +43,7 @@ namespace CityTraveler.Tests
                 EmailConfirmed = true,
                 Profile = new UserProfileModel
                 {
-                    Gender = "male"
+                    Gender = "male",
                 }
             };
             var store = new Mock<IUserStore<ApplicationUserModel>>();
@@ -75,6 +75,27 @@ namespace CityTraveler.Tests
                 entertainments.Add(entertainment);
             }
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.SaveChangesAsync();
+
+            var userProfiles = new List<UserProfileModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var user = new UserProfileModel()
+                {
+                    Name = $"name{i}",
+                    Birthday = new DateTime(),
+                    Gender = "male",
+                    User = new ApplicationUserModel()
+                    {
+                        UserId = new Guid(),
+                        UserName = $"email{i}@email",
+                        Email = $"email{i}@email",
+                    }
+                };
+
+                userProfiles.Add(user);
+            }
+            await ApplicationContext.UserProfiles.AddRangeAsync(userProfiles);
             await ApplicationContext.SaveChangesAsync();
         }
     }
