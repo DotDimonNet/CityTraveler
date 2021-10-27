@@ -32,6 +32,8 @@ namespace CityTraveler.Tests
 
             await dbInitializer.Initialize();
             await GenerateData();
+            await GenerateTrips();
+
         }
 
         private static void SetupManagementMocks()
@@ -75,6 +77,35 @@ namespace CityTraveler.Tests
                 entertainments.Add(entertainment);
             }
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.SaveChangesAsync();
+        }
+        private static async Task GenerateTrips()
+        {
+            var trips = new List<TripModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var trip = new TripModel()
+                { TripStart = DateTime.Now,
+                    TripEnd = DateTime.Now.AddHours(4),
+                    Entertaiment = new List<EntertaimentModel>(),
+                    Price = new TripPriceModel(),
+                    Title = $"TripTitle{i}",
+                    Description = $"TripDescription{i}",
+                    OptimalSpent = TimeSpan.Zero,
+                    RealSpent = TimeSpan.Zero,
+                    TripStatus = new Domain.Enums.TripStatus(1, "New"),
+                    TagSting=$"tripTagString{i}"           
+                };
+                if (i % 2 == 0){
+                    trip.DafaultTrip = true;
+                } 
+                if (i > 5)
+                {
+                    trip.AverageRating = 4;
+                }
+                trips.Add(trip);
+            }
+            await ApplicationContext.Trips.AddRangeAsync(trips);
             await ApplicationContext.SaveChangesAsync();
         }
     }
