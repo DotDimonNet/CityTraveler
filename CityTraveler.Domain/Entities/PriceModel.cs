@@ -13,11 +13,13 @@ namespace CityTraveler.Domain.Entities
 
     public class TripPriceModel: PriceModel
     {
+        public virtual Guid TripId { get; set; }
         public virtual TripModel Trip { get; set; }
     }
 
     public class EntertaimentPriceModel : PriceModel
     {
-        public virtual Entertaiment Entertaiment { get; set; }
+        public virtual Guid EntertaimentId { get; set; }
+        public virtual EntertaimentModel Entertaiment { get; set; }
     }
 }

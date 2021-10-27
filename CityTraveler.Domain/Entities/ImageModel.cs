@@ -16,21 +16,25 @@ namespace CityTraveler.Domain.Entities
 
     public class UserImageModel : ImageModel
     {
+        public virtual Guid UserId { get; set; } 
         public virtual ApplicationUserModel User { get; set; }
     }
 
     public class EntertaimentImageModel : ImageModel
     {
-        public virtual Entertaiment Entertaiment { get; set; }
+        public virtual Guid EntertaimentId { get; set; }
+        public virtual EntertaimentModel Entertaiment { get; set; }
     }
 
     public class ReviewImageModel : ImageModel
     {
+        public virtual Guid ReviewId { get; set; }
         public virtual ReviewModel Review { get; set; }
     }
 
     public class TripImageModel : ImageModel
     {
+        public virtual Guid TripId { get; set; } 
         public virtual TripModel Trip { get; set; }
     }
 }

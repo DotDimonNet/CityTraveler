@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CityTraveler.Entities.DTO
+namespace CityTraveler.Domain.DTO
 {
-    public class UnblockModel
+    public class UpdateUserPasswordDTO
     {
         public string UserName { get; set; }
-        public string BlockedUserName { get; set; }
+        public string NewPassword { get; set; }
+        public string OldPassword { get; set; }
+
     }
 }

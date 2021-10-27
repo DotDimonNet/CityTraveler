@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CityTraveler.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,12 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IUserManagementService : IServiceMetadata
     {
-        /*public bool UpdateUserData(IUser user);
+        public bool UpdateUserData(UserProfileModel user);
         public bool RemoveUser(Guid userId);
-        public IEnumerable<IUser> GetUsers(int skip = 0, int take = 10);
-        public IEnumerable<IUser> GetUsers(IEnumerable<Guid> guids);
-        public IUser GetUserById(Guid userId);
-        public IUser GetUserByEmail(string email);*/
+        public IEnumerable<UserProfileModel> GetUsers(int skip = 0, int take = 10);
+        public IEnumerable<UserProfileModel> GetUsers(IEnumerable<Guid> guids);
+        public UserProfileModel GetUserById(Guid userId);
+        //public UserProfileModel GetUserByEmail(string email);
 
         
     }   

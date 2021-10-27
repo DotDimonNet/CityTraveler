@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace CityTraveler.Domain.Entities
 {
-    public class EventModel : Entertaiment
+    public class EventModel : EntertaimentModel
     {
         //To JSON
         public DateTime Start { get; set; }

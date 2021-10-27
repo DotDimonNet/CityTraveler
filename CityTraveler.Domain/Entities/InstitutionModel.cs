@@ -6,7 +6,7 @@ using CityTraveler.Domain.Enums;
 
 namespace CityTraveler.Domain.Entities
 {
-    public class InstitutionModel : Entertaiment
+    public class InstitutionModel : EntertaimentModel
     {
         //To JSON
         //public virtual InstitutionType Type { get; set; }

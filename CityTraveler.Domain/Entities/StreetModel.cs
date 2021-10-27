@@ -7,7 +7,7 @@ namespace CityTraveler.Domain.Entities
 {
     public class StreetModel : Entity, IDescribable
     {
-        public virtual ICollection<StreetAddressModel> Addresses { get; set; } = new List<StreetAddressModel>();
+        public virtual ICollection<AddressModel> Addresses { get; set; } = new List<AddressModel>();
         public string Title { get; set; }
         public string Description { get; set; }
     }

@@ -1,122 +1,258 @@
-﻿using CityTraveler.Repository.DbContext;
+﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Errors;
+using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    public class CityArchitectureService //: ICityArchitectureService
+    public class CityArchitectureService : ICityArchitectureService
     {
-        /*private readonly IServiceContext _serviceContext;
-        private readonly DbContext _dbContext;
+        private readonly ApplicationContext _dbContext;
+
         public bool IsActive { get; set; }
         public string Version { get; set; }
-        public Guid Id { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime Modified { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
 
-        public CityArchitectureService(IServiceContext serviceContext, DbContext dbContext)
+        public CityArchitectureService(ApplicationContext dbContext)
         {
             _dbContext = dbContext;
-            _serviceContext = serviceContext;
         }
-
-        public async Task<bool> AddObjectToCity(IInstitution institution)
+        public async Task<bool> AddEntertainmentToCity(EntertaimentModel entertaiment)
         {
-            _dbContext.Institutions.Collection.Add(institution);
-
-            var query = $"";
-
-            var affectedObjects = await _dbContext.Institutions.RequestManager.SendRequestAsync(query, null, false);
-            return affectedObjects > 0;
-        }
-
-        public async Task<bool> AddObjectToCity(IEvent ev)
-        {
-            _dbContext.Events.Collection.Add(ev);
-
-            var query = $"";
-
-            var affectedObjects = await _dbContext.Events.RequestManager.SendRequestAsync(query, null, false);
-            return affectedObjects > 0;
-        }
-
-        public async Task<bool> AddObjectToCity(ILandskape landskape)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> AddStreet(IStreet street)
-        {
-            _dbContext.Streets.Collection.Add(street);
-
-            var query = $"";
-
-            var affectedObjects = await _dbContext.Streets.RequestManager.SendRequestAsync(query, null, false);
-            return affectedObjects > 0;
-        }
-
-        public async Task<bool> BuildCityMap()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> RemoveObjectById(Guid objectId, PlaceType type)
-        {
-            switch (type)
+            try
             {
-                case PlaceType.Event:
-                    _dbContext.Events.Collection.RemoveAll(x => x.Id == objectId);
-                    break;
-                case PlaceType.Institution:
-                    _dbContext.Institutions.Collection.RemoveAll(x => x.Id == objectId);
-                    break;
-                case PlaceType.Landscape:
-                    _dbContext.Landskapes.Collection.RemoveAll(x => x.Id == objectId);
-                    break;
-                default:
-                    break;
+                _dbContext.Entertaiments.Add(entertaiment);
+                await _dbContext.SaveChangesAsync();
             }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                throw new CityArchitectureServiceException("Failed to add entertainment");
+                //return false;
+            }
+            return true;
+        }
 
-            var query = $"";
+        public async Task<bool> UpdateCityEntertainment(EntertaimentModel entertaiment)
+        {
+            try
+            {
+                _dbContext.Entertaiments.Update(entertaiment);
+               /* DbSet<EntertaimentModel> en = (DbSet<EntertaimentModel>)_dbContext.Entertaiments.Where(x => x.Id != entertaiment.Id);
+                  
+                _dbContext.Entertaiments.Add(entertaiment);*/
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new CityArchitectureServiceException("Failed to update entertainment");
+                //return false;
+            }
+            return true;
+        }
 
-            var affectedObjects = await _dbContext.Events.RequestManager.SendRequestAsync(query, null, false);
-            return affectedObjects > 0;
+        public async Task<bool> RemoveEntertainmentById(Guid objectId)
+        {
+            try
+            {
+                EntertaimentModel mo= await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == objectId);
+                if(mo == null)
+                    throw new CityArchitectureServiceException("Entertainment not found");
+                _dbContext.Entertaiments.Remove(mo);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new CityArchitectureServiceException("Failed to remove entertainment");
+                Console.WriteLine(e.Message);
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> AddStreet(StreetModel street)
+        {
+            try
+            {
+                _dbContext.Streets.Add(street);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new CityArchitectureServiceException("Failed to add street");
+                //return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> UpdateStreet(StreetModel street)
+        {
+            try
+            {
+                /*DbSet<StreetModel> en = (DbSet<StreetModel>)_dbContext.Entertaiments.Where(x => x.Id != street.Id);
+                _dbContext.Streets.Add(street);*/
+                _dbContext.Streets.Update(street);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new CityArchitectureServiceException("Failed to update street");
+                //return false;
+            }
+            return true;
         }
 
         public async Task<bool> RemoveStreet(Guid streetId)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateCityObject(IInstitution institute)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateCityObject(IEvent ev)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateCityObject(ILandskape landskape)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateStreet(IStreet street)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                StreetModel st = await _dbContext.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
+                if (st == null)
+                    throw new CityArchitectureServiceException("Street not found");
+                _dbContext.Streets.Remove(st);
+               await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new CityArchitectureServiceException("Failed to remove street");
+                //return false;
+            }
+            return true;
         }
 
         public async Task<bool> ValidateCityMap()
         {
-            throw new NotImplementedException();
-        }*/
+            return validateAddresses().Result && validateEntertainments().Result;
+        }
+
+        public async Task<bool> validateEntertainments() 
+        {
+            try
+            {
+                EntertaimentModel en = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Address == null);
+                EntertaimentModel en1 = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Type == null);
+                if (en == null && en1 == null)
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception e) 
+            {
+                throw new CityArchitectureServiceException("Failed to validate city map");
+                //return false;
+            }
+        }
+        public async Task<bool> validateAddresses()
+        {
+            try
+            {
+                AddressModel ad = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Coordinates == null);
+                AddressModel ad1 = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Street == null);
+                if (ad == null && ad1 == null)
+                    return true;
+                else
+                    return false;
+
+            }
+            catch (Exception e)
+            {
+                throw new CityArchitectureServiceException("Failed to validate addresses");
+                //return false;
+            }
+        }
+
+        public async Task<StreetModel> FindStreetByCoordinates(Guid coordID)
+        {
+            try
+            {
+                AddressModel ad = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.CoordinatesId == coordID);
+                return ad.Street;
+            }
+            catch (Exception e) 
+            {
+                throw new CityArchitectureServiceException("Failed to find street by coordinates");
+            }
+        }
+        public async Task<StreetModel> FindStreetByCoordinates(double longtitude, double latitude) 
+        {
+            AddressModel ad = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Coordinates.Longitude == longtitude && x.Coordinates.Latitude == latitude);
+            if (ad == null)
+                throw new CityArchitectureServiceException("Coordinates not found");
+            return ad.Street;
+        }
+        public async Task<AddressModel> FindAddressByCoordinates(Guid coordID)
+        {
+            return await _dbContext.Addresses.FirstOrDefaultAsync(x => x.CoordinatesId == coordID);
+        }
+
+        public IEnumerable<EntertaimentModel> FindEntertainmentByStreet(Guid streetId)
+        {
+            return  _dbContext.Entertaiments.Where(x=>x.Address.StreetId == streetId);
+        }
+
+        public IEnumerable<EntertaimentModel> FindEntertainmentByCoordinate(Guid coorId)
+        {
+            return _dbContext.Entertaiments.Where(x => x.Address.CoordinatesId == coorId);
+        }
+
+        public IEnumerable<EntertaimentModel> FindEntertainmentByAddress(Guid addressId)
+        {
+            return _dbContext.Entertaiments.Where(x => x.Address.StreetId == addressId);
+        }
+
+        public async Task<AddressModel> FindAddressByStreetHouse(Guid streetId, string houseNum)
+        {
+            return await _dbContext.Addresses.FirstOrDefaultAsync(x=>x.StreetId == streetId && x.HouseNumber == houseNum);
+        }
+
+        public IEnumerable<AddressModel> FindAddressByHouse(string houseNum)
+        {
+            return _dbContext.Addresses.Where(x => x.HouseNumber == houseNum);
+        }
+
+        public IEnumerable<EntertaimentModel> FindEntertainmentByStreetTitle(string streetTitle)
+        {
+            return _dbContext.Entertaiments.Where(x => x.Address.Street.Title == streetTitle);
+        }
+
+        public async Task<AddressModel> FindAddressByCoordinates(double longtitude, double latitude)
+        {
+            return await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Coordinates.Longitude == longtitude&&x.Coordinates.Latitude==latitude);
+        }
+
+        public IEnumerable<AddressModel> getAddress(int skip = 0, int take = 10)
+        {
+            try
+            {
+                return _dbContext.Addresses.Skip(skip).Take(take);
+            }
+            catch (Exception e) 
+            {
+                throw new CityArchitectureServiceException("Failed to get addresses");
+                //return null;
+            }
+        }
+
+        public IEnumerable<StreetModel> getStreet(int skip = 0, int take = 10)
+        {
+            try
+            {
+                return _dbContext.Streets.Skip(skip).Take(take);
+            }
+            catch (Exception e)
+            {
+                throw new CityArchitectureServiceException("Failed to get streets");
+                //return null;
+            }
+        }
     }
 }

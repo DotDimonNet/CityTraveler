@@ -6,14 +6,15 @@ using CityTraveler.Domain.Enums;
     
 namespace CityTraveler.Domain.Entities
 {
-    public class Entertaiment : Entity, IDescribable
+    public class EntertaimentModel : Entity, IDescribable
     {
-        public virtual ICollection<EntertaimentImageModel> Images { get; set; } = new List<EntertaimentImageModel>();
-        public virtual ICollection<ReviewModel> Reviews { get; set; } = new List<ReviewModel>();
-        public virtual EntertaimentAddressModel Address { get; set; }
+        public virtual Guid AddressId { get; set; }
+        public virtual AddressModel Address { get; set; }
         public virtual EntertainmentType Type { get; set; }
         public virtual ICollection<TripModel> Trips { get; set; } = new List<TripModel>();
         public virtual ICollection<EntertaimentPriceModel> Prices { get; set; } = new List<EntertaimentPriceModel>();
+        public virtual ICollection<EntertaimentImageModel> Images { get; set; } = new List<EntertaimentImageModel>();
+        public virtual ICollection<EntertainmentReviewModel> Reviews { get; set; } = new List<EntertainmentReviewModel>();
         public string Title { get; set; }
         public string Description { get; set; }
 

@@ -1,5 +1,9 @@
-﻿using CityTraveler.Repository.DbContext;
+﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Errors;
+using CityTraveler.Infrastucture.Data;
+using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,80 +14,168 @@ namespace CityTraveler.Services
 {
     public class SocialMediaService : ISocialMediaService
     {
-        /*private readonly IServiceContext _serviceContext;
-        private readonly IDbContext _dbContext;
-        public SocialMediaService(IServiceContext serviceContext, IDbContext dbContext)
+        private readonly ApplicationContext _dbContext;
+
+        public bool IsActive { get; set; }
+        public string Version { get; set; }
+
+        public SocialMediaService(ApplicationContext dbContext)
         {
             _dbContext = dbContext;
-            _serviceContext = serviceContext;
         }
-
-        public async Task<IReview> AddReview(IReview rev)
+        public async Task<EntertainmentReviewModel> AddReviewEntertainment(Guid enterId, EntertainmentReviewModel rev)
         {
-            _dbContext.Reviews.Collection.Add(rev);
-
-            var query = $"";
-
-            return await _dbContext.Reviews.RequestManager.ExecuteScalarAsync(query, null, false);
-        }
-
-        public async Task<IReview> AddReviewTrip(Guid tripId, IReview rev)
-        {
-            _dbContext.Reviews.Collection.Add(rev);
-
-            var query = $"";
-
-            return await _dbContext.Reviews.RequestManager.ExecuteScalarAsync(query, null, false);
-        }
-
-        public IEnumerable<IReview> GetObjectReviews(Guid objectId, PlaceType type)
-        {
-            switch (type)
+            try
             {
-                case PlaceType.Event:
-                    return _dbContext.Events.Collection.FirstOrDefault(x => x.Id == objectId).Reviews;
-                case PlaceType.Institution:
-                    return _dbContext.Institutions.Collection.FirstOrDefault(x => x.Id == objectId).Reviews;
-                case PlaceType.Landscape:
-                    return _dbContext.Landskapes.Collection.FirstOrDefault(x => x.Id == objectId).Reviews;
-                default:
-                    return Enumerable.Empty<IReview>();
+                rev.EntertaimentId = enterId;
+                _dbContext.Reviews.Add(rev);
+                await _dbContext.SaveChangesAsync();
             }
+            catch (Exception e) 
+            {
+                 throw new SocialMediaServiceException("Failed to add review to entertainment");
+                //return rev;
+            }
+            return rev;
         }
 
-        public IEnumerable<IReview> GetReviews(int skip = 0, int take = 10)
+        public async Task<TripReviewModel> AddReviewTrip(Guid tripId, TripReviewModel rev)
         {
-            return _dbContext.Reviews.Collection.Skip(skip).Take(take);
+            try
+            {
+                rev.TripId = tripId;
+                _dbContext.Reviews.Add(rev);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new SocialMediaServiceException("Failed to add review to trip");
+                //return rev;
+            }
+            return rev;
         }
 
-        public IEnumerable<IReview> GetTripReviews(Guid tripId)
+        public IEnumerable<ReviewModel> GetObjectReviews(Guid objectId)
         {
-            return _dbContext.Trips.Collection.FirstOrDefault(x => x.Id == tripId).Reviews;
+            EntertaimentModel e = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
+            TripModel t = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
+            if (e != null)
+                return e.Reviews;
+            else if (t != null)
+                return t.Reviews;
+            else
+                throw new SocialMediaServiceException("Object not found");
         }
 
-        public IEnumerable<IReview> GetUserReviews(Guid userId)
+        public IEnumerable<ReviewModel> GetReviews(int skip = 0, int take = 10)
         {
-            return _dbContext.Reviews.Collection.Where(x => x.OwnerID == userId);
+            return _dbContext.Reviews.Skip(skip).Take(take);
         }
 
-        public async Task<IReview> PostRating(IRating rating, Guid reviewId)
+        public IEnumerable<ReviewModel> GetUserReviews(Guid userId)
         {
-            _dbContext.Ratings.Collection.Add(rating);
+            return _dbContext.Reviews.Where(x=>x.UserId == userId);
+        }
 
-            var review = _dbContext.Reviews.Collection.FirstOrDefault(x => x.Id == reviewId);
-            review.Rating = rating;
-            var query = $"";
+        public async Task<ReviewModel> PostRating(RatingModel rating, Guid reviewId)
+        {
+            try
+            {
+                ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                _dbContext.Reviews.Remove(re);
+                re.Rating = rating;
+                re.RatingId = rating.Id;
+                _dbContext.Reviews.Add(re);
+                return re;
+            }
+            catch (Exception e) 
+            {
+                throw new SocialMediaServiceException("Failed to post raiting");
+                //return null;
+            }
 
-            return await _dbContext.Reviews.RequestManager.ExecuteScalarAsync(query, null, false);
         }
 
         public async Task<bool> RemoveReview(Guid reviewId)
         {
-            _dbContext.Reviews.Collection.RemoveAll(x => x.Id == reviewId);
-            var query = $"";
-
-            var affectedReviews = await _dbContext.Reviews.RequestManager.SendRequestAsync(query, null, false);
-            return affectedReviews > 0;
-        }*/
+            try
+            {
+                ReviewModel re =await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                if(re==null)
+                    throw new SocialMediaServiceException("Review not found");
+                _dbContext.Reviews.Remove(re);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new SocialMediaServiceException("Failed to remove review");
+                //return false;
+            }
+        }
+        public async Task<bool> AddComment(CommentModel comment, Guid reviewId) 
+        {
+            try
+            {
+                comment.ReviewId = reviewId;
+                _dbContext.Comments.Add(comment);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e) 
+            {
+                throw new SocialMediaServiceException("Failed to add comment");
+                //return false;
+            }
+        }
+        public async Task<bool> RemoveComment(Guid commentId, Guid reviewId)
+        {
+            try
+            {
+                CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=>x.ReviewId == reviewId && x.Id == commentId);
+                if(comment == null)
+                    throw new SocialMediaServiceException("Comment not found");
+                _dbContext.Comments.Remove(comment);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new SocialMediaServiceException("Failed to remove comment");
+                //return false;
+            }
+        }
+        public async Task<bool> AddImage(ReviewImageModel image, Guid reviewId) 
+        {
+            try
+            {
+                image.ReviewId = reviewId;
+                _dbContext.Images.Add(image);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new SocialMediaServiceException("Failed to add image");
+                //return false;
+            }
+        }
+        public async Task<bool> RemoveImage(Guid reviewImageId, Guid reviewId) 
+        {
+            try
+            {
+                ReviewImageModel image = (ReviewImageModel) await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
+                if(image == null)
+                    throw new SocialMediaServiceException("Image not found");
+                _dbContext.Images.Remove(image);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new SocialMediaServiceException("Failed to remove image");
+                //return false;
+            }
+        }
     }
 }

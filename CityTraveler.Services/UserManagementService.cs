@@ -1,14 +1,23 @@
-﻿using CityTraveler.Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using CityTraveler.Domain.Entities;
+using CityTraveler.Infrastucture.Data;
+using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
     public class UserManagementService// : IUserManagementService
     {
+        private ApplicationContext _context;
+        public UserManagementService(ApplicationContext context)
+        {
+            _context = context;
+        }
         public bool IsActive { get; set; }
         public string Version { get; set; }
         public Guid Id { get; set; }
@@ -17,29 +26,41 @@ namespace CityTraveler.Services
         public string Title { get; set; }
         public string Description { get; set; }
 
-        /*public IUser GetUserByEmail(string email)
+        
+        public async Task<UserProfileModel> GetUserById(Guid userId)
         {
-            throw new NotImplementedException();
+           
+                return await _context.UserProfiles.FirstOrDefaultAsync(x => x.Id == userId);
+                              
+                       
         }
 
-        public IUser GetUserById(Guid userId)
+        public IEnumerable<UserProfileModel> GetUsersByBirthday (DateTime userbirthday)
         {
-            throw new NotImplementedException();
+            
+                return _context.UserProfiles.Where(x => x.Birthday.Date == userbirthday.Date);
+                     
+           
         }
 
-        public IEnumerable<IUser> GetUsers(int skip = 0, int take = 10)
+        public IEnumerable<UserProfileModel> GetUsersByName (string name)
         {
-            throw new NotImplementedException();
+            return _context.UserProfiles.Where(x => x.Name == name);
         }
 
-        public IEnumerable<IUser> GetUsers(IEnumerable<Guid> guids)
+        public IEnumerable<UserProfileModel> GetUsersByGender(string gender)
         {
-            throw new NotImplementedException();
+            return _context.UserProfiles.Where(x => x.Gender == gender);
         }
 
-        public bool RemoveUser(Guid userId)
+        public IEnumerable<UserProfileModel> GetUsers(int skip = 0, int take = 10)
         {
-            throw new NotImplementedException();
+            return _context.UserProfiles.Skip(skip).Take(take);
+        }
+
+        public IEnumerable<UserProfileModel> GetUsers(IEnumerable<Guid> guids)
+        {
+            return _context.UserProfiles.Where(x => guids.Contains(x.Id));
         }
 
         public async Task<bool> RemoveUser(Guid userId)
@@ -55,6 +76,9 @@ namespace CityTraveler.Services
                 return false;
             }
             
+        }
+
+        
         }
 
         

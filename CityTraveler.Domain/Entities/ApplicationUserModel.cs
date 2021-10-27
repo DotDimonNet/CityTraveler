@@ -6,6 +6,7 @@ namespace CityTraveler.Domain.Entities
 {
     public class ApplicationUserModel : IdentityUser<Guid>
     {
+        public virtual Guid UserId { get; set; }
         public virtual UserProfileModel Profile { get; set; }
         public virtual ICollection<UserImageModel> Images { get; set; } = new List<UserImageModel>();
         public virtual ICollection<ReviewModel> Reviews { get; set; } = new List<ReviewModel>();
