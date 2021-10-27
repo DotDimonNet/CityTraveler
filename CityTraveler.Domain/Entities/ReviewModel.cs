@@ -8,7 +8,7 @@ namespace CityTraveler.Domain.Entities
     public class ReviewModel : Entity, IDescribable
     {
         public virtual Guid RatingId { get; set; }
-        public virtual IEnumerable<RatingReviewModel> Rating { get; set; }
+        public virtual RatingModel Rating { get; set; }
         public virtual Guid UserId { get; set; }
         public virtual ApplicationUserModel User { get; set; }
         public virtual ICollection<ReviewImageModel> Images { get; set; } = new List<ReviewImageModel>();

@@ -10,10 +10,10 @@ namespace CityTraveler.Domain.DTO
 {
     public class EntertainmentDTO
     {
-        public virtual AddressModel Address { get; set; }
-        public virtual EntertainmentType Type { get; set; }
-        public virtual ICollection<EntertaimentPriceModel> Prices { get; set; } = new List<EntertaimentPriceModel>();
-        public virtual ICollection<EntertaimentImageModel> Images { get; set; } = new List<EntertaimentImageModel>();
+        public AddressModel Address { get; set; }
+        public EntertainmentType Type { get; set; }
+        public EntertaimentPriceModel AveragePrice { get; set; }
+        public ICollection<EntertaimentImageModel> Images { get; set; } = new List<EntertaimentImageModel>();
         public string Title { get; set; }
         public string Description { get; set; }
     }

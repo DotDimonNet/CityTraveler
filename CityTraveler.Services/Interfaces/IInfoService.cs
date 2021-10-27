@@ -9,17 +9,20 @@ namespace CityTraveler.Services.Interfaces
 {
     interface IInfoService : IServiceMetadata
     {
-        public Task<EntertaimentModel> GetEntertaimentByMaxChoiceInTrip(Guid userId = default);
-        public TripModel GetTripByMaxChoiceOfUsers();
+        public Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default);
+        public Task<TripModel> GetTripByMaxChoiceOfUsers();
         public Task<ReviewModel> GetReviewByMaxComment(Guid userId = default);
         public Task<TripModel> GetMostlyUsedTemplate();
         public Task<TripModel> GetTripByMaxReview(Guid userId = default);
         public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime srart, DateTime end);
-        public TripModel GetTripByLowPrice();
-        public int GetRegisteredUserByPeriod(DateTime start, DateTime end);
-        public int GetUsersTripsDateRange(DateTime start, DateTime end);
-        public TripModel GetLongestTrip();
-        
+        public Task<TripModel> GetTripByLowPrice();
+        public Task<int> GetRegisteredUserByPeriod(DateTime start, DateTime end);
+        public int GetUsersCountTripsDateRange(DateTime start, DateTime end);
+        public Task<TripModel> GetLongestTrip();
+        public Task<TripModel> GetShortestTrip();
+        public int GetTripsCreatedByPeriod(DateTime start, DateTime end);
+
+
 
 
     }
