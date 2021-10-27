@@ -14,7 +14,10 @@ namespace CityTraveler.Infrastucture.Data
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
-             Database.SetCommandTimeout(1000);
+            if (!Database.ProviderName.Equals("Microsoft.EntityFrameworkCore.InMemory"))
+            {
+                Database.SetCommandTimeout(1000);
+            }
         }
 
         public DbSet<UserProfileModel> UserProfiles { get; set; }

@@ -27,7 +27,7 @@ namespace CityTraveler.Services
 
         public IEnumerable<EntertaimentModel> GetAll()
         {
-            return (IEnumerable<EntertaimentModel>)_context.Entertaiments;
+            return _context.Entertaiments;
         }
 
         public async Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesModel coordinates)
