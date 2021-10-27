@@ -22,7 +22,7 @@ namespace CityTraveler.Services
         public bool IsActive { get ; set ; }
         public string Version { get ; set ; }
 
-        public async Task<EntertaimentModel> GetEntertaimentByMaxChoiceInTrip(Guid userId = default)
+        public async Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default)
         {
             return userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
@@ -30,9 +30,9 @@ namespace CityTraveler.Services
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
                     .SelectMany(x => x.Entertaiment).GroupBy(x => x.Trips.Count).FirstOrDefault().FirstOrDefault();
         }
-        public TripModel GetTripByMaxChoiceOfUsers()
+        public async Task<TripModel> GetTripByMaxChoiceOfUsers()
         {
-            return  _context.Trips.OrderBy(x => x.Users.Count).FirstOrDefault();
+            return await  _context.Trips.OrderBy(x => x.Users.Count).FirstOrDefaultAsync();
         }
         public async Task<ReviewModel> GetReviewByMaxComment(Guid userId = default)
         {
@@ -50,16 +50,17 @@ namespace CityTraveler.Services
 
         public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime srart, DateTime end)
         {
-            return  _context.Trips.Where(x => x.TripStart == srart && x.TripStart == end);
+            return _context.Trips.Where(x => x.TripStart > srart && x.TripStart < end);
         }
-        public TripModel GetTripByLowPrice()
+        public async Task<TripModel> GetTripByLowPrice()
         {
-            return _context.Trips.OrderByDescending(x => x.Price).FirstOrDefault();
+            return await _context.Trips.OrderBy(x => x.Price).FirstOrDefaultAsync();
+            
         }
 
-        public int GetRegisteredUserByPeriod(DateTime start, DateTime end)
+        public async Task<int> GetRegisteredUserByPeriod(DateTime start, DateTime end)
         {
-           return  _context.Users.Count(x => x.Profile.Created > start && x.Profile.Created < end);
+           return await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
         }
         public async Task<TripModel> GetMostlyUsedTemplate()
         {
@@ -67,14 +68,26 @@ namespace CityTraveler.Services
             return await _context.Trips.FirstOrDefaultAsync(x => x.Id == templateId);
         }
 
-        public int GetUsersTripsDateRange(DateTime start, DateTime end)
+        public int GetUsersCountTripsDateRange(DateTime start, DateTime end)
         {
-            return _context.Trips.Where(x => x.TripStart == start && x.TripEnd == end).Select(x => x.Users).Count();
+            return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).SelectMany(x => x.Users).Distinct().Count();
         }
 
-        public TripModel GetLongestTrip()
+        public async Task<TripModel> GetLongestTrip()
         {
-            throw new NotImplementedException();
+            return await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
         }
+
+        public async Task<TripModel> GetShortestTrip()
+        {
+            return await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
+        }
+
+        public int GetTripsCreatedByPeriod(DateTime start, DateTime end)
+        {
+            return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count();
+        }
+
+        
     }
 }

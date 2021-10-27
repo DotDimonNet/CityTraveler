@@ -8,23 +8,10 @@ namespace CityTraveler.Domain.Entities
 {
     public class RatingModel : Entity
     {
+        public virtual ReviewModel Review { get; set; }
+        public virtual Guid ReviewId { get; set; }
         public virtual ApplicationUserModel User { get; set; }
         public virtual Guid UserId { set; get; }
         public double Value { get; set; }
-    }
-    public class RatingReviewModel : RatingModel
-    {
-        public virtual Guid ReviewId { get; set; }
-        public virtual ReviewModel Review { get; set; }
-    }
-    public class RatingEntertainmentModel : RatingModel
-    {
-        public virtual Guid EntertainmentId { get; set; }
-        public virtual EntertaimentModel Entertaiment { get; set; }
-    }
-    public class RatingTripModel : RatingModel
-    {
-        public virtual Guid TripId { get; set; }
-        public virtual TripModel Trip { get; set; }
     }
 }

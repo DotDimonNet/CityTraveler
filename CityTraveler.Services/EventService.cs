@@ -9,6 +9,7 @@ using CityTraveler.Domain.Enums;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Infrastucture.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CityTraveler.Services
 {
@@ -26,151 +27,63 @@ namespace CityTraveler.Services
 
         public IEnumerable<EntertaimentModel> GetAll()
         {
-            return (IEnumerable<EntertaimentModel>)_context.Entertaiments.Where(x=>x.Type == EntertainmentType.Event);
+            return (IEnumerable<EntertaimentModel>)_context.Entertaiments;
         }
 
-        public IEnumerable<EntertaimentModel> GetEntartainmentByMinRating(int averageRating)
+        public async Task<EntertaimentModel> GetEventByCoordinates(CoordinatesModel coordinates)
         {
-            var ES = new EntertainmentService(_context);
-            return ES.GetEntartainmentByMinRating(averageRating).Where(x => x.Type == EntertainmentType.Event);
-        }
-        public IEnumerable<EntertaimentModel> GetEntartainmentByMaxRating(int averageRating)
-        {
-            var ES = new EntertainmentService(_context);
-            return ES.GetEntartainmentByMaxRating(averageRating).Where(x => x.Type == EntertainmentType.Event);
+            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.Coordinates == coordinates 
+                && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesModel coordinates)
+        public async Task<EntertaimentModel> GetEventById(Guid id)
         {
-            var ES = new EntertainmentService(_context);
-            var result = await ES.GetEntertainmentByCoordinates(coordinates);
-            if (result != null || result.Type == EntertainmentType.Event)
-            {
-                return result;
-            }
-            else
-            {
-                return default;
-            }
+            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id
+                && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentById(Guid id)
+        public IEnumerable<EntertaimentModel> GetEventsByStreet(StreetModel street)
         {
-            var ES = new EntertainmentService(_context);
-            var result = await ES.GetEntertainmentById(id);
-            if (result != null || result.Type == EntertainmentType.Event)
-            {
-                return result;
-            }
-            else
-            {
-                return default;
-            }
+            return _context.Entertaiments.Where(x => x.Address.Street == street
+                && x.Type == EntertainmentType.Event);
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(StreetModel street)
+        public IEnumerable<EntertaimentModel> GetEventsByStreet(string streetTitle)
         {
-            var ES = new EntertainmentService(_context);
-            var result = (List<EntertaimentModel>)ES.GetEntertainmentsByStreet(street);
-            foreach (var entertainment in result)
-            {
-                if (entertainment.Type != EntertainmentType.Event)
-                {
-                    result.Remove(entertainment);
-
-                }
-            }
-            return result;
-        }
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle)
-        {
-            var ES = new EntertainmentService(_context);
-            var result = (List<EntertaimentModel>)ES.GetEntertainmentsByStreet(streetTitle);
-            foreach (var entertainment in result)
-            {
-                if (entertainment.Type != EntertainmentType.Event)
-                {
-                    result.Remove(entertainment);
-
-                }
-            }
-            return result;
+            return _context.Entertaiments.Where(x => x.Address.Street.Title == streetTitle
+                && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByTitle(string title)
+        public async Task<EntertaimentModel> GetEventByTitle(string title)
         {
-            var ES = new EntertainmentService(_context);
-            var result = await ES.GetEntertainmentByTitle(title);
-            if (result != null || result.Type == EntertainmentType.Event)
-            {
-                return result;
-            }
-            else
-            {
-                return default;
-            }
+            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Title == title
+                && x.Type == EntertainmentType.Event);
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids)
+        public IEnumerable<EntertaimentModel> GetEvents(IEnumerable<Guid> ids)
         {
-            var ES = new EntertainmentService(_context);
-            var result = (List<EntertaimentModel>)ES.GetEntertainments(ids);
-            foreach (var entertainment in result)
-            {
-                if (entertainment.Type != EntertainmentType.Event)
-                {
-                    result.Remove(entertainment);
-
-                }
-            }
-            return result;
+            return _context.Entertaiments.Where(x => ids.Contains(x.Id)
+                && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(AddressModel address)
+        public async Task<EntertaimentModel> GetEventByAddress(AddressModel address)
         {
-            var ES = new EntertainmentService(_context);
-            var result = await ES.GetEntertainmentByAddress(address);
-            if (result != null || result.Type == EntertainmentType.Event)
-            {
-                return result;
-            }
-            else
-            {
-                return default;
-            }
-        }
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle)
-        {
-            var ES = new EntertainmentService(_context);
-            var result = await ES.GetEntertainmentByAddress(houseNumber, apartmentNumber, streetTitle);
-            if (result != null || result.Type == EntertainmentType.Event)
-            {
-                return result;
-            }
-            else
-            {
-                return default;
-            }
+            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address == address
+                && x.Type == EntertainmentType.Event);
         }
 
-        public double GetAverageRating(EntertaimentModel entertaiment)
+        public async Task<EntertaimentModel> GetEventByAddress(string houseNumber, string apartmentNumber, string streetTitle)
         {
-            var ES = new EntertainmentService(_context);
-            var result = ES.GetAverageRating(entertaiment);
-            return result;
-        }
-
-        public double GetAveragePrice(EntertaimentModel entertaiment)
-        {
-            var ES = new EntertainmentService(_context);
-            var result = ES.GetAveragePrice(entertaiment);
-            return result;
+            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber
+            && x.Address.ApartmentNumber == apartmentNumber 
+            && x.Address.Street.Title == streetTitle
+            && x.Type == EntertainmentType.Event);
         }
 
         //TODO
         public IEnumerable<EntertaimentModel> GetEventByBeginingDay(DateTime begin)
-        {
-            throw new NotImplementedException();
-        }
+    {
+        throw new NotImplementedException();
+    }
     }
 }

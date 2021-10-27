@@ -17,8 +17,7 @@ namespace CityTraveler.Services
         private ApplicationContext _context;
         public ImageService(ApplicationContext context)
         {
-            _context = context;
-            
+            _context = context;      
         }
 
         public bool IsActive { get; set ; }
@@ -33,12 +32,10 @@ namespace CityTraveler.Services
             }
             catch (ImageServiceException e)
             {
-
                 throw new ImageServiceException("Exception on adding new image!", e);
             }
             return true;
         }
-
         public async Task<bool> DeleteImage(Guid imageId)
         {
             try
@@ -49,7 +46,6 @@ namespace CityTraveler.Services
             }
             catch (ImageServiceException e)
             {
-
                 throw new ImageServiceException("Exception on deleting image!", e);
             }
             return true;
@@ -59,7 +55,6 @@ namespace CityTraveler.Services
         {
             return (T)await _context.Images.FirstOrDefaultAsync(x=>x.Id==imageId);
         }
-
 
         public IEnumerable<T> GetImages(int skip = 0, int take=7)
         {
@@ -74,7 +69,6 @@ namespace CityTraveler.Services
             }
             catch (ImageServiceException e)
             {
-
                 throw new ImageServiceException("Exception on adding avatar to user profile!", e);
             }
             return true;
@@ -87,16 +81,12 @@ namespace CityTraveler.Services
                 user.AvatarSrc = src;
                 _context.Update(user);
                 _context.SaveChanges();
-
             }
             catch (ImageServiceException e)
             {
-
                 throw new ImageServiceException("Exception on updating avatar to user profile!", e);
             }
             return true;
         }
-        
-
     }
 }

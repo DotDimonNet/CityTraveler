@@ -34,7 +34,6 @@ namespace CityTraveler.Services
             {
                 _context.Trips.Add(newTrip);
                 await _context.SaveChangesAsync();
-
             }
             catch (TripServiceException e)
             {
@@ -47,15 +46,12 @@ namespace CityTraveler.Services
         {
             try
             {
-
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
                 _context.Trips.Remove(trip);
                 await _context.SaveChangesAsync();
-
             }
             catch (TripServiceException e)
             {
-
                 throw new TripServiceException("Exception on deleting trip", e);
             }
             return true;
@@ -74,7 +70,6 @@ namespace CityTraveler.Services
 
         public IEnumerable<TripModel> GetTripsByDate(DateTime date)
         {
-
             return _context.Trips.Where(x => x.TripStart == date);
         }
 
@@ -86,7 +81,6 @@ namespace CityTraveler.Services
         public IEnumerable<TripModel> GetTripsByAverageRating(double rating)
         {
             return _context.Trips.Where(x => x.AverageRating == rating);
-
         }
 
         public IEnumerable<TripModel> GetTripsByOptimalSpent(TimeSpan optSpent)
@@ -111,13 +105,11 @@ namespace CityTraveler.Services
         public IEnumerable<TripModel> GetTripsByEntartainmentName(string name)
         {
             return _context.Trips.Where(x => x.Title == name);
-
         }
 
         public IEnumerable<TripModel> GetTripsOrderedByRatingBy()
         {
             return _context.Trips.OrderBy(x => x.AverageRating);
-
         }
 
         public IEnumerable<TripModel> GetTripsOrderdByRatingByDesc()
@@ -136,9 +128,8 @@ namespace CityTraveler.Services
             {
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
                 var status = await _context.TripStatuses.FirstOrDefaultAsync(x => x.Id == newStatus.Id);
-
                 trip.TripStatus = status;
-                _context.Update<TripModel>(trip);
+                _context.Update(trip);
                 await _context.SaveChangesAsync();
             }
             catch (TripServiceException e)
@@ -190,9 +181,7 @@ namespace CityTraveler.Services
             }
             catch (TripServiceException e)
             {
-
                 throw new TripServiceException("Exception on updating trip description!", e);
-
             }
             return true;
         }
@@ -224,7 +213,6 @@ namespace CityTraveler.Services
             }
             catch (TripServiceException e)
             {
-
                 throw new TripServiceException("Exception on deleting entertainment from trip!", e);
             }
             return true;
@@ -251,7 +239,6 @@ namespace CityTraveler.Services
             }
             catch (TripServiceException e)
             {
-
                 throw new TripServiceException("Exception on setting default as defaut trip", e);
             }
             return true;
