@@ -74,7 +74,13 @@ namespace CityTraveler.Services
 
         public IEnumerable<ReviewModel> GetUserReviews(Guid userId)
         {
-            return _dbContext.Reviews.Where(x=>x.UserId == userId);
+            if (_dbContext.Users.Where(x => x.Id == userId) == null)
+                throw new SocialMediaServiceException("User not found");
+            IEnumerable<ReviewModel> reviews = _dbContext.Reviews.Where(x => x.UserId == userId);
+            if (reviews != null)
+                return reviews;
+            else
+                return Enumerable.Empty<ReviewModel>();
         }
 
         public async Task<ReviewModel> PostRating(RatingModel rating, Guid reviewId)
@@ -198,6 +204,11 @@ namespace CityTraveler.Services
         public IEnumerable<ReviewModel> GetReviewsByDescription(string description)
         {
             return _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
+        }
+
+        public async Task<ReviewModel> GetReviewGyId(Guid Id)
+        {
+           return await _dbContext.Reviews.FirstOrDefaultAsync(x=>x.Id == Id);
         }
     }
 }
