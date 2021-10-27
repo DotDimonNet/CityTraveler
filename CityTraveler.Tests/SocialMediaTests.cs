@@ -60,7 +60,8 @@ namespace CityTraveler.Tests
             var user = ArrangeTests.ApplicationContext.Users
                .FirstOrDefault();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            EntertainmentReviewModel enR = new EntertainmentReviewModel { Rating = new RatingModel { Value = 5 }, User = user };
+            EntertainmentReviewModel enR = new EntertainmentReviewModel { 
+                Rating = new RatingModel { Value = 5 }, User = user };
             var review = await service.AddReviewEntertainment(entertainmentId, enR);
             Assert.IsNotNull(review);
             Assert.True(ArrangeTests.ApplicationContext.Reviews.Contains(review));
@@ -103,8 +104,8 @@ namespace CityTraveler.Tests
         public void AddReviewEntertainmentThrowsTest()
         {
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.AddReviewEntertainment(Guid.NewGuid(), 
-                new EntertainmentReviewModel { Rating = new RatingModel { Value = 5 }}));
+            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.AddReviewEntertainment(
+                Guid.NewGuid(), new EntertainmentReviewModel { Rating = new RatingModel { Value = 5 }}));
             Assert.That(ex.Message, Is.EqualTo("Entertainment not found"));
         }
         [Test]
@@ -167,7 +168,8 @@ namespace CityTraveler.Tests
         public void PostRatingThrowsTest()
         {
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.PostRating(new RatingModel { Value  = 3}, Guid.NewGuid())); ;
+            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.PostRating(
+                new RatingModel { Value  = 3}, Guid.NewGuid())); ;
             Assert.That(result.Message, Is.EqualTo("Review not found"));
         }
         [Test]
@@ -195,7 +197,8 @@ namespace CityTraveler.Tests
         public void AddCommentThrowsTest()
         {
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.AddComment(new CommentModel { Status = CommentStatus.Liked }, Guid.NewGuid())); ;
+            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.AddComment(
+                new CommentModel { Status = CommentStatus.Liked }, Guid.NewGuid())); ;
             Assert.That(result.Message, Is.EqualTo("Review not found"));
         }
 
@@ -215,7 +218,8 @@ namespace CityTraveler.Tests
         {
             var comment = await ArrangeTests.ApplicationContext.Comments.FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveComment(comment.Id, Guid.NewGuid())); ;
+            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveComment(
+                comment.Id, Guid.NewGuid())); ;
             Assert.That(ex.Message, Is.EqualTo("Review not found"));
         }
         [Test]
@@ -224,7 +228,8 @@ namespace CityTraveler.Tests
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
              .FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveComment(Guid.NewGuid(), firstReview.Id)); ;
+            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveComment(
+                Guid.NewGuid(), firstReview.Id)); ;
             Assert.That(ex.Message, Is.EqualTo("Comment not found"));
         }
         [Test]
@@ -270,7 +275,8 @@ namespace CityTraveler.Tests
         public void AddImageThrowsTest()
         {
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.AddImage(new ReviewImageModel { Title = "title" }, Guid.NewGuid())); ;
+            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.AddImage(
+                new ReviewImageModel { Title = "title" }, Guid.NewGuid())); ;
             Assert.That(result.Message, Is.EqualTo("Review not found"));
         }
 
@@ -279,7 +285,8 @@ namespace CityTraveler.Tests
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
               .FirstOrDefaultAsync(x=>x.Images.Count()>0);
-            var image = await ArrangeTests.ApplicationContext.Images.FirstOrDefaultAsync(x=>x.Id == firstReview.Images.ElementAt(0).Id);
+            var image = await ArrangeTests.ApplicationContext.Images.FirstOrDefaultAsync(
+                x=>x.Id == firstReview.Images.ElementAt(0).Id);
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var review = await service.RemoveImage(image.Id, firstReview.Id);
             Assert.True(review);
@@ -290,16 +297,18 @@ namespace CityTraveler.Tests
         {
             var image = await ArrangeTests.ApplicationContext.Images.FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveImage(image.Id, Guid.NewGuid())); ;
+            var result = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveImage(
+                image.Id, Guid.NewGuid())); ;
             Assert.That(result.Message, Is.EqualTo("Review not found"));
         }
         [Test]
-        public async Task RemoveImageThrowsIamgeTest()
+        public async Task RemoveImageThrowsImageTest()
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
              .FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveImage(Guid.NewGuid(), firstReview.Id)); ;
+            var ex = Assert.ThrowsAsync<SocialMediaServiceException>(() => service.RemoveImage(Guid.NewGuid(), 
+                firstReview.Id)); ;
             Assert.That(ex.Message, Is.EqualTo("Image not found"));
         }
     }
