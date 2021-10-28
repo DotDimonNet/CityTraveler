@@ -2,6 +2,8 @@ using CityTraveler.Domain.Entities;
 using CityTraveler.Infrastructure.Authorization;
 using CityTraveler.Infrastructure.Settings;
 using CityTraveler.Infrastucture.Data;
+using CityTraveler.Services;
+using CityTraveler.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -101,12 +103,15 @@ namespace CityTraveler
             });
             services.AddOptions();
             services.AddScoped<DbInitializer>();
+            services.AddTransient<ITripService, TripService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>
             {
                 options.EnableEndpointRouting = false;
-            }).SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
+            }).AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            ).SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
 
 
 
@@ -120,6 +125,7 @@ namespace CityTraveler
             {
                 document.Info.Version = "v1";
                 document.Info.Title = "CityTraveler API";
+                document.DocumentPath = "/swagger";
             });
         }
 

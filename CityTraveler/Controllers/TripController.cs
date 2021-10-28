@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Repository.DbContext;
+using CityTraveler.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,21 +10,23 @@ using System.Threading.Tasks;
 namespace CityTraveler.Controllers
 {
     [ApiController]
-    [Route("api/trip")]
+    [Route("api/trips")]
     public class TripController : Controller
     {
         private readonly ILogger<TripController> _logger;
+        private readonly ITripService _service;
 
-        public TripController(ILogger<TripController> logger)
+        public TripController(ILogger<TripController> logger, ITripService tripService)
         {
-            
+            _service = tripService;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Route("get")]
+        public async Task<IActionResult> GetTrips(int skip = 0, int take = 10)
         {
-            return new JsonResult(1);
+            return Json(_service.GetTrips(skip, take));
         }
     }
 }
