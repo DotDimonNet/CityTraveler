@@ -36,6 +36,7 @@ namespace CityTraveler.Tests
             await GenerateReviews();
             await GenerateImage();
             await GenerateComment();
+            await GenerateTrips();
 
         }
 
