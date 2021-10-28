@@ -45,30 +45,27 @@ namespace CityTraveler.Infrastucture.Data
 
         public static void SetupData(ApplicationContext context)
         {
-            /*var rand = new Random();
-            context.Entertaiments.Add(new EntertaimentModel 
-            { 
-                Title = "hotel", 
-                Description = "trteter",
-                Type = context.EntertainmentType.FirstOrDefault(x => x.Id == EntertainmentType.Institution.Id),
-                Address = new AddressModel()
+            var trips = new List<TripModel>();
+            var random = new Random();
+            for (int index = 0; index < 100; index++)
+            {
+                var trip = new TripModel()
                 {
-                    ApartmentNumber = "3d",
-                    Coordinates = new CoordinatesModel()
-                    { 
-                        Latitude = 1, 
-                        Longitude = 2 
-                    },
-                    HouseNumber = "numberOne",
-                    Street = new StreetModel()
+                    AverageRating = random.Next(1, index + 2),
+                    DafaultTrip = false,
+                    Description = $"test_desc_{index}",
+                    TripStart = DateTime.Now.AddDays(index),
+                    TripEnd = DateTime.Now.AddDays(index + 2),
+                    Entertaiment = new List<EntertaimentModel>(),
+                    Images = new List<TripImageModel>()
                     {
-                        Title = "Street",
-                        Description = "Desc"
+                        new TripImageModel() { Title = "test_image" }
                     }
-                }
-            });
-           */
-
+                };
+                trips.Add(trip);
+            }
+            context.Trips.AddRange(trips);
+            context.SaveChanges();
         }
         private static Random random = new Random();
         public static string RandomString(int length)
