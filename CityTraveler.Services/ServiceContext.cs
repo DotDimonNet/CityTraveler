@@ -17,6 +17,9 @@ namespace CityTraveler.Services
         public UserManagementService UserManagementService { get; set; }
         public CityArchitectureService CityArchitectureService { get; set; }
         public AuthService AuthService { get; set; }
+        public StatisticService StatisticService { get; set; }
+        public HistoryService HistoryService { get; set; }
+
         public ServiceContext(ApplicationContext dbContext)
         {
             _dbContext = dbContext;
@@ -25,6 +28,8 @@ namespace CityTraveler.Services
             UserManagementService = new UserManagementService(_dbContext);
             EntertainmentService = new EntertainmentService(_dbContext);
             CityArchitectureService = new CityArchitectureService(_dbContext);
+            StatisticService = new StatisticService(_dbContext);
+            HistoryService = new HistoryService(_dbContext);
             // AuthService = new AuthService(_dbContext);
 
         }
