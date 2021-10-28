@@ -276,6 +276,10 @@ namespace CityTraveler.Tests
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var reviews = service.GetReviewsByAverageRaiting(5);
             Assert.NotNull(reviews);
+            foreach (ReviewModel review in reviews)
+            {
+                Assert.True(review.Rating.Value == 5 );
+            }
         }
         [Test]
         public async Task AddImageTest()

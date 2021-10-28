@@ -33,6 +33,10 @@ namespace CityTraveler.Tests
 
             await dbInitializer.Initialize();
             await GenerateData();
+            await GenerateReviews();
+            await GenerateImage();
+            await GenerateComment();
+
         }
 
         private static void SetupManagementMocks()
