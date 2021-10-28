@@ -135,9 +135,24 @@ namespace CityTraveler.Tests
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed},
-                           new TripModel {AverageRating = i+ 1,TripStatus= TripStatus.Passed},
-                           new TripModel {AverageRating = i+ 4,TripStatus= TripStatus.InProgress}
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
                         }
                     }
                 };
