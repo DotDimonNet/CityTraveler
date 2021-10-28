@@ -42,7 +42,11 @@ namespace CityTraveler.Services
         {
             try
             {
-                _context.Entertaiments.RemoveRange(_context.Entertaiments);
+                foreach (var item in _context.Entertaiments)
+                {
+                    _context.Entertaiments.Remove(item);
+                }
+                await _context.SaveChangesAsync();
                 foreach (var item in entertaiments)
                 {
                     _context.Entertaiments.Add(item);
@@ -61,13 +65,23 @@ namespace CityTraveler.Services
             try
             {
                 var model = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id);
-                _context.Entertaiments.Update(model.UpdateEntertainmentWith(entertaiment));
-                await _context.SaveChangesAsync();
-                return true;
+                if (model==null)
+                {
+                    _context.Entertaiments.Add(entertaiment);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    _context.Entertaiments.Update(model.UpdateEntertainmentWith(entertaiment));
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                
             }
             catch (Exception ex) 
             {
-                return false;
+                throw new Exception(ex.Message);
             }
         }
 
