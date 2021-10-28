@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    public class UserManagementService : IUserManagementService
+    public class UserManagementService// : IUserManagementService
     {
         private ApplicationContext _context;
         public UserManagementService(ApplicationContext context)

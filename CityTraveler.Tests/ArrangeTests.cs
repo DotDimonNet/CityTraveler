@@ -30,12 +30,13 @@ namespace CityTraveler.Tests
             ApplicationContext = new ApplicationContext(options);
             SetupManagementMocks();
             var dbInitializer = new DbInitializer(ApplicationContext, UserManagerMock.Object, RoleManagerMock.Object);
-
+            
             await dbInitializer.Initialize();
             await GenerateData();
             await GenerateReviews();
             await GenerateImage();
             await GenerateComment();
+            await GenerateUserData();
 
         }
 
@@ -98,6 +99,7 @@ namespace CityTraveler.Tests
                 }
                 var entertainment = new EntertaimentModel()
                 {
+                    Title = $"Entertainment - {i}",
                     Address = new AddressModel()
                     {
                         Coordinates = new CoordinatesModel()
@@ -122,7 +124,35 @@ namespace CityTraveler.Tests
                 entertainments.Add(entertainment);
             }
             //Profiles
-            var userProfiles = new List<UserProfileModel>();
+            var users = new List<UserProfileModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var user = new UserProfileModel()
+                {
+                    Birthday = new DateTime(2018 - i, 9, 13),
+                    Id = Guid.NewGuid(),
+                    User = new ApplicationUserModel
+                    {
+                        Trips = new List<TripModel>
+                        {
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed},
+                           new TripModel {AverageRating = i+ 1,TripStatus= TripStatus.Passed},
+                           new TripModel {AverageRating = i+ 4,TripStatus= TripStatus.InProgress}
+                        }
+                    }
+                };
+
+                users.Add(user);
+            }
+            await ApplicationContext.UserProfiles.AddRangeAsync(users);
+            await ApplicationContext.Streets.AddRangeAsync(streets);
+            await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.SaveChangesAsync();
+        }
+
+        private static async Task GenerateUserData()
+        {
+            var users = new List<UserProfileModel>();
             for (int i = 0; i < 10; i++)
             {
                 var user = new UserProfileModel()
@@ -138,15 +168,12 @@ namespace CityTraveler.Tests
                     }
                 };
 
-                userProfiles.Add(user);
+                users.Add(user);
             }
-            await ApplicationContext.UserProfiles.AddRangeAsync(userProfiles);
-            await ApplicationContext.SaveChangesAsync();
-            await ApplicationContext.Streets.AddRangeAsync(streets);
-            await ApplicationContext.SaveChangesAsync();
-            await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.UserProfiles.AddRangeAsync(users);
             await ApplicationContext.SaveChangesAsync();
         }
+      
         private static async Task GenerateReviews()
         {
             var reviews = new List<ReviewModel>();

@@ -75,5 +75,11 @@ namespace CityTraveler.Services.Extensions
             }
             
         }
+
+        public static EntertaimentModel UpdateEntertainmentWith(this EntertaimentModel model, EntertaimentModel source)
+        {
+            model.Title = source.Title;
+            return model;
+        }
     }
 }
