@@ -28,33 +28,33 @@ namespace CityTraveler.Services
         public string Description { get; set; }
 
         
-        public async Task<UserProfileModel> GetUserById(Guid userId)
+        public async Task<ApplicationUserModel> GetUserById(Guid userId)
         {
-                return await _context.UserProfiles.FirstOrDefaultAsync(x => x.Id == userId);
+                return await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
         }
-        public IEnumerable<UserProfileModel> GetUsersByBirthday (DateTime userbirthday)
+        public IEnumerable<ApplicationUserModel> GetUsersByBirthday (DateTime userbirthday)
         {
-                return _context.UserProfiles.Where(x => x.Birthday.Date == userbirthday.Date);
+                return _context.Users.Where(x => x.Profile.Birthday.Date == userbirthday.Date);
         }
-        public IEnumerable<UserProfileModel> GetUsersByName (string name)
+        public IEnumerable<ApplicationUserModel> GetUsersByName (string name)
         {
-            return _context.UserProfiles.Where(x => x.Name == name);
+            return _context.Users.Where(x => x.Profile.Name == name);
         }
-        public IEnumerable<UserProfileModel> GetUsersByGender(string gender)
+        public IEnumerable<ApplicationUserModel> GetUsersByGender(string gender)
         {
-            return _context.UserProfiles.Where(x => x.Gender == gender);
+            return _context.Users.Where(x => x.Profile.Gender == gender);
         }
-        public IEnumerable<UserProfileModel> GetUsers(int skip = 0, int take = 10)
+        public IEnumerable<ApplicationUserModel> GetUsersRange(int skip = 0, int take = 10)
         {
-            return _context.UserProfiles.Skip(skip).Take(take);
+            return _context.Users.Skip(skip).Take(take);
         }
-        public IEnumerable<UserProfileModel> GetUsers(IEnumerable<Guid> guids)
+        public IEnumerable<ApplicationUserModel> GetUsers(IEnumerable<Guid> guids)
         {
-            return _context.UserProfiles.Where(x => guids.Contains(x.Id));
+            return _context.Users.Where(x => guids.Contains(x.Id));
         }
-        public async Task<UserProfileModel> GetUserByEmail(string email)
+        public async Task<ApplicationUserModel> GetUserByEmail(string email)
         {
-            return await _context.UserProfiles.FirstOrDefaultAsync(x => x.User.Email == email); 
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email); 
         }
 
         
