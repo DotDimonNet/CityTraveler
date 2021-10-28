@@ -123,6 +123,7 @@ namespace CityTraveler.Tests
                 };
                 entertainments.Add(entertainment);
             }
+            //Profiles
             var users = new List<UserProfileModel>();
             for (int i = 0; i < 10; i++)
             {
@@ -144,6 +145,7 @@ namespace CityTraveler.Tests
                 users.Add(user);
             }
             await ApplicationContext.UserProfiles.AddRangeAsync(users);
+            await ApplicationContext.Streets.AddRangeAsync(streets);
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
             await ApplicationContext.SaveChangesAsync();
         }
@@ -166,11 +168,9 @@ namespace CityTraveler.Tests
                     }
                 };
 
-                userProfiles.Add(user);
+                users.Add(user);
             }
-            await ApplicationContext.UserProfiles.AddRangeAsync(userProfiles);
-            await ApplicationContext.Streets.AddRangeAsync(streets);
-            await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.UserProfiles.AddRangeAsync(users);
             await ApplicationContext.SaveChangesAsync();
         }
       
