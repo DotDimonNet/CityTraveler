@@ -27,13 +27,12 @@ namespace CityTraveler.Tests
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
             var users = await service.FilterUsers(new FilterUsers { });
-            Assert.IsNotNull(users);
-            Console.WriteLine(users.Count());
-            Console.WriteLine(ArrangeTests.ApplicationContext.Users.Count());
+            Assert.IsNotEmpty(users);
+
             foreach (ApplicationUserModel user in users)
             {
-                Assert.True(user.UserName.Contains(""));
-                Assert.True(user.Profile.Gender.Contains(""));
+                Assert.AreNotEqual(user.UserName, "");
+                Assert.AreNotEqual(user.Profile.Gender, "");
             }
         }
         [Test]
@@ -41,8 +40,12 @@ namespace CityTraveler.Tests
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var users = await service.FilterUsers(new FilterUsers {UserName = "kate", 
-                EntertainmentName = "entertainment", Gender = "f"  });
+            var users = await service.FilterUsers(new FilterUsers
+            {
+                UserName = "kate",
+                EntertainmentName = "entertainment",
+                Gender = "f"
+            });
             Assert.IsNotNull(users);
             foreach (ApplicationUserModel user in users)
             {
@@ -55,12 +58,12 @@ namespace CityTraveler.Tests
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var trips = service.FilterTrips(new FilterTrips {});
+            var trips = service.FilterTrips(new FilterTrips { });
             Assert.IsNotNull(trips);
             foreach (TripModel trip in trips)
             {
-                    Assert.True(trip.Title.Contains(""));
-                    Assert.True(trip.Description.Contains(""));
+                Assert.AreNotEqual(trip.Title, null);
+                Assert.AreNotEqual(trip.Description, null);
             }
         }
         [Test]
@@ -84,35 +87,34 @@ namespace CityTraveler.Tests
                 OptimalSpent = TimeSpan.FromMinutes(50),
                 User = "kate",
 
-            }) ;
+            });
             Assert.IsNotNull(trips);
+
             foreach (TripModel trip in trips)
             {
-                Assert.True(trip.TripStatus == TripStatus.Passed);
+                Assert.AreEqual(trip.TripStatus, TripStatus.Passed);
                 Assert.True(trip.Title.Contains("title"));
                 Assert.True(trip.Description.Contains("description"));
-                Assert.True(trip.RealSpent == TimeSpan.FromHours(2));
-                Assert.True(trip.OptimalSpent == TimeSpan.FromMinutes(50));
+                Assert.AreEqual(trip.RealSpent, TimeSpan.FromHours(2));
+                Assert.AreEqual(trip.OptimalSpent, TimeSpan.FromMinutes(50));
                 Assert.True(trip.AverageRating > 2);
                 Assert.True(trip.AverageRating < 4);
                 Assert.True(trip.AverageRating > 100);
                 Assert.True(trip.AverageRating < 200);
-
             }
         }
         [Test]
         public void FilterTripsThrowsPriceTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext, 
+            var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips 
-            ( new FilterTrips
-            {
-                PriceLess = 100,
-                PriceMore = 200
-            })); 
-            Assert.That(result.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. " +
-                "The same is for rating."));
+            var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips(
+                new FilterTrips
+                {
+                    PriceLess = 100,
+                    PriceMore = 200
+                }));
+            Assert.AreEqual(result.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
         }
         [Test]
         public void FilterTripsThrowsRaitingTest()
@@ -120,23 +122,23 @@ namespace CityTraveler.Tests
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
             var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips(
-                new FilterTrips {
-                AverageRatingLess = 100,
-                AverageRatingMore = 200
-            }));
-            Assert.That(result.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. " +
-                "The same is for rating."));
+                new FilterTrips
+                {
+                    AverageRatingLess = 100,
+                    AverageRatingMore = 200
+                }));
+            Assert.AreEqual(result.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
         }
         [Test]
         public void FilterEntertainmentsNullFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext, 
+            var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
             var entertainments = service.FilterEntertainments(new FilterEntertainment { });
             Assert.IsNotNull(entertainments);
-            foreach (EntertaimentModel entertainment in entertainments) 
+            foreach (EntertaimentModel entertainment in entertainments)
             {
-                Assert.True(entertainment.Title.Contains(""));
+                Assert.AreNotEqual(entertainment.Title, "");
             }
 
         }
@@ -162,7 +164,7 @@ namespace CityTraveler.Tests
             foreach (EntertaimentModel entertainment in entertainments)
             {
                 Assert.True(entertainment.Title.Contains("title"));
-                Assert.True(entertainment.Type == EntertainmentType.Event);
+                Assert.AreEqual(entertainment.Type, EntertainmentType.Event);
                 Assert.True(entertainment.AverageRating > 1);
                 Assert.True(entertainment.AverageRating < 3);
                 Assert.True(entertainment.Address.Street.Title.Contains("a"));
@@ -176,13 +178,13 @@ namespace CityTraveler.Tests
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var ex = Assert.Throws<SearchServiceException>(() => 
+            var ex = Assert.Throws<SearchServiceException>(() =>
             service.FilterEntertainments(new FilterEntertainment
             {
                 PriceLess = 100,
                 PriceMore = 200
             }));
-            Assert.That(ex.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. The same is for rating."));
+            Assert.AreEqual(ex.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
         }
         [Test]
         public void FilterEntertainmentThrowsRaitingTest()
@@ -195,19 +197,19 @@ namespace CityTraveler.Tests
                 RatingLess = 100,
                 RatingMore = 200
             }));
-            Assert.That(ex.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. The same is for rating."));
+            Assert.AreEqual(ex.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
         }
         [Test]
         public void FilterUsersAlikeNullFieldsTest()
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var users = service.FilterUsersAlike(new UserProfileModel {});
+            var users = service.FilterUsersAlike(new UserProfileModel { });
             Assert.IsNotNull(users);
             foreach (ApplicationUserModel user in users)
             {
-                Assert.True(user.UserName.Contains(""));
-                Assert.True(user.Profile.Gender.Contains(""));
+                Assert.AreNotEqual(user.UserName, null);
+                Assert.AreNotEqual(user.Profile.Gender, null);
             }
         }
         [Test]
@@ -220,7 +222,7 @@ namespace CityTraveler.Tests
                 Name = "kate",
                 Gender = "f",
                 Birthday = DateTime.Now.AddMonths(-2),
-                User= new ApplicationUserModel { },
+                User = new ApplicationUserModel { },
                 AvatarSrc = "avatar"
             });
             Assert.IsNotNull(users);
@@ -257,9 +259,9 @@ namespace CityTraveler.Tests
             foreach (EntertaimentModel entertainment in entertainments)
             {
                 Assert.True(entertainment.Description.Contains("desc"));
-                Assert.True(entertainment.AverageRating == 5);
+                Assert.AreEqual(entertainment.AverageRating, 5);
                 Assert.True(entertainment.Title.Contains("title"));
-                Assert.True(entertainment.Type == EntertainmentType.Institution);
+                Assert.AreEqual(entertainment.Type, EntertainmentType.Institution);
             }
         }
         [Test]
@@ -271,8 +273,8 @@ namespace CityTraveler.Tests
             Assert.IsNotNull(trips);
             foreach (TripModel trip in trips)
             {
-                Assert.True(trip.Description.Contains(""));
-                Assert.True(trip.Title.Contains(""));
+                Assert.AreNotEqual(trip.Description, null);
+                Assert.AreNotEqual(trip.Title, null);
             }
         }
         [Test]
@@ -291,7 +293,7 @@ namespace CityTraveler.Tests
             foreach (TripModel trip in trips)
             {
                 Assert.True(trip.Description.Contains("desc"));
-                Assert.True(trip.AverageRating == 5);
+                Assert.AreEqual(trip.AverageRating, 5);
                 Assert.True(trip.Title.Contains("title"));
             }
         }

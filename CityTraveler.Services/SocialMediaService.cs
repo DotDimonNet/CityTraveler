@@ -92,10 +92,7 @@ namespace CityTraveler.Services
             try
             {
                 ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
-                _dbContext.Reviews.Remove(re);
-                re.Rating = rating;
-                re.RatingId = rating.Id;
-                _dbContext.Reviews.Add(re);
+                _dbContext.Ratings.Add(rating);
                 return re;
             }
             catch (Exception e) 

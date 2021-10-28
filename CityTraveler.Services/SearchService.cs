@@ -28,7 +28,7 @@ namespace CityTraveler.Services
         {
             if (filter.PriceLess < filter.PriceMore || filter.RatingLess < filter.RatingMore) 
             {
-                throw new SearchServiceException("PriceMore cant`b be more than priceLess. The same is for rating.");
+                throw new SearchServiceException("PriceMore can`t be more than priceLess. The same is for rating.");
             }
             IEnumerable<TripModel> trips = _svContext.TripService.GetTripsByName(filter.TripName ?? "");
             try
@@ -72,7 +72,7 @@ namespace CityTraveler.Services
         {
             if (filter.PriceLess < filter.PriceMore || filter.AverageRatingLess < filter.AverageRatingMore)
             {
-                throw new SearchServiceException("PriceMore cant`b be more than priceLess. The same is for rating.");
+                throw new SearchServiceException("PriceMore can`t be more than priceLess. The same is for rating.");
             }
             EntertainmentService es = _svContext.EntertainmentService;
             TripService ts = _svContext.TripService;
