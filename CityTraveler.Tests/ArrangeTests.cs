@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Infrastucture.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -63,18 +64,170 @@ namespace CityTraveler.Tests
 
         private static async Task GenerateData()
         {
-            var entertainments = new List<EntertaimentModel>();
+            //StreetGen
+            var streets = new List<StreetModel>();
             for (int i = 0; i < 10; i++)
             {
+                var street = new StreetModel()
+                {
+                    Title = $"Street-{i}",
+                    Description = $"Street description-{i}"
+                };
+                streets.Add(street);
+            }
+            //EntertainmentGen
+            var entertainments = new List<EntertaimentModel>();
+            for (int i = 0; i < 100; i++)
+            {
+                var rnd = new Random();
+                var streetIndex = rnd.Next(0, 9);
+
+                var entertainmentType = EntertainmentType.Landskape;
+                switch (i % 3)
+                {
+                    case 0:
+                        entertainmentType = EntertainmentType.Event;
+                        break;
+                    case 1:
+                        entertainmentType = EntertainmentType.Institution;
+                        break;
+                }
                 var entertainment = new EntertaimentModel()
                 {
-                    Address = new AddressModel(),
+                    Address = new AddressModel()
+                    {
+                        Coordinates = new CoordinatesModel()
+                        {
+                            Latitude = i * 3 / 2 + 1.34,
+                            Longitude = i * 5 / 2 + 1.34
+                        },
+                        HouseNumber = $"House-{i}",
+                        ApartmentNumber = $"Apartment-{i}",
+                        Street = streets[streetIndex],
+                    },
                     AveragePrice = new EntertaimentPriceModel(),
+                    Reviews = new List<EntertainmentReviewModel>()
+                    {
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                    },
+                    Type = entertainmentType,
                 };
-
                 entertainments.Add(entertainment);
             }
+            //Profiles
+            var userProfiles = new List<UserProfileModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var user = new UserProfileModel()
+                {
+                    Name = $"name{i}",
+                    Birthday = new DateTime(),
+                    Gender = "male",
+                    User = new ApplicationUserModel()
+                    {
+                        UserId = new Guid(),
+                        UserName = $"email{i}@email",
+                        Email = $"email{i}@email",
+                    }
+                };
+
+                userProfiles.Add(user);
+            }
+            await ApplicationContext.UserProfiles.AddRangeAsync(userProfiles);
+            await ApplicationContext.SaveChangesAsync();
+            await ApplicationContext.Streets.AddRangeAsync(streets);
+            await ApplicationContext.SaveChangesAsync();
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
+            await ApplicationContext.SaveChangesAsync();
+        }
+        private static async Task GenerateReviews()
+        {
+            var reviews = new List<ReviewModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var review = new TripReviewModel()
+                {
+                    User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
+                    Trip = new TripModel { },
+                    Rating = new RatingModel { Value = 5 }
+                };
+
+                reviews.Add(review);
+            }
+            await ApplicationContext.Reviews.AddRangeAsync(reviews);
+            await ApplicationContext.SaveChangesAsync();
+        }
+
+        private static async Task GenerateComment()
+        {
+            var comments = new List<CommentModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var comment = new CommentModel()
+                {
+                    Status = CommentStatus.Liked,
+                    Review = new ReviewModel { Rating = new RatingModel { Value = 3 } }
+                };
+
+                comments.Add(comment);
+            }
+            await ApplicationContext.Comments.AddRangeAsync(comments);
+            await ApplicationContext.SaveChangesAsync();
+        }
+
+        private static async Task GenerateImage()
+        {
+            var images = new List<ImageModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var image = new ReviewImageModel()
+                {
+                    Review = new ReviewModel
+                    {
+                        User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
+                        Rating = new RatingModel { Value = 5 }
+                    }
+
+                };
+
+                images.Add(image);
+            }
+            await ApplicationContext.Images.AddRangeAsync(images);
+            await ApplicationContext.SaveChangesAsync();
+        }
+
+        private static async Task GenerateTrips()
+        {
+            var trips = new List<TripModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var trip = new TripModel()
+                {
+                    TripStart = DateTime.Now,
+                    TripEnd = DateTime.Now.AddHours(4),
+                    Entertaiment = new List<EntertaimentModel>(),
+                    Price = new TripPriceModel(),
+                    Title = $"TripTitle{i}",
+                    Description = $"TripDescription{i}",
+                    OptimalSpent = TimeSpan.Zero,
+                    RealSpent = TimeSpan.Zero,
+                    TripStatus = TripStatus.New,
+                    TagSting = $"tripTagString{i}"
+                };
+                if (i % 2 == 0)
+                {
+                    trip.DafaultTrip = true;
+                }
+                if (i > 5)
+                {
+                    trip.AverageRating = 4;
+                }
+                trips.Add(trip);
+            }
+            await ApplicationContext.Trips.AddRangeAsync(trips);
             await ApplicationContext.SaveChangesAsync();
         }
     }
