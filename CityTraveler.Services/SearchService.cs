@@ -80,7 +80,7 @@ namespace CityTraveler.Services
 
             try
             {
-                IEnumerable<UserProfileModel> users = us.GetUsersByName(filter.User);
+                IEnumerable<ApplicationUserModel> users = us.GetUsersByName(filter.User);
                 IEnumerable<EntertaimentModel> enter = null; //es.GetEntartainmentByName(filter.Entertainment)
                 if (filter.TripStatus != null)
                 {
@@ -91,7 +91,7 @@ namespace CityTraveler.Services
                         && x.RealSpent == filter.RealSpent
                         && x.OptimalSpent == filter.OptimalSpent
                         && x.TripStatus.Id == filter.TripStatus
-                        && x.Users.Where(x => users.Contains(x.Profile)) != null
+                        && x.Users.Where(x => users.Contains(x)) != null
                         && x.Entertaiment.Where(x => enter.Contains(x)) != null
                         && x.Title.Contains(filter.Title ?? "")
                         && x.Price.Value > filter.PriceMore
@@ -108,7 +108,7 @@ namespace CityTraveler.Services
                        && x.TripStart == filter.TripStart
                        && x.RealSpent == filter.RealSpent
                        && x.OptimalSpent == filter.OptimalSpent
-                       && x.Users.Where(x => users.Contains(x.Profile)) != null
+                       && x.Users.Where(x => users.Contains(x)) != null
                        && x.Entertaiment.Where(x => enter.Contains(x)) != null
                        && x.Title.Contains(filter.Title ?? "")
                        && x.Price.Value > filter.PriceMore
