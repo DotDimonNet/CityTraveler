@@ -42,14 +42,20 @@ namespace CityTraveler.Services
         {
             try
             {
-
-                _context.Entertaiments = (DbSet<EntertaimentModel>)entertaiments;
+                foreach (var item in _context.Entertaiments)
+                {
+                    _context.Entertaiments.Remove(item);
+                }
+                await _context.SaveChangesAsync();
+                foreach (var item in entertaiments)
+                {
+                    _context.Entertaiments.Add(item);
+                }
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
                 throw new Exception("Failed to set entertainments");
             }
         }
@@ -58,22 +64,24 @@ namespace CityTraveler.Services
         {
             try
             {
-                var oldEntertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id);
-                _context.Entertaiments.Remove(oldEntertainment);
-                await _context.SaveChangesAsync();
-                entertaiment.Created = oldEntertainment.Created;
+                var model = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id);
+                if (model==null)
+                {
+                    _context.Entertaiments.Add(entertaiment);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    _context.Entertaiments.Update(model.UpdateEntertainmentWith(entertaiment));
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                
             }
-            catch (Exception) { }
-            try
+            catch (Exception ex) 
             {
-                entertaiment.Modified = DateTime.Now;
-                _context.Entertaiments.Add(entertaiment);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                throw new Exception("Failed to update entertainment");
+                throw new Exception(ex.Message);
             }
         }
 
