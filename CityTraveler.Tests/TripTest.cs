@@ -62,9 +62,7 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddNewTripTest()
         {
-            var newId = Guid.NewGuid();
-            var trip = ArrangeTests.ApplicationContext.Trips.FirstOrDefault();
-            trip.Id = newId;          
+            var trip = new TripModel();        
             var service = new TripService(ArrangeTests.ApplicationContext);
             var newTrip = await service.AddNewTripAsync(trip);
             Assert.True(newTrip);
