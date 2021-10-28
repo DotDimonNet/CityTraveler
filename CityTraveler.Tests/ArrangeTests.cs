@@ -135,9 +135,24 @@ namespace CityTraveler.Tests
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed},
-                           new TripModel {AverageRating = i+ 1,TripStatus= TripStatus.Passed},
-                           new TripModel {AverageRating = i+ 4,TripStatus= TripStatus.InProgress}
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
                         }
                     }
                 };
@@ -229,6 +244,17 @@ namespace CityTraveler.Tests
             await ApplicationContext.Images.AddRangeAsync(images);
             await ApplicationContext.SaveChangesAsync();
         }
+
+
+        private static async Task GenerateDifferrentImages()
+        {
+            var images = new List<ImageModel>();
+            for (int i = 0; i < 4; i++)
+            {
+                var userImage = new UserImageModel();
+            }
+        }
+
 
         private static async Task GenerateTrips()
         {

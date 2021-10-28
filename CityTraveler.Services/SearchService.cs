@@ -33,7 +33,7 @@ namespace CityTraveler.Services
             IEnumerable<TripModel> trips = _svContext.TripService.GetTripsByName(filter.TripName ?? "");
             try
             {
-                if (filter.Type != null)
+                if (filter.Type != -1)
                 {
                     return _dbContext.Entertaiments.Where(x =>
                                x.Title.Contains(filter.Title ?? "")
@@ -81,18 +81,18 @@ namespace CityTraveler.Services
             try
             {
                 IEnumerable<ApplicationUserModel> users = us.GetUsersByName(filter.User);
-                IEnumerable<EntertaimentModel> enter = null; //es.GetEntartainmentByName(filter.Entertainment)
-                if (filter.TripStatus != null)
+                //IEnumerable<EntertaimentModel> enter = null; //es.GetEntartainmentByName(filter.Entertainment)
+                if (filter.TripStatus != -1)
                 {
                     return _dbContext.Trips.Where(x =>
                         x.Description.Contains(filter.Description ?? "")
-                        && x.TripEnd == filter.TripEnd
-                        && x.TripStart == filter.TripStart
-                        && x.RealSpent == filter.RealSpent
-                        && x.OptimalSpent == filter.OptimalSpent
+                        && x.TripEnd > filter.TripEnd
+                        && x.TripStart > filter.TripStart
+                        && x.RealSpent > filter.RealSpent
+                        && x.OptimalSpent > filter.OptimalSpent
                         && x.TripStatus.Id == filter.TripStatus
-                        && x.Users.Where(x => users.Contains(x)) != null
-                        && x.Entertaiment.Where(x => enter.Contains(x)) != null
+                        && x.Users.Where(x => users.Contains(x)).Count() != 0
+                       // && x.Entertaiment.Where(x => enter.Contains(x)) != null
                         && x.Title.Contains(filter.Title ?? "")
                         && x.Price.Value > filter.PriceMore
                         && x.Price.Value < filter.PriceLess
@@ -104,12 +104,12 @@ namespace CityTraveler.Services
                 {
                     return _dbContext.Trips.Where(x =>
                        x.Description.Contains(filter.Description ?? "")
-                       && x.TripEnd == filter.TripEnd
-                       && x.TripStart == filter.TripStart
-                       && x.RealSpent == filter.RealSpent
-                       && x.OptimalSpent == filter.OptimalSpent
-                       && x.Users.Where(x => users.Contains(x)) != null
-                       && x.Entertaiment.Where(x => enter.Contains(x)) != null
+                       && x.TripEnd > filter.TripEnd
+                       && x.TripStart > filter.TripStart
+                       && x.RealSpent > filter.RealSpent
+                       && x.OptimalSpent > filter.OptimalSpent
+                       && x.Users.Where(x => users.Contains(x)).Count()!=-1
+                       //&& x.Entertaiment.Where(x => enter.Contains(x)) != null
                        && x.Title.Contains(filter.Title ?? "")
                        && x.Price.Value > filter.PriceMore
                        && x.Price.Value < filter.PriceLess
@@ -124,20 +124,21 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<ApplicationUserModel> FilterUsers(FilterUsers filter)
+        public async Task<IEnumerable<ApplicationUserModel>> FilterUsers(FilterUsers filter)
         {
             TripService ts = _svContext.TripService;
             EntertainmentService es = _svContext.EntertainmentService;
             try
             {
-                IEnumerable<TripModel> trips = null; // ts.getTripsByName(filter.TripName)
-                IEnumerable<EntertaimentModel> entertaiments = null; //es.getEntertainmentsByName(filter.eintertainment)
-                IEnumerable<TripModel> tripsWithGivenEntrtainments = _dbContext.Trips.Where(x => x.Entertaiment.Where(y => entertaiments.Contains(y)) != null);
+                //IEnumerable<TripModel> trips = _svContext.TripService.GetTripsByName(filter.);
+                //IEnumerable<EntertaimentModel> entertaiments = await _svContext.EntertainmentService.GetEntertainmentByTitle(filter.EntertainmentName);
+                //IEnumerable<TripModel> tripsWithGivenEntrtainments = _dbContext.Trips.Where(
+                   // x => x.Entertaiment.Where(y => entertaiments.Contains(y)) != null);
                 return _dbContext.Users.Where(x =>
                     x.UserName.Contains(filter.UserName ?? "")
                     && x.Profile.Gender.Contains(filter.Gender ?? "")
-                    && x.Trips.Where(x=>trips.Contains(x))!=null
-                    && x.Trips.Where(x=> tripsWithGivenEntrtainments.Contains(x))!=null
+                   // && x.Trips.Where(x=>trips.Contains(x))!=null
+                    //&& x.Trips.Where(x=> tripsWithGivenEntrtainments.Contains(x))!=null
                     );
             }
             catch (Exception e)
@@ -151,8 +152,9 @@ namespace CityTraveler.Services
         {
             try
             {
-                return _dbContext.Users.Where(x => x.Profile.Gender == u.Gender 
-                && x.Profile.Name.Contains(u.Name));
+                return _dbContext.Users.Where(
+                    x => x.Profile.Gender.Contains( u.Gender??"" )
+                && x.Profile.Name.Contains(u.Name ?? ""));
             }
             catch (Exception e)
             {
@@ -165,6 +167,7 @@ namespace CityTraveler.Services
         {
             try
             {
+                if (t.TripStatus!=null)
                     return _dbContext.Trips.Where(x =>
                         x.Description.Contains(t.Description ?? "")
                         && x.TripEnd == t.TripEnd
@@ -173,6 +176,13 @@ namespace CityTraveler.Services
                         && x.OptimalSpent == t.OptimalSpent
                         && x.TripStatus == t.TripStatus
                         );
+                else
+                    return _dbContext.Trips.Where(x =>
+                      x.Description.Contains(t.Description ?? "")
+                      && x.TripEnd == t.TripEnd
+                      && x.TripStart == t.TripStart
+                      && x.RealSpent == t.RealSpent
+                      && x.OptimalSpent == t.OptimalSpent);
             }
             catch (Exception e)
             {
@@ -185,12 +195,33 @@ namespace CityTraveler.Services
         {
             try
             {
-                return _dbContext.Entertaiments.Where(x =>
+                if (e.Type != null && e.Address!=null)
+                    return _dbContext.Entertaiments.Where(x =>
+                                   x.Title.Contains(e.Title ?? "")
+                                && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
+                                && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? "")
+                                && x.Type == e.Type
+                                && x.Description.Contains(e.Description ?? "")
+                                );
+                else if (e.Type == null && e.Address == null)
+                    return _dbContext.Entertaiments.Where(x =>
                                x.Title.Contains(e.Title ?? "")
                             && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
-                            && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? "")
-                            && x.Type == e.Type
-                            );
+                            && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? ""));
+                else if (e.Type!=null && e.Address == null)
+                    return _dbContext.Entertaiments.Where(x =>
+                                   x.Title.Contains(e.Title ?? "")
+                                && x.Type == e.Type
+                                && x.Description.Contains(e.Description ?? "")
+                                );
+                else
+                    return _dbContext.Entertaiments.Where(x =>
+                                   x.Title.Contains(e.Title ?? "")
+                                && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
+                                && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? "")
+                                && x.Description.Contains(e.Description ?? "")
+                                );
+
             } catch (Exception)
             {
                 throw new SearchServiceException("Couldn`t get alike entertainmens");
