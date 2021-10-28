@@ -36,8 +36,8 @@ namespace CityTraveler.Tests
             await GenerateReviews();
             await GenerateImage();
             await GenerateComment();
+            await GenerateTrips();
             await GenerateUserData();
-
         }
 
         private static void SetupManagementMocks()
