@@ -28,7 +28,7 @@ namespace CityTraveler.Services
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
                     .SelectMany(x => x.Entertaiment).AsEnumerable().GroupBy(x => x.Trips.Count).FirstOrDefault()?.FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).AsEnumerable().GroupBy(x => x.Trips.Count).FirstOrDefault()?.FirstOrDefault();
+                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderBy(x => x.Trips.Count).FirstOrDefault();
         }
         public async Task<TripModel> GetTripByMaxChoiceOfUsers()
         {

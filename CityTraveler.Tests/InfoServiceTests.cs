@@ -17,7 +17,7 @@ namespace CityTraveler.Tests
             await ArrangeTests.SetupDbContext();
         }
 
-        /*[Test]
+        [Test]
 
         public async Task GetMostPopularUserEntertaimentTripsTests()
         {
@@ -37,11 +37,11 @@ namespace CityTraveler.Tests
             Assert.AreEqual(entertaiment.Title, mostPopularUserEntertaimentInTrips.Title);
         }
 
-        [Test]
+        /*[Test]
         public async Task GetMostPopularEntertaimentTripsTests()
         {
-            var mostPopularEntertainment = ArrangeTests.ApplicationContext.Trips
-                .OrderBy(x => x.Entertaiment.Count).FirstOrDefault();
+            var mostPopularEntertainment = ArrangeTests.ApplicationContext.Entertaiments
+                .OrderBy(x => x.Trips.Count).FirstOrDefault();
             var service = new InfoService(ArrangeTests.ApplicationContext);
             var entertaiment = await service.GetMostPopularEntertaimentInTrips();
 
