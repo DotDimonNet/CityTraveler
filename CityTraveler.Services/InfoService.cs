@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    class InfoService : IInfoService
+    public class InfoService : IInfoService
     {
         ApplicationContext _context;
 
@@ -24,11 +24,11 @@ namespace CityTraveler.Services
 
         public async Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default)
         {
-            return userId != Guid.Empty
+           return userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
-                    .SelectMany(x => x.Entertaiment).GroupBy(x => x.Trips.Count).FirstOrDefault().FirstOrDefault()
+                    .SelectMany(x => x.Entertaiment).AsEnumerable().GroupBy(x => x.Trips.Count).FirstOrDefault()?.FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).GroupBy(x => x.Trips.Count).FirstOrDefault().FirstOrDefault();
+                    .SelectMany(x => x.Entertaiment).AsEnumerable().GroupBy(x => x.Trips.Count).FirstOrDefault()?.FirstOrDefault();
         }
         public async Task<TripModel> GetTripByMaxChoiceOfUsers()
         {
@@ -37,8 +37,8 @@ namespace CityTraveler.Services
         public async Task<ReviewModel> GetReviewByMaxComment(Guid userId = default)
         {
             return userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.OrderBy(x => x.Comments.Count).FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Reviews).OrderBy(x => x.Comments.Count).FirstOrDefault();
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.AsEnumerable().OrderBy(x => x.Comments.Count).FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Reviews).OrderBy(x => x.Comments.Count).AsEnumerable().FirstOrDefault();
         }
 
         public async Task<TripModel> GetTripByMaxReview(Guid userId = default)
