@@ -42,14 +42,16 @@ namespace CityTraveler.Services
         {
             try
             {
-
-                _context.Entertaiments = (DbSet<EntertaimentModel>)entertaiments;
+                _context.Entertaiments.RemoveRange(_context.Entertaiments);
+                foreach (var item in entertaiments)
+                {
+                    _context.Entertaiments.Add(item);
+                }
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
                 throw new Exception("Failed to set entertainments");
             }
         }

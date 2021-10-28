@@ -99,6 +99,7 @@ namespace CityTraveler.Tests
                 }
                 var entertainment = new EntertaimentModel()
                 {
+                    Title = $"Entertainment - {i}",
                     Address = new AddressModel()
                     {
                         Coordinates = new CoordinatesModel()

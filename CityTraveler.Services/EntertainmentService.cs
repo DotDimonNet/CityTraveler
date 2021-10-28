@@ -54,9 +54,9 @@ namespace CityTraveler.Services
                 .Where(x => x.Address.Street.Title == streetTitle);
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByTitle(string title)
+        public IEnumerable<EntertaimentModel> GetEntertainmentByTitle(string title)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x=>x.Title == title);
+            return _context.Entertaiments.Where(x=>x.Title.Contains(title));
         }
 
         public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids)
