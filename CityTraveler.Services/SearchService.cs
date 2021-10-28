@@ -24,13 +24,13 @@ namespace CityTraveler.Services
             _dbContext = dbContext;
             _svContext = sc;
         }
-
-        //assuming that if user didn`t give priceLess, priceMore, raitingMore, raitingLess, default values will be given
-        //(priceMore = 0, priceLess = double.MaxValue, raitingMore = 0, raitingLess = double.MaxValue)
         public IEnumerable<EntertaimentModel> FilterEntertainments(FilterEntertainment filter)
         {
-            EntertainmentService es = new EntertainmentService(_dbContext);
-            TripService ts = new TripService(_dbContext);
+            if (filter.PriceLess < filter.PriceMore || filter.RatingLess < filter.RatingMore) 
+            {
+                throw new SearchServiceException("PriceMore cant`b be more than priceLess. The same is for rating.");
+            }
+            IEnumerable<TripModel> trips = _svContext.TripService.GetTripsByName(filter.TripName ?? "");
             try
             {
                 if (filter.Type != null)
@@ -40,12 +40,11 @@ namespace CityTraveler.Services
                             && x.Address.Street.Title.Contains(filter.StreetName ?? "")
                             && x.Address.HouseNumber.Contains(filter.HouseNumber ?? "")
                             && x.Type.Id == filter.Type
-                            //need additional methods in services 
-                            //&& x.Trips.Contains(ts.getTripsByName(filter.TripName))
-                            //&& es.getAveragePrice(x.Prices) > filter.PriceMore
-                            //&& es.getAveragePrice(x.Prices) < filter.PriceLess
-                            //&& es.getAverageRaiting(x) > filter.RatingMore
-                            //&& es.getAverageRaiting(x) < filter.RatingLess
+                            && x.Trips.Where(x=>trips.Contains(x)).Count() != 0
+                            && x.AveragePrice.Value > filter.PriceMore
+                            && x.AveragePrice.Value < filter.PriceLess
+                            && x.AverageRating > filter.RatingMore
+                            && x.AverageRating < filter.RatingLess
                             );
                 }
                 else
@@ -54,12 +53,11 @@ namespace CityTraveler.Services
                                x.Title.Contains(filter.Title ?? "")
                             && x.Address.Street.Title.Contains(filter.StreetName ?? "")
                             && x.Address.HouseNumber.Contains(filter.HouseNumber ?? "")
-                            //need additional methods in services 
-                            //&& x.Trips.Contains(ts.getTripsByName(filter.TripName))
-                            //&& es.getAveragePrice(x.Prices) > filter.PriceMore
-                            //&& es.getAveragePrice(x.Prices) < filter.PriceLess
-                            //&& es.getAverageRaiting(x) > filter.RatingMore
-                            //&& es.getAverageRaiting(x) < filter.RatingLess
+                            && x.Trips.Where(x => trips.Contains(x)).Count() != 0
+                            && x.AveragePrice.Value > filter.PriceMore
+                            && x.AveragePrice.Value < filter.PriceLess
+                            && x.AverageRating > filter.RatingMore
+                            && x.AverageRating < filter.RatingLess
                             );
                 }
             }
@@ -72,6 +70,10 @@ namespace CityTraveler.Services
 
         public IEnumerable<TripModel> FilterTrips(FilterTrips filter)
         {
+            if (filter.PriceLess < filter.PriceMore || filter.AverageRatingLess < filter.AverageRatingMore)
+            {
+                throw new SearchServiceException("PriceMore cant`b be more than priceLess. The same is for rating.");
+            }
             EntertainmentService es = _svContext.EntertainmentService;
             TripService ts = _svContext.TripService;
             UserManagementService us = _svContext.UserManagementService;
@@ -92,11 +94,10 @@ namespace CityTraveler.Services
                         && x.Users.Where(x => users.Contains(x.Profile)) != null
                         && x.Entertaiment.Where(x => enter.Contains(x)) != null
                         && x.Title.Contains(filter.Title ?? "")
-                        //need additional methods in services
-                        //&& es.getAveragePrice(x.Prices) > filter.PriceMore
-                        //&& es.getAveragePrice(x.Prices) < filter.PriceLess
-                        //&& es.getAverageRaiting(x) > filter.RatingMore
-                        //&& es.getAverageRaiting(x) < filter.RatingLess
+                        && x.Price.Value > filter.PriceMore
+                        && x.Price.Value < filter.PriceLess
+                        && x.AverageRating > filter.AverageRatingMore
+                        && x.AverageRating < filter.AverageRatingLess
                         );
                 }
                 else 
@@ -109,12 +110,11 @@ namespace CityTraveler.Services
                        && x.OptimalSpent == filter.OptimalSpent
                        && x.Users.Where(x => users.Contains(x.Profile)) != null
                        && x.Entertaiment.Where(x => enter.Contains(x)) != null
-                       && x.Title.Contains(filter.Title ?? ""));
-                        //need additional methods in services
-                        //&& es.getAveragePrice(x.Prices) > filter.PriceMore
-                        //&& es.getAveragePrice(x.Prices) < filter.PriceLess
-                        //&& es.getAverageRaiting(x) > filter.RatingMore
-                        //&& es.getAverageRaiting(x) < filter.RatingLess
+                       && x.Title.Contains(filter.Title ?? "")
+                       && x.Price.Value > filter.PriceMore
+                       && x.Price.Value < filter.PriceLess
+                       && x.AverageRating > filter.AverageRatingMore
+                       && x.AverageRating < filter.AverageRatingLess);
                 }
             }
             catch (Exception e)
