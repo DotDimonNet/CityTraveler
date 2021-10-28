@@ -147,6 +147,11 @@ namespace CityTraveler.Tests
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var reviews = service.GetUserReviews(user.Id);
             Assert.NotNull(reviews);
+            foreach (ReviewModel review in reviews) 
+            {
+                Assert.True(review.UserId == user.Id);
+            }
+
         }
         [Test]
         public async Task GetObjectReviewsTest()
@@ -238,6 +243,10 @@ namespace CityTraveler.Tests
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var reviews = service.GetReviewsByTitle("title");
             Assert.NotNull(reviews);
+            foreach (ReviewModel review in reviews)
+            {
+                Assert.True(review.Title.Contains("title"));
+            }
         }
         [Test]
         public void GetReviewsByDescriptionTest()
@@ -245,6 +254,10 @@ namespace CityTraveler.Tests
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var reviews = service.GetReviewsByDescription("description");
             Assert.NotNull(reviews);
+            foreach (ReviewModel review in reviews)
+            {
+                Assert.True(review.Description.Contains("description"));
+            }
         }
         [Test]
         public async Task GetReviewsByCommentTest()
@@ -252,6 +265,10 @@ namespace CityTraveler.Tests
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var reviews = service.GetReviewsByComment(await ArrangeTests.ApplicationContext.Comments.FirstOrDefaultAsync());
             Assert.NotNull(reviews);
+            foreach (ReviewModel review in reviews)
+            {
+                Assert.True(review.Comments.Contains(await ArrangeTests.ApplicationContext.Comments.FirstOrDefaultAsync()));
+            }
         }
         [Test]
         public void GetReviewsByAverageRaitingTest()

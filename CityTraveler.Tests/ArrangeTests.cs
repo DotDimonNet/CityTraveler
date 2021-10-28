@@ -33,9 +33,6 @@ namespace CityTraveler.Tests
 
             await dbInitializer.Initialize();
             await GenerateData();
-            await GenerateReviews();
-            await GenerateComment();
-            await GenerateImage();
         }
 
         private static void SetupManagementMocks()
@@ -52,14 +49,14 @@ namespace CityTraveler.Tests
             };
             var store = new Mock<IUserStore<ApplicationUserModel>>();
             UserManagerMock = new Mock<UserManager<ApplicationUserModel>>(store.Object, null, null, null, null, null, null, null, null);
-            UserManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>())).Callback(() => 
+            UserManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>())).Callback(() =>
             {
                 ApplicationContext.Users.Add(user);
                 ApplicationContext.SaveChanges();
             }).ReturnsAsync(IdentityResult.Success).Verifiable();
             UserManagerMock.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(user).Verifiable();
             UserManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success).Verifiable();
-            
+
             var storeRoles = new Mock<IRoleStore<ApplicationUserRole>>();
             RoleManagerMock = new Mock<RoleManager<ApplicationUserRole>>(storeRoles.Object, null, null, null, null);
             RoleManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUserRole>())).ReturnsAsync(IdentityResult.Success).Verifiable();
@@ -67,17 +64,82 @@ namespace CityTraveler.Tests
 
         private static async Task GenerateData()
         {
-            var entertainments = new List<EntertaimentModel>();
+            //StreetGen
+            var streets = new List<StreetModel>();
             for (int i = 0; i < 10; i++)
             {
+                var street = new StreetModel()
+                {
+                    Title = $"Street-{i}",
+                    Description = $"Street description-{i}"
+                };
+                streets.Add(street);
+            }
+            //EntertainmentGen
+            var entertainments = new List<EntertaimentModel>();
+            for (int i = 0; i < 100; i++)
+            {
+                var rnd = new Random();
+                var streetIndex = rnd.Next(0, 9);
+
+                var entertainmentType = EntertainmentType.Landskape;
+                switch (i % 3)
+                {
+                    case 0:
+                        entertainmentType = EntertainmentType.Event;
+                        break;
+                    case 1:
+                        entertainmentType = EntertainmentType.Institution;
+                        break;
+                }
                 var entertainment = new EntertaimentModel()
                 {
-                    Address = new AddressModel(),
+                    Address = new AddressModel()
+                    {
+                        Coordinates = new CoordinatesModel()
+                        {
+                            Latitude = i * 3 / 2 + 1.34,
+                            Longitude = i * 5 / 2 + 1.34
+                        },
+                        HouseNumber = $"House-{i}",
+                        ApartmentNumber = $"Apartment-{i}",
+                        Street = streets[streetIndex],
+                    },
                     AveragePrice = new EntertaimentPriceModel(),
+                    Reviews = new List<EntertainmentReviewModel>()
+                    {
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                    },
+                    Type = entertainmentType,
                 };
-
                 entertainments.Add(entertainment);
             }
+            //Profiles
+            var userProfiles = new List<UserProfileModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var user = new UserProfileModel()
+                {
+                    Name = $"name{i}",
+                    Birthday = new DateTime(),
+                    Gender = "male",
+                    User = new ApplicationUserModel()
+                    {
+                        UserId = new Guid(),
+                        UserName = $"email{i}@email",
+                        Email = $"email{i}@email",
+                    }
+                };
+
+                userProfiles.Add(user);
+            }
+            await ApplicationContext.UserProfiles.AddRangeAsync(userProfiles);
+            await ApplicationContext.SaveChangesAsync();
+            await ApplicationContext.Streets.AddRangeAsync(streets);
+            await ApplicationContext.SaveChangesAsync();
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
             await ApplicationContext.SaveChangesAsync();
         }
@@ -90,7 +152,7 @@ namespace CityTraveler.Tests
                 {
                     User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
                     Trip = new TripModel { },
-                    Rating = new RatingModel { Value = 5}
+                    Rating = new RatingModel { Value = 5 }
                 };
 
                 reviews.Add(review);
@@ -98,6 +160,7 @@ namespace CityTraveler.Tests
             await ApplicationContext.Reviews.AddRangeAsync(reviews);
             await ApplicationContext.SaveChangesAsync();
         }
+
         private static async Task GenerateComment()
         {
             var comments = new List<CommentModel>();
@@ -114,6 +177,7 @@ namespace CityTraveler.Tests
             await ApplicationContext.Comments.AddRangeAsync(comments);
             await ApplicationContext.SaveChangesAsync();
         }
+
         private static async Task GenerateImage()
         {
             var images = new List<ImageModel>();
@@ -121,7 +185,8 @@ namespace CityTraveler.Tests
             {
                 var image = new ReviewImageModel()
                 {
-                    Review = new ReviewModel {
+                    Review = new ReviewModel
+                    {
                         User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
                         Rating = new RatingModel { Value = 5 }
                     }
@@ -131,6 +196,38 @@ namespace CityTraveler.Tests
                 images.Add(image);
             }
             await ApplicationContext.Images.AddRangeAsync(images);
+            await ApplicationContext.SaveChangesAsync();
+        }
+
+        private static async Task GenerateTrips()
+        {
+            var trips = new List<TripModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var trip = new TripModel()
+                {
+                    TripStart = DateTime.Now,
+                    TripEnd = DateTime.Now.AddHours(4),
+                    Entertaiment = new List<EntertaimentModel>(),
+                    Price = new TripPriceModel(),
+                    Title = $"TripTitle{i}",
+                    Description = $"TripDescription{i}",
+                    OptimalSpent = TimeSpan.Zero,
+                    RealSpent = TimeSpan.Zero,
+                    TripStatus = TripStatus.New,
+                    TagSting = $"tripTagString{i}"
+                };
+                if (i % 2 == 0)
+                {
+                    trip.DafaultTrip = true;
+                }
+                if (i > 5)
+                {
+                    trip.AverageRating = 4;
+                }
+                trips.Add(trip);
+            }
+            await ApplicationContext.Trips.AddRangeAsync(trips);
             await ApplicationContext.SaveChangesAsync();
         }
     }
