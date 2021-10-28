@@ -69,6 +69,7 @@ namespace CityTraveler.Services
             return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address == address);
         }
 
+        //Need to change
         public async Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle)
         {
             return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber 

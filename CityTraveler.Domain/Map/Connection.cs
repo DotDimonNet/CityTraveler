@@ -10,10 +10,12 @@ namespace CityTraveler.Domain.Map
     public class Connection
     {
         public Connection(CoordinatesModel point1, CoordinatesModel point2)
-        {
+        { 
             Point1 = point1;
             Point2 = point2;
-            Lenght = Math.Sqrt(Math.Pow((point1.Latitude-point2.Latitude),2)+Math.Pow((point1.Longitude-point2.Longitude),2));
+            //calculate distance in meters
+            Lenght = Math.Sqrt(Math.Pow((point1.Latitude - point2.Latitude) * 111.134, 2) 
+                + Math.Pow((point1.Longitude - point2.Longitude) * 111.321, 2)); 
         }
         public CoordinatesModel Point1 { get; set; }
         public CoordinatesModel Point2 { get; set; }
