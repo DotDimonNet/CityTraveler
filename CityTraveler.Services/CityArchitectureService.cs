@@ -42,6 +42,7 @@ namespace CityTraveler.Services
         {
             try
             {
+
                 _context.Entertaiments = (DbSet<EntertaimentModel>)entertaiments;
                 await _context.SaveChangesAsync();
                 return true;
