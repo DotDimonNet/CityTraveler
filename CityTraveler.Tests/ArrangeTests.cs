@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Infrastucture.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -63,17 +64,61 @@ namespace CityTraveler.Tests
 
         private static async Task GenerateData()
         {
-            var entertainments = new List<EntertaimentModel>();
+            //StreetGen
+            var streets = new List<StreetModel>();
             for (int i = 0; i < 10; i++)
             {
+                var street = new StreetModel()
+                {
+                    Title = $"Street-{i}",
+                    Description = $"Street description-{i}"
+                };
+                streets.Add(street);
+            }
+            //EntertainmentGen
+            var entertainments = new List<EntertaimentModel>();
+            for (int i = 0; i < 100; i++)
+            {
+                var rnd = new Random();
+                var streetIndex = rnd.Next(0, 9);
+
+                var entertainmentType = EntertainmentType.Landskape;
+                switch (i % 3)
+                {
+                    case 0:
+                        entertainmentType = EntertainmentType.Event;
+                        break;
+                    case 1:
+                        entertainmentType = EntertainmentType.Institution;
+                        break;
+                }
                 var entertainment = new EntertaimentModel()
                 {
-                    Address = new AddressModel(),
+                    Address = new AddressModel()
+                    {
+                        Coordinates = new CoordinatesModel()
+                        {
+                            Latitude = i * 3 / 2 + 1.34,
+                            Longitude = i * 5 / 2 + 1.34
+                        },
+                        HouseNumber = $"House-{i}",
+                        ApartmentNumber = $"Apartment-{i}",
+                        Street = streets[streetIndex],
+                    },
                     AveragePrice = new EntertaimentPriceModel(),
+                    Reviews = new List<EntertainmentReviewModel>()
+                    {
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                    },
+                    Type = entertainmentType,
                 };
-
                 entertainments.Add(entertainment);
             }
+            await ApplicationContext.Streets.AddRangeAsync(streets);
+            await ApplicationContext.SaveChangesAsync();
             await ApplicationContext.Entertaiments.AddRangeAsync(entertainments);
             await ApplicationContext.SaveChangesAsync();
         }

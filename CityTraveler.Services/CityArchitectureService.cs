@@ -32,9 +32,9 @@ namespace CityTraveler.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception("Failed to remove entertainment");
             }
         }
 
@@ -46,9 +46,10 @@ namespace CityTraveler.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
+                throw new Exception("Failed to set entertainments");
             }
         }
 
@@ -56,14 +57,22 @@ namespace CityTraveler.Services
         {
             try
             {
-                _context.Entertaiments.Remove(await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id));
+                var oldEntertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id);
+                _context.Entertaiments.Remove(oldEntertainment);
+                await _context.SaveChangesAsync();
+                entertaiment.Created = oldEntertainment.Created;
+            }
+            catch (Exception) { }
+            try
+            {
+                entertaiment.Modified = DateTime.Now;
                 _context.Entertaiments.Add(entertaiment);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
             {
-                return false;
+                throw new Exception("Failed to update entertainment");
             }
         }
 
