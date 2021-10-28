@@ -8,8 +8,8 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IServiceContext
     { 
-        public void SetServices(IEnumerable<IServiceMetadata> services);       
-        public IServiceMetadata GetService(string serviceName);
+        /*public void SetServices(IEnumerable<IServiceMetadata> services);       
+        public IServiceMetadata GetService(string serviceName);*/
     }   
 }
 

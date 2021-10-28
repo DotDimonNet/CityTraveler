@@ -32,32 +32,26 @@ namespace CityTraveler.Services
         {
                 return await _context.UserProfiles.FirstOrDefaultAsync(x => x.Id == userId);
         }
-
         public IEnumerable<UserProfileModel> GetUsersByBirthday (DateTime userbirthday)
         {
                 return _context.UserProfiles.Where(x => x.Birthday.Date == userbirthday.Date);
         }
-
         public IEnumerable<UserProfileModel> GetUsersByName (string name)
         {
             return _context.UserProfiles.Where(x => x.Name == name);
         }
-
         public IEnumerable<UserProfileModel> GetUsersByGender(string gender)
         {
             return _context.UserProfiles.Where(x => x.Gender == gender);
         }
-
         public IEnumerable<UserProfileModel> GetUsers(int skip = 0, int take = 10)
         {
             return _context.UserProfiles.Skip(skip).Take(take);
         }
-
         public IEnumerable<UserProfileModel> GetUsers(IEnumerable<Guid> guids)
         {
             return _context.UserProfiles.Where(x => guids.Contains(x.Id));
         }
-
         public async Task<UserProfileModel> GetUserByEmail(string email)
         {
             return await _context.UserProfiles.FirstOrDefaultAsync(x => x.User.Email == email); 
