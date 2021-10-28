@@ -9,14 +9,13 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IUserManagementService : IServiceMetadata
     {
-        public bool UpdateUserData(UserProfileModel user);
-        public bool RemoveUser(Guid userId);
+        public Task<UserProfileModel> GetUserById(Guid userId);
+        public IEnumerable<UserProfileModel> GetUsersByBirthday(DateTime userbirthday);
+        public IEnumerable<UserProfileModel> GetUsersByName(string name);
+        public IEnumerable<UserProfileModel> GetUsersByGender(string gender);
         public IEnumerable<UserProfileModel> GetUsers(int skip = 0, int take = 10);
         public IEnumerable<UserProfileModel> GetUsers(IEnumerable<Guid> guids);
-        public UserProfileModel GetUserById(Guid userId);
-        //public UserProfileModel GetUserByEmail(string email);
-
-        
+        public Task<UserProfileModel> GetUserByEmail(string email);
     }   
 }
 

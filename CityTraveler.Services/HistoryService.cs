@@ -8,7 +8,7 @@ using CityTraveler.Infrastucture.Data;
 
 namespace CityTraveler.Services 
 {
-    class HistoryService : IHistoryService
+    public class HistoryService : IHistoryService
     {
         //last trip, 
         private ApplicationContext _context;

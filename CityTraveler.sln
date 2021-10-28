@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Repository", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Services", "CityTraveler.Services\CityTraveler.Services.csproj", "{3297D975-9C77-4BC7-B72C-75AA1ECA2771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityTraveler.Domain", "CityTraveler.Domain\CityTraveler.Domain.csproj", "{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraveler.Domain", "CityTraveler.Domain\CityTraveler.Domain.csproj", "{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityTraveler.Tests", "CityTraveler.Tests\CityTraveler.Tests.csproj", "{D499819B-046E-456F-B61A-9D464F171956}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E1B9427-0451-42C2-85B2-7D4FE7A983D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D499819B-046E-456F-B61A-9D464F171956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D499819B-046E-456F-B61A-9D464F171956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D499819B-046E-456F-B61A-9D464F171956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D499819B-046E-456F-B61A-9D464F171956}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

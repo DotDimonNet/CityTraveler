@@ -45,7 +45,7 @@ namespace CityTraveler.Infrastucture.Data
 
         public static void SetupData(ApplicationContext context)
         {
-            var rand = new Random();
+            /*var rand = new Random();
             context.Entertaiments.Add(new EntertaimentModel 
             { 
                 Title = "hotel", 
@@ -67,7 +67,7 @@ namespace CityTraveler.Infrastucture.Data
                     }
                 }
             });
-           
+           */
 
         }
         private static Random random = new Random();

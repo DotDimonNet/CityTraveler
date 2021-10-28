@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CityTraveler.Services.Extensions;
 
 namespace CityTraveler.Services.Extensions
 {
@@ -50,6 +51,29 @@ namespace CityTraveler.Services.Extensions
                 }
             };
             return user;
+        }
+        public static EntertaimentModel ToEntertaiment(this EntertainmentDTO entertainmentDTO)
+        {
+            try
+            {
+                return new EntertaimentModel()
+                {
+                    AddressId = entertainmentDTO.Address.Id,
+                    Address = entertainmentDTO.Address,
+                    Type = entertainmentDTO.Type,
+                    Trips = new List<TripModel>(),
+                    AveragePrice = entertainmentDTO.AveragePrice,
+                    Images = entertainmentDTO.Images,
+                    Reviews = new List<EntertainmentReviewModel>(),
+                    Title = entertainmentDTO.Title,
+                    Description = entertainmentDTO.Description,
+                };
+            }
+            catch (Exception)
+            { 
+                throw new Exception("EntertainmentDTO isn't correct");
+            }
+            
         }
     }
 }
