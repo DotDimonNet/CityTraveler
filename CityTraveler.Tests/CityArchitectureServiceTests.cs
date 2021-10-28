@@ -84,11 +84,11 @@ namespace CityTraveler.Tests
             Assert.IsTrue(isUpdated);
             Assert.IsFalse(newEntertainment.Title == oldTitle);
             Assert.IsFalse(newEntertainment.Modified == oldModifided);
-            //Assert.AreEqual(newEntertainment.Created, oldCreated);
+            Assert.AreEqual(newEntertainment.Created, oldCreated);
         }
 
         [Test]
-        public async Task UpdateEntertainmentRemoveExeptionTest()
+        public async Task UpdateEntertainmentExeptionTest()
         {
             var newEntertainment = new EntertaimentModel();
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
