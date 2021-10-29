@@ -9,7 +9,7 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface ISearchService : IServiceMetadata
     {
-        public IEnumerable<ApplicationUserModel> FilterUsers(FilterUsers user);
+        public Task<IEnumerable<ApplicationUserModel>> FilterUsers(FilterUsers user);
         public IEnumerable<TripModel> FilterTrips(FilterTrips trip);
         public IEnumerable<EntertaimentModel> FilterEntertainments(FilterEntertainment entertainment);
         public IEnumerable<ApplicationUserModel> FilterUsersAlike(UserProfileModel u);
