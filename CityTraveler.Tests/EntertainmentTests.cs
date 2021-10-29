@@ -20,13 +20,14 @@ namespace CityTraveler.Tests
         [Test]
         public async Task GetEntertainmentByIdTest()
         {
-            var entertainmentId = ArrangeTests.ApplicationContext.Entertaiments
-                .FirstOrDefault().Id;
+            var entertainment = ArrangeTests.ApplicationContext.Entertaiments
+                .FirstOrDefault();
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
-            var entertainment = await service.GetEntertainmentById(entertainmentId);
-            Assert.IsNotNull(entertainment);
+            var testEntertainment = await service.GetEntertainmentById(entertainment.Id);
 
+            Assert.IsNotNull(testEntertainment);
+            Assert.AreEqual(entertainment, testEntertainment);
             ArrangeTests.UserManagerMock
                 .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
@@ -34,13 +35,14 @@ namespace CityTraveler.Tests
         [Test]
         public async Task GetEntertainmentByCoordinatesTest()
         {
-            var entertainmentCoordinates = ArrangeTests.ApplicationContext.Entertaiments
-                .FirstOrDefault().Address.Coordinates;
+            var entertainment = ArrangeTests.ApplicationContext.Entertaiments
+                .FirstOrDefault(x=>x.Address.Coordinates!=null);
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
-            var entertainment = await service.GetEntertainmentByCoordinates(entertainmentCoordinates);
-            Assert.IsNotNull(entertainment);
+            var testEntertainment = await service.GetEntertainmentByCoordinates(entertainment.Address.Coordinates);
 
+            Assert.IsNotNull(testEntertainment);
+            Assert.AreEqual(entertainment, testEntertainment);
             ArrangeTests.UserManagerMock
                 .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
@@ -53,6 +55,7 @@ namespace CityTraveler.Tests
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
             var entertainments = service.GetEntertainmentsByStreet(street);
+
             Assert.IsNotNull(entertainments);
             foreach (var entertainment in entertainments)
             {
@@ -70,6 +73,7 @@ namespace CityTraveler.Tests
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
             var entertainments = service.GetEntertainmentsByStreet(streetTitle);
+
             Assert.IsNotNull(entertainments);
             foreach (var entertainment in entertainments)
             {
@@ -82,13 +86,14 @@ namespace CityTraveler.Tests
         [Test]
         public void GetEntertainmentByTitleTest()
         {
-            var randomEntertainments = ArrangeTests.ApplicationContext.Entertaiments
+            var entertainments = ArrangeTests.ApplicationContext.Entertaiments
                 .Where(x=>x.Title.Contains("2")).ToList();
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
-            var entertainments = service.GetEntertainmentByTitle("2").ToList();
-            Assert.IsNotNull(entertainments);
-            Assert.AreEqual(entertainments, randomEntertainments);
+            var testEntertainments = service.GetEntertainmentByTitle("2").ToList();
+
+            Assert.IsNotNull(testEntertainments);
+            Assert.AreEqual(testEntertainments, entertainments);
             ArrangeTests.UserManagerMock
                 .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
@@ -101,6 +106,7 @@ namespace CityTraveler.Tests
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
             var entertainments = service.GetEntertainments(entertainmentsIds);
+
             Assert.IsNotNull(entertainments);
             Assert.AreEqual(entertainments.Count(), entertainmentsIds.Count());
             ArrangeTests.UserManagerMock
@@ -115,6 +121,7 @@ namespace CityTraveler.Tests
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
             var entertainment = await service.GetEntertainmentByAddress(address);
+
             Assert.IsNotNull(entertainment);
             Assert.AreEqual(entertainment, address.Entertaiment);
             ArrangeTests.UserManagerMock
@@ -130,6 +137,7 @@ namespace CityTraveler.Tests
 
             var entertainment = await service.GetEntertainmentByAddress(address.HouseNumber, 
                 address.ApartmentNumber, address.Street.Title);
+
             Assert.IsNotNull(entertainment);
             Assert.AreEqual(entertainment, address.Entertaiment);
             ArrangeTests.UserManagerMock
@@ -144,8 +152,8 @@ namespace CityTraveler.Tests
             var service = new EntertainmentService(ArrangeTests.ApplicationContext);
 
             var averageRating = service.GetAverageRating(entertainment);
+
             Assert.IsNotNull(averageRating);
-            Assert.IsTrue(averageRating>0 && averageRating<5);
             ArrangeTests.UserManagerMock
                 .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }

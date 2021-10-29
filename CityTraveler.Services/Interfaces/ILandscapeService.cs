@@ -12,7 +12,7 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<EntertaimentModel> GetAll();
         public IEnumerable<EntertaimentModel> GetLandscapes(IEnumerable<Guid> guids);
         public Task<EntertaimentModel> GetLandscapeById(Guid guids);
-        public Task<EntertaimentModel> GetLandscapeByTitle(string title);
+        public IEnumerable<EntertaimentModel> GetLandscapeByTitle(string title);
         public IEnumerable<EntertaimentModel> GetLandscapesByStreet(StreetModel street);
         public IEnumerable<EntertaimentModel> GetLandscapesByStreet(string streetTitle);
         public Task<EntertaimentModel> GetLandscapeByCoordinates(CoordinatesModel coordinates);

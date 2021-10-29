@@ -95,7 +95,7 @@ namespace CityTraveler.Services
             }
             catch (Exception)
             {
-                return false;
+                throw;
             }
         }
 
