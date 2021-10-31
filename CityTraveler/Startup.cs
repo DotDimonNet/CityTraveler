@@ -1,4 +1,6 @@
 using CityTraveler.Domain.Entities;
+using CityTraveler.Services.Interfaces;
+using CityTraveler.Services;
 using CityTraveler.Infrastructure.Authorization;
 using CityTraveler.Infrastructure.Settings;
 using CityTraveler.Infrastucture.Data;
@@ -100,6 +102,7 @@ namespace CityTraveler
                 options.AddPolicy(Policies.RequireUserRole, policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
             });
             services.AddOptions();
+            services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddScoped<DbInitializer>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
