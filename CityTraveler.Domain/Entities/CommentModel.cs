@@ -10,6 +10,7 @@ namespace CityTraveler.Domain.Entities
     public class CommentModel : Entity
     {
         public virtual ApplicationUserModel Owner { get; set; }
+        public virtual Guid ReviewId { get; set; }
         public virtual ReviewModel Review { get; set; }
         public virtual CommentStatus Status { get; set; }
         public string Description { get; set; }

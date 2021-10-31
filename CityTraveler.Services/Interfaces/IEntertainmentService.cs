@@ -1,4 +1,5 @@
-﻿
+﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,19 +8,17 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IEntertainmentService
+    public interface IEntertainmentService : IServiceMetadata
     {
-        /*public bool SetEntertaiment(IEnumerable<IEntertaiment> entertaiments);
-        public bool UpdateEntertainment(IEntertaiment entertaiments);
-        public bool RemoveEntertainment(Guid id);
-        public IEnumerable<IEntertaiment> GetAll();
-        public IEnumerable<IEntertaiment> GetEntertainments(IEnumerable<Guid> guids);
-        public IEntertaiment GetEntertainmentById(Guid guids);
-        public IEntertaiment GetEntertainmentByTitle(string title);
-        public IEntertaiment GetEntertainmentByStreet(IStreet street);
-        public IEntertaiment GetEntertainmentByCoordinates(ICoordinates street);
-        public IEnumerable<IEntertaiment> GetEntartainmentyRating(Guid ratingId, Guid tripId);*/
-
-
+        public IEnumerable<EntertaimentModel> GetAll();
+        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> guids);
+        public Task<EntertaimentModel> GetEntertainmentById(Guid guids);
+        public IEnumerable<EntertaimentModel> GetEntertainmentByTitle(string title);
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(StreetModel street);
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle);
+        public Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesModel coordinates);
+        public Task<EntertaimentModel> GetEntertainmentByAddress(AddressModel address);
+        public Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle);
+        public double GetAverageRating(EntertaimentModel entertaiment);
     }
 }
