@@ -173,13 +173,29 @@ namespace CityTraveler.Tests
                 var user = new UserProfileModel()
                 {
                     Name = $"name{i}",
-                    Birthday = new DateTime(),
+                    Birthday = new DateTime(2018 - i, 9, 13),
                     Gender = "male",
                     User = new ApplicationUserModel()
                     {
-                        UserId = new Guid(),
+                        UserId = Guid.NewGuid(),
                         UserName = $"email{i}@email",
                         Email = $"email{i}@email",
+                        Trips = new List<TripModel>
+                        {
+                            new TripModel
+                            {
+                                Entertaiment = new List<EntertaimentModel>
+                                {
+                                    new EntertaimentModel(),
+                                    new EntertaimentModel(),
+                                },
+                                Reviews = new List<TripReviewModel>
+                                {
+                                   new TripReviewModel(),
+                                   new TripReviewModel(),
+                                }
+                            }
+                         }   
                     }
                 };
 
@@ -192,6 +208,8 @@ namespace CityTraveler.Tests
         private static async Task GenerateReviews()
         {
             var reviews = new List<ReviewModel>();
+
+
             for (int i = 0; i < 10; i++)
             {
                 var review = new TripReviewModel()
@@ -202,6 +220,7 @@ namespace CityTraveler.Tests
                 };
 
                 reviews.Add(review);
+
             }
             await ApplicationContext.Reviews.AddRangeAsync(reviews);
             await ApplicationContext.SaveChangesAsync();
@@ -261,8 +280,8 @@ namespace CityTraveler.Tests
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}"
-                };
+                    TagSting = $"tripTagString{i}",
+                 };
                 if (i % 2 == 0)
                 {
                     trip.DafaultTrip = true;

@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    interface IInfoService : IServiceMetadata
+    public interface IInfoService : IServiceMetadata
     {
         public Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default);
         public Task<TripModel> GetTripByMaxChoiceOfUsers();
-        public Task<ReviewModel> GetReviewByMaxComment(Guid userId = default);
-        public Task<TripModel> GetMostlyUsedTemplate();
+        public Task<ReviewModel> GetReviewByMaxComments(Guid userId = default);
+        //public Task<TripModel> GetMostlyUsedTemplate();
         public Task<TripModel> GetTripByMaxReview(Guid userId = default);
         public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime srart, DateTime end);
         public Task<TripModel> GetTripByLowPrice();
-        public Task<int> GetRegisteredUserByPeriod(DateTime start, DateTime end);
+        public Task<int> GetRegisteredUsersByPeriod(DateTime start, DateTime end);
         public int GetUsersCountTripsDateRange(DateTime start, DateTime end);
         public Task<TripModel> GetLongestTrip();
         public Task<TripModel> GetShortestTrip();
