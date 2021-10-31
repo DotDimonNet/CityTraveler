@@ -54,9 +54,9 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Landskape);
         }
 
-        public async Task<EntertaimentModel> GetLandscapeByTitle(string title)
+        public IEnumerable<EntertaimentModel> GetLandscapeByTitle(string title)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Title == title
+            return  _context.Entertaiments.Where(x => x.Title.Contains(title)
                 && x.Type == EntertainmentType.Landskape);
         }
 

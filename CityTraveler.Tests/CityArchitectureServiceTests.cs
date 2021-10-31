@@ -101,13 +101,27 @@ namespace CityTraveler.Tests
             Assert.AreEqual(newEntertainmentAfter, newEntertainment);
         }
 
+        [Test]
         public async Task AddEntertainmentTest()
         {
-            var entertainment = new EntertainmentDTO();
+            var dto = new EntertainmentDTO()
+            {
+                Address = new AddressModel()
+                {
+                    Coordinates = new CoordinatesModel() { Latitude = 345, Longitude = 534 },
+                    HouseNumber = "23",
+                    ApartmentNumber = "24",
+                    Street = new StreetModel()
+                },
+                Type = EntertainmentType.Event,
+                AveragePrice = new EntertaimentPriceModel() { Title = "Average price", Value = 4567 },
+                Title = "Lorem",
+                Description = "Ipsum"
+            };
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
             var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
-            var isAdded = await service.AddEntertainment(entertainment);
+            var isAdded = await service.AddEntertainment(dto);
 
             var newContextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
             Assert.IsTrue(isAdded);

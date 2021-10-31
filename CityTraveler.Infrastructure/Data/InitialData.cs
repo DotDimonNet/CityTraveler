@@ -66,6 +66,67 @@ namespace CityTraveler.Infrastucture.Data
             }
             context.Trips.AddRange(trips);
             context.SaveChanges();
+
+            //StreetGen
+            var streets = new List<StreetModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var street = new StreetModel()
+                {
+                    Title = $"Street-{i}",
+                    Description = $"Street description-{i}"
+                };
+                streets.Add(street);
+            }
+
+            //EntertainmentGen
+            var entertainments = new List<EntertaimentModel>();
+            for (int i = 0; i < 100; i++)
+            {
+                var rnd = new Random();
+                var streetIndex = rnd.Next(0, 9);
+
+                var entertainmentType = EntertainmentType.Landskape;
+                switch (i % 3)
+                {
+                    case 0:
+                        entertainmentType = EntertainmentType.Event;
+                        break;
+                    case 1:
+                        entertainmentType = EntertainmentType.Institution;
+                        break;
+                }
+                var entertainment = new EntertaimentModel()
+                {
+                    Title = $"Entertainment - {i}",
+                    Address = new AddressModel()
+                    {
+                        Coordinates = new CoordinatesModel()
+                        {
+                            Latitude = i * 3 / 2 + 1.34,
+                            Longitude = i * 5 / 2 + 1.34
+                        },
+                        HouseNumber = $"{i}",
+                        ApartmentNumber = $"{i}",
+                        Street = streets[streetIndex],
+                    },
+                    AveragePrice = new EntertaimentPriceModel(),
+                    Reviews = new List<EntertainmentReviewModel>()
+                    {/*
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },*/
+                    },
+                    Type = entertainmentType,
+                };
+                entertainments.Add(entertainment);
+            }
+
+            context.Streets.AddRange(streets);
+            context.SaveChanges();
+            context.Entertaiments.AddRange(entertainments);
+            context.SaveChanges();
         }
         private static Random random = new Random();
         public static string RandomString(int length)
