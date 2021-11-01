@@ -27,7 +27,7 @@ namespace CityTraveler.Controllers
 
         [HttpGet]
         [Route("get")]
-        public async Task<IActionResult> GetTrips(int skip = 0, int take = 10)
+        public IActionResult GetTrips([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] string name = "")
         {
             return Json(_service.GetTrips(skip, take));
         }
@@ -36,18 +36,17 @@ namespace CityTraveler.Controllers
         [Route("getById")]
         public async Task<IActionResult> GetTripById(Guid tripId)
         { 
-            if (tripId!=null)
+            if (tripId == Guid.Empty)
             {
                 return Json(_service.GetTripById(tripId));
             }
             else
             {
-                return new StatusCodeResult(404);
+                return new NotFoundResult();
             }     
         }
 
-        [HttpGet]
-        [Route("getTripsByName")]
+        [HttpGet("get-trips-by-name")]
         public async Task<IActionResult> GetTripsName(string tripName)
         {
             if (String.IsNullOrEmpty(tripName))
@@ -64,14 +63,7 @@ namespace CityTraveler.Controllers
         [Route("postNewTrip")]
         public async Task<IActionResult> AddNewTrip(TripModel trip)
         {
-            try
-            {         
-                await _service.AddNewTripAsync(trip);
-            }
-            catch
-            {
-                return new StatusCodeResult(500);
-            }
+            await _service.AddNewTripAsync(trip);
             return RedirectToAction();
         }
 
