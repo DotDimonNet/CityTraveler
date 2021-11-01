@@ -18,7 +18,7 @@ namespace CityTraveler.Domain.Entities
         public virtual double AverageRating { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-
-        //Need to create a json for institution's and event's properties  
+        public DateTime Begin { get; set; }
+        public DateTime End { get; set; }
     }
 }

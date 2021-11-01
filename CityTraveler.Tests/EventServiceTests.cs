@@ -28,6 +28,7 @@ namespace CityTraveler.Tests
             var testEntertainment = await service.GetEventById(entertainment.Id);
 
             Assert.IsNotNull(entertainment);
+            Assert.IsNotNull(testEntertainment);
             Assert.AreEqual(testEntertainment, entertainment);
         }
 
@@ -41,6 +42,7 @@ namespace CityTraveler.Tests
             var testEvent = await service.GetEventByCoordinates(realEvent.Address.Coordinates);
 
             Assert.IsNotNull(realEvent);
+            Assert.IsNotNull(realEvent);
             Assert.AreEqual(realEvent, testEvent);
         }
 
@@ -53,8 +55,8 @@ namespace CityTraveler.Tests
 
             var events = service.GetEventsByStreet(street);
 
+            Assert.IsNotNull(street);
             Assert.IsNotNull(events);
-
             foreach (var item in events)
             {
                 Assert.AreEqual(item.Address.Street, street);
@@ -70,8 +72,8 @@ namespace CityTraveler.Tests
 
             var events = service.GetEventsByStreet(streetTitle);
 
+            Assert.IsNotNull(streetTitle);
             Assert.IsNotNull(events);
-
             foreach (var item in events)
             {
                 Assert.AreEqual(item.Address.Street.Title, streetTitle);
@@ -88,6 +90,7 @@ namespace CityTraveler.Tests
             var testEvents = service.GetEventByTitle("2").ToList();
 
             Assert.IsNotNull(realEvents);
+            Assert.IsNotNull(testEvents);
             Assert.AreEqual(testEvents, realEvents);
         }
 
@@ -99,6 +102,7 @@ namespace CityTraveler.Tests
 
             var testEvents = service.GetEvents(realEvents.Select(x=>x.Id));
 
+            Assert.IsNotNull(realEvents);
             Assert.IsNotNull(testEvents);
             Assert.AreEqual(testEvents.Count(), realEvents.Count());
         }
@@ -112,6 +116,7 @@ namespace CityTraveler.Tests
 
             var testEvent = await service.GetEventByAddress(address);
 
+            Assert.IsNotNull(address);
             Assert.IsNotNull(testEvent);
             Assert.AreEqual(testEvent, address.Entertaiment);
         }
@@ -126,6 +131,7 @@ namespace CityTraveler.Tests
             var testEvent = await service.GetEventByAddress(address.HouseNumber,
                 address.ApartmentNumber, address.Street.Title);
 
+            Assert.IsNotNull(address);
             Assert.IsNotNull(testEvent);
             Assert.AreEqual(testEvent, address.Entertaiment);
         }

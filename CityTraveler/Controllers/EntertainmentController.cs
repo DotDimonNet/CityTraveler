@@ -22,25 +22,16 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("get")]
+        [HttpGet("get")]
         public IActionResult GetAll()
         {
             return Json(_service.GetAll());
         }
 
-        [HttpGet]
-        [Route("getByTitle")]
+        [HttpGet("getByTitle")]
         public IActionResult GetEntertainmentByTitle(string title)
         {
             return Json(_service.GetEntertainmentByTitle(title));
-        }
-
-        [HttpGet]
-        [Route("getByAddress")]
-        public IActionResult GetEntertainmentByAddress([FromBody] AddressDTO dto)
-        {
-            return Json(_service.GetEntertainmentByAddress(houseNumber, apartmentNumber, streetTitle));
         }
     }
 }

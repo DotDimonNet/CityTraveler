@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CityTraveler.Infrastructure\CityTraveler.Infrastructure.csproj" />
     <ProjectReference Include="..\CityTraveler.Repository\CityTraveler.Repository.csproj" />
     <ProjectReference Include="..\CityTraveler.Services\CityTraveler.Services.csproj" />
