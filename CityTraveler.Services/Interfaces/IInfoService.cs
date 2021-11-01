@@ -12,10 +12,10 @@ namespace CityTraveler.Services.Interfaces
         public Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default);
         public Task<TripModel> GetTripByMaxChoiceOfUsers();
         public Task<ReviewModel> GetReviewByMaxComments(Guid userId = default);
-        //public Task<TripModel> GetMostlyUsedTemplate();
+        public IEnumerable<TripModel> GetMostlyUsedTemplates(int count);
         public Task<TripModel> GetTripByMaxReview(Guid userId = default);
         public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime srart, DateTime end);
-        public Task<TripModel> GetTripByLowPrice();
+        public IEnumerable<TripModel> GetTripsByLowPrice(int count);
         public Task<int> GetRegisteredUsersByPeriod(DateTime start, DateTime end);
         public int GetUsersCountTripsDateRange(DateTime start, DateTime end);
         public Task<TripModel> GetLongestTrip();
