@@ -1,7 +1,9 @@
+using AutoMapper;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Infrastructure.Authorization;
 using CityTraveler.Infrastructure.Settings;
 using CityTraveler.Infrastucture.Data;
+using CityTraveler.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -98,6 +100,11 @@ namespace CityTraveler
                 options.AddPolicy(Policies.RequireAdminRole, policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
                 options.AddPolicy(Policies.RequireContentManagerRole, policy => policy.RequireClaim(ClaimTypes.Role, Roles.ContentManager));
                 options.AddPolicy(Policies.RequireUserRole, policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
+            });
+
+            services.AddAutoMapper(x => 
+            {
+                x.AddProfile<MappingProfile>();
             });
             services.AddOptions();
             services.AddScoped<DbInitializer>();
