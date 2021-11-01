@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CityTraveler.Domain.Errors;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    public class UserManagementService// : IUserManagementService
+    public class UserManagementService: IUserManagementService
     {
         private ApplicationContext _context;
         public UserManagementService(ApplicationContext context)
@@ -28,24 +29,43 @@ namespace CityTraveler.Services
         public string Description { get; set; }
 
         
-        public async Task<ApplicationUserModel> GetUserById(Guid userId)
+        public ApplicationUserModel GetUserById(Guid userId)
         {
-                return await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (_context.Users.FirstOrDefault(x => x.Id == userId) == null)
+                throw new UserManagemenServicetException("Users not found");
+            if (userId == Guid.Empty)
+                throw new UserManagemenServicetException("Invalid argument");
+
+            return _context.Users.FirstOrDefault(x => x.Id == userId);
         }
         public IEnumerable<ApplicationUserModel> GetUsersByBirthday (DateTime userbirthday)
         {
+            if (_context.Users.Where(x => x.Profile.Birthday.Date == userbirthday).Count() == 0)
+                throw new UserManagemenServicetException("Users not found");
+            if (userbirthday.Date > DateTime.Now)
+                throw new UserManagemenServicetException("Invalid argument");
+
                 return _context.Users.Where(x => x.Profile.Birthday.Date == userbirthday.Date);
         }
         public IEnumerable<ApplicationUserModel> GetUsersByName (string name)
         {
+            if (_context.Users.Where(x => x.Profile.Name == name).Count() == 0)
+                throw new UserManagemenServicetException("Users not found");
+            if (name == null)
+                throw new UserManagemenServicetException("Invalid argument");
             return _context.Users.Where(x => x.Profile.Name == name);
         }
         public IEnumerable<ApplicationUserModel> GetUsersByGender(string gender)
         {
+            if (gender == null)
+                throw new UserManagemenServicetException("Invalid argument");
+
             return _context.Users.Where(x => x.Profile.Gender == gender);
         }
         public IEnumerable<ApplicationUserModel> GetUsersRange(int skip = 0, int take = 10)
         {
+            if (skip < 0 || take < 0 )
+                 throw new UserManagemenServicetException("Invalid arguments");
             return _context.Users.Skip(skip).Take(take);
         }
         public IEnumerable<ApplicationUserModel> GetUsers(IEnumerable<Guid> guids)
@@ -54,6 +74,8 @@ namespace CityTraveler.Services
         }
         public async Task<ApplicationUserModel> GetUserByEmail(string email)
         {
+            if(email == null)
+                throw new UserManagemenServicetException("Invalid argument");
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email); 
         }
 
