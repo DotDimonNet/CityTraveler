@@ -23,63 +23,47 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("id/{userId}")]
-
+        [HttpGet("id/{userId}")]
         public IActionResult GetUserById(Guid userId)
         {
             return Json(_service.GetUserById(userId));
         }
 
-        [HttpGet]
-        [Route("birthday/{date}")]
-
+        [HttpGet("birthday/{date}")]
         public IActionResult GetUsersByBirthday(DateTime date)
         {
             return Json(_service.GetUsersByBirthday(date));
         }
 
-        [HttpGet]
-        [Route("name/{name}")]
-
+        [HttpGet("name/{name}")]
         public IActionResult GetUsersByName(string name)
         {
             return Json(_service.GetUsersByName(name));
         }
 
-        [HttpGet]
-        [Route("gender/{gender}")]
-
+        [HttpGet("gender/{gender}")]
         public IActionResult GetUsersByGender(string gender)
         {
             return Json(_service.GetUsersByGender(gender));
         }
 
-        [HttpGet]
-        [Route("users")]
-
+        [HttpGet("users")]
         public IActionResult GetUsers(int skip = 0, int take = 10)
         {
             return Json(_service.GetUsersRange(skip, take));
         }
 
-        [HttpGet]
-        [Route("email/{email}")]
-
+        [HttpGet("email/{email}")]
         public IActionResult GetUserByEmail(string email)
         {
             return Json(_service.GetUserByEmail (email));
         }
 
-        [HttpGet]
-        [Route("users-by-id")]
-
-        public async Task<IActionResult> GetUsers (IEnumerable<Guid> guids)
+        [HttpGet("users-by-id")]
+        public IActionResult GetUsers (IEnumerable<Guid> guids)
         {
             return Json(_service.GetUsers(guids));
         }
-
-
 
     }
 }
