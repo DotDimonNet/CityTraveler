@@ -131,21 +131,6 @@ namespace CityTraveler.Tests
             Assert.IsNotNull(entertainment);
             Assert.AreEqual(entertainment, address.Entertaiment);
         }
-        
-        [Test]
-        public async Task GetEntertainmentByAddressStringTest()
-        {
-            var address = ArrangeTests.ApplicationContext.Addresses
-                .FirstOrDefault();
-            var service = new EntertainmentService(ArrangeTests.ApplicationContext);
-
-            var entertainment = await service.GetEntertainmentByAddress(address.HouseNumber, 
-                address.ApartmentNumber, address.Street.Title);
-
-            Assert.IsNotNull(address);
-            Assert.IsNotNull(entertainment);
-            Assert.AreEqual(entertainment, address.Entertaiment);
-        }
 
         [Test]
         public void GetAverageRatingTest()

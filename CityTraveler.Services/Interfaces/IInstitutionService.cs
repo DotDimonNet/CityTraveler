@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services.Interfaces
 {
@@ -12,11 +13,9 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<EntertaimentModel> GetAll();
         public IEnumerable<EntertaimentModel> GetInstitutions(IEnumerable<Guid> guids);
         public Task<EntertaimentModel> GetInstitutionById(Guid guids);
-        public Task<EntertaimentModel> GetInstitutionByTitle(string title);
-        public IEnumerable<EntertaimentModel> GetInstitutionsByStreet(StreetModel street);
+        public IEnumerable<EntertaimentModel> GetInstitutionsByTitle(string title);
         public IEnumerable<EntertaimentModel> GetInstitutionsByStreet(string streetTitle);
-        public Task<EntertaimentModel> GetInstitutionByCoordinates(CoordinatesModel coordinates);
-        public Task<EntertaimentModel> GetInstitutionByAddress(AddressModel address);
-        public Task<EntertaimentModel> GetInstitutionByAddress(string houseNumber, string apartmentNumber, string streetTitle);
+        public Task<EntertaimentModel> GetInstitutionByCoordinates(CoordinatesDTO coordinates);
+        public Task<EntertaimentModel> GetInstitutionByAddress(AddressDTO address);
     }
 }

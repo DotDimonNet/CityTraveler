@@ -27,12 +27,15 @@ namespace CityTraveler.Services
 
         public IEnumerable<EntertaimentModel> GetAll()
         {
-            return (IEnumerable<EntertaimentModel>)_context.Entertaiments;
+            return (IEnumerable<EntertaimentModel>)_context.Entertaiments.
+                Where(x => x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEventByCoordinates(CoordinatesModel coordinates)
+        public async Task<EntertaimentModel> GetEventByCoordinates(CoordinatesDTO coordinatesDto)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.Coordinates == coordinates 
+            return await _context.Entertaiments
+                .FirstOrDefaultAsync(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                && x.Address.Coordinates.Longitude == coordinatesDto.Longitude
                 && x.Type == EntertainmentType.Event);
         }
 
@@ -42,15 +45,9 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Event);
         }
 
-        public IEnumerable<EntertaimentModel> GetEventsByStreet(StreetModel street)
-        {
-            return _context.Entertaiments.Where(x => x.Address.Street == street
-                && x.Type == EntertainmentType.Event);
-        }
-
         public IEnumerable<EntertaimentModel> GetEventsByStreet(string streetTitle)
         {
-            return _context.Entertaiments.Where(x => x.Address.Street.Title == streetTitle
+            return _context.Entertaiments.Where(x => x.Address.Street.Title.Contains(streetTitle)
                 && x.Type == EntertainmentType.Event);
         }
 
@@ -66,24 +63,19 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEventByAddress(AddressModel address)
+        public async Task<EntertaimentModel> GetEventByAddress(AddressDTO addressDto)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address == address
+            return await _context.Entertaiments
+                .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartsmentNumber
+                && x.Address.HouseNumber == addressDto.HouseNumber
+                && x.Address.Street.Title.Contains(addressDto.StreetTitle)
                 && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEventByAddress(string houseNumber, string apartmentNumber, string streetTitle)
-        {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber
-            && x.Address.ApartmentNumber == apartmentNumber 
-            && x.Address.Street.Title == streetTitle
-            && x.Type == EntertainmentType.Event);
-        }
-
-        //TODO
         public IEnumerable<EntertaimentModel> GetEventByBeginingDay(DateTime begin)
         {
-            throw new NotImplementedException();
+            return _context.Entertaiments.Where(x => x.Begin >= begin
+            && x.Type == EntertainmentType.Event); 
         }
     }
 }
