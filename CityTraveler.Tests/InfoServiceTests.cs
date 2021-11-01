@@ -18,7 +18,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetMostPopularUserEntertaimentTripsTests()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
@@ -101,7 +100,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetTripByMaxReviewTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Users
@@ -135,7 +133,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public void GetlastTripByPeriodTest()
         {
             var startDateTime = DateTime.Now;
@@ -175,12 +172,15 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public void GetMostlyUsedTemplatesTest()
         {
             var count = 5;
             var templateIds = ArrangeTests.ApplicationContext.Trips
-                .Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).Select(x => x.Key).Take(count);
+                .Select(x => x.TemplateId)
+                .GroupBy(x => x)
+                .OrderByDescending(g => g.Count())
+                .Select(x => x.Key)
+                .Take(count);
 
             var service = new InfoService(ArrangeTests.ApplicationContext);
             var templatesActual = service.GetMostlyUsedTemplates(count);
@@ -191,7 +191,6 @@ namespace CityTraveler.Tests
         }    
 
         [Test]
-
         public void GetUsersCountTripsDateRangeTest()
         {
             var startOfPeriod = DateTime.Now;
@@ -207,7 +206,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetLongestTripTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Trips
@@ -220,7 +218,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetShortestTripTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Trips
@@ -234,7 +231,6 @@ namespace CityTraveler.Tests
 
         [Test]
         public void GetTripsCreatedByPeriod()
-
         {
             var startOfPeriod = DateTime.Now;
             var endOfPeriod = DateTime.Now.AddMilliseconds(4);
@@ -245,16 +241,19 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(tripscreatedActual);
             Assert.AreEqual(tripsCreatedExpected, tripscreatedActual);
-
         }
 
+        [Test]
+        public void GetTripsByLowPriceTest()
+        {
+            var count = 3;
+            var trips = ArrangeTests.ApplicationContext
+                .Trips.OrderBy(x => x.Price.Value).Take(count);
+            var service = new InfoService(ArrangeTests.ApplicationContext);
+            var tripsByLowPrice = service.GetTripsByLowPrice(count);
 
-
-
-
-
-
-
+            Assert.IsNotEmpty(tripsByLowPrice);
+            Assert.AreEqual(tripsByLowPrice.Count(), count);
+        }
     }
-
 }

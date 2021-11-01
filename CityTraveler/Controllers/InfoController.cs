@@ -22,5 +22,17 @@ namespace CityTraveler.Controllers
             _service = infoService;
             _logger = logger;
         }
+
+        [HttpGet("user/entertaiment/{userId}")]
+        public IActionResult GetMostPopularEntertaimentInTrips([FromQuery] Guid userId)
+        {
+            return Json(_service.GetMostPopularEntertaimentInTrips(userId));
+        }
+
+        [HttpGet("entertaiment")]
+        public IActionResult GetMostPopularEntertaimentInTrips()
+        {
+            return Json(_service.GetMostPopularEntertaimentInTrips());
+        }
     }
 }
