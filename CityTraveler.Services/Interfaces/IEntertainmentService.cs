@@ -17,7 +17,6 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle);
         public Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesDTO coordinates);
         public Task<EntertaimentModel> GetEntertainmentByAddress(AddressDTO address);
-        public Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle);
         public double GetAverageRating(EntertaimentModel entertaiment);
     }
 }
