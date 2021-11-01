@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Domain.Entities;
+using System.Web;
 
 namespace CityTraveler.Controllers
 {
@@ -34,46 +35,74 @@ namespace CityTraveler.Controllers
         [HttpGet]
         [Route("getById")]
         public async Task<IActionResult> GetTripById(Guid tripId)
-        {
-            TripModel trip;
-            try
-            {         
-                trip = _service.GetTripById(tripId);
-            }
-            catch (TripControllerException e) when (tripId == null)
+        { 
+            if (tripId!=null)
             {
-
-                throw new TripControllerException($"Trip with Id={tripId} not found", e);
+                return Json(_service.GetTripById(tripId));
             }
-            catch (TripControllerException e)
+            else
             {
-                throw new TripControllerException("Exception on finding trip by Id", e);
-            }
-            return (Json(trip));
-     
+                return new StatusCodeResult(404);
+            }     
         }
 
         [HttpGet]
         [Route("getTripsByName")]
         public async Task<IActionResult> GetTripsName(string tripName)
         {
-            IEnumerable<TripModel> trips;
+            if (String.IsNullOrEmpty(tripName))
+            {
+                return Json(_service.GetTripsByName(tripName));
+            }
+            else
+            {
+                return new StatusCodeResult(404);   
+            }
+        }
+
+        [HttpPost]
+        [Route("postNewTrip")]
+        public async Task<IActionResult> AddNewTrip(TripModel trip)
+        {
+            try
+            {         
+                await _service.AddNewTripAsync(trip);
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
+            }
+            return RedirectToAction();
+        }
+
+        [HttpDelete]
+        [Route("deleteTrip")]
+        public async Task<IActionResult> DeleteTrip(Guid tripId)
+        {
             try
             {
-                trips = _service.GetTripsByName(tripName);
+                await _service.DeleteTripAsync(tripId);
             }
-            catch (TripControllerException e) when (tripName == null)
+            catch 
             {
-
-                throw new TripControllerException($"Trip with Tirle={tripName} not found");
+                return new StatusCodeResult(500);     
             }
-            catch (TripControllerException e)
-            {
-
-                throw new TripControllerException("Exception on finding trip by Title", e);
-            }
-            return Json(trips);
+            return RedirectToAction();
         }
-        
+
+        [HttpPut]
+        [Route("addTripToEntertainment")]
+        public async Task<IActionResult> AddEntertainmentToTrip(Guid tripId, EntertaimentModel entertainment)
+        {
+            try
+            {
+                await _service.AddEntertainmetToTripAsync(tripId, entertainment);
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult(500);
+            }
+            return RedirectToAction();
+        }
     }
 }
