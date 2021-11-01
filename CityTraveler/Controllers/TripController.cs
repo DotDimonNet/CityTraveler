@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CityTraveler.Domain.Errors;
+using CityTraveler.Domain.Entities;
 
 namespace CityTraveler.Controllers
 {
@@ -28,5 +30,50 @@ namespace CityTraveler.Controllers
         {
             return Json(_service.GetTrips(skip, take));
         }
+
+        [HttpGet]
+        [Route("getById")]
+        public async Task<IActionResult> GetTripById(Guid tripId)
+        {
+            TripModel trip;
+            try
+            {         
+                trip = _service.GetTripById(tripId);
+            }
+            catch (TripControllerException e) when (tripId == null)
+            {
+
+                throw new TripControllerException($"Trip with Id={tripId} not found", e);
+            }
+            catch (TripControllerException e)
+            {
+                throw new TripControllerException("Exception on finding trip by Id", e);
+            }
+            return (Json(trip));
+     
+        }
+
+        [HttpGet]
+        [Route("getTripsByName")]
+        public async Task<IActionResult> GetTripsName(string tripName)
+        {
+            IEnumerable<TripModel> trips;
+            try
+            {
+                trips = _service.GetTripsByName(tripName);
+            }
+            catch (TripControllerException e) when (tripName == null)
+            {
+
+                throw new TripControllerException($"Trip with Tirle={tripName} not found");
+            }
+            catch (TripControllerException e)
+            {
+
+                throw new TripControllerException("Exception on finding trip by Title", e);
+            }
+            return Json(trips);
+        }
+        
     }
 }
