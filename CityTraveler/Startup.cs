@@ -109,6 +109,7 @@ namespace CityTraveler
             services.AddTransient<ITripService, TripService>();
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
+            services.AddTransient<ISocialMediaService, SocialMediaService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>
