@@ -38,7 +38,7 @@ namespace CityTraveler.Controllers
 
         [HttpGet]
         [Route("getByAddress")]
-        public IActionResult GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle)
+        public IActionResult GetEntertainmentByAddress([FromBody] AddressDTO dto)
         {
             return Json(_service.GetEntertainmentByAddress(houseNumber, apartmentNumber, streetTitle));
         }

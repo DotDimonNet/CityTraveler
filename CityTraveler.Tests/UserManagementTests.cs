@@ -78,13 +78,13 @@ namespace CityTraveler.Tests
             }
         }
         [Test]
-        public async Task GetUsersByEmailTests()
+        public void GetUsersByEmailTests()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
                 .FirstOrDefault();
             var service = new UserManagementService(ArrangeTests.ApplicationContext);
 
-            var userResult = await service.GetUserByEmail(userModel.Email);
+            var userResult = service.GetUserByEmail(userModel.Email);
 
             Assert.IsNotNull(userResult);
             Assert.AreEqual(userModel.Email, userResult.Email);

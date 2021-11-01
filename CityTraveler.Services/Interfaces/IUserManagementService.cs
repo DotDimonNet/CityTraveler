@@ -15,7 +15,7 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<ApplicationUserModel> GetUsersByGender(string gender);
         public IEnumerable<ApplicationUserModel> GetUsersRange(int skip = 0, int take = 10);
         public IEnumerable<ApplicationUserModel> GetUsers(IEnumerable<Guid> guids);
-        public Task<ApplicationUserModel> GetUserByEmail(string email);
+        public ApplicationUserModel GetUserByEmail(string email);
     }   
 }
 
