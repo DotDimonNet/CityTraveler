@@ -80,7 +80,7 @@ namespace CityTraveler.Services
 
             try
             {
-                IEnumerable<ApplicationUserModel> users = us.GetUsersByName(filter.User);
+                IEnumerable<ApplicationUserModel> users = GetUsersByName(filter.User ?? "");
                 //IEnumerable<EntertaimentModel> enter = null; //es.GetEntartainmentByName(filter.Entertainment)
                 if (filter.TripStatus != -1)
                 {
@@ -205,9 +205,7 @@ namespace CityTraveler.Services
                                 );
                 else if (e.Type == null && e.Address == null)
                     return _dbContext.Entertaiments.Where(x =>
-                               x.Title.Contains(e.Title ?? "")
-                            && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
-                            && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? ""));
+                               x.Title.Contains(e.Title ?? ""));
                 else if (e.Type!=null && e.Address == null)
                     return _dbContext.Entertaiments.Where(x =>
                                    x.Title.Contains(e.Title ?? "")
@@ -227,6 +225,12 @@ namespace CityTraveler.Services
                 throw new SearchServiceException("Couldn`t get alike entertainmens");
                 //return null;
             }
+        }
+        public IEnumerable<ApplicationUserModel> GetUsersByName(string name)
+        {
+            if (name == null)
+                throw new UserManagemenServicetException("Invalid argument");
+            return _dbContext.Users.Where(x => x.Profile.Name == name);
         }
     }
 }

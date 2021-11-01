@@ -138,7 +138,7 @@ namespace CityTraveler.Tests
             Assert.IsNotNull(entertainments);
             foreach (EntertaimentModel entertainment in entertainments)
             {
-                Assert.AreNotEqual(entertainment.Title, "");
+                Assert.AreNotEqual(entertainment.Title, null);
             }
 
         }
@@ -241,6 +241,10 @@ namespace CityTraveler.Tests
             var entertainments = service.FilterEntertainmentsAlike(new EntertaimentModel { });
             Console.WriteLine(ArrangeTests.ApplicationContext.Entertaiments.Count());
             Assert.IsNotNull(entertainments);
+            foreach (EntertaimentModel entertainment in entertainments)
+            {
+                Assert.AreNotEqual(entertainment.Title, null);
+            }
         }
         [Test]
         public void FilterEntertainmentsAlikeAllFieldsTest()

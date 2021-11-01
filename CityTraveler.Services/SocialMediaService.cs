@@ -109,8 +109,14 @@ namespace CityTraveler.Services
                 throw new SocialMediaServiceException("Review not found");
             try
             {
-                ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
-                _dbContext.Reviews.Remove(re);
+                ReviewModel review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                var raiting = _dbContext.Ratings.FirstOrDefault(x => x.ReviewId == review.Id);
+                var removeRaiting = _dbContext.Ratings.Remove(raiting);
+                _dbContext.SaveChanges();
+                for (int i = 0; i < review.Images.Count; i++)
+                    _dbContext.Images.Remove(review.Images.ElementAt(i));
+                _dbContext.SaveChanges();
+                _dbContext.Reviews.Remove(review);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -222,6 +228,11 @@ namespace CityTraveler.Services
             if (_dbContext.Reviews.Where(x => x.Id == Id).Count() == 0)
                 throw new SocialMediaServiceException("Review not found");
             return await _dbContext.Reviews.FirstOrDefaultAsync(x=>x.Id == Id);
+        }
+
+        public Task<bool> RemoveRaiting(Guid ratingId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
