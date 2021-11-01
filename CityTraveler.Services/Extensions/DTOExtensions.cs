@@ -60,7 +60,6 @@ namespace CityTraveler.Services.Extensions
                 {
                     AddressId = entertainmentDTO.Address.Id,
                     Address = entertainmentDTO.Address,
-                    Type = entertainmentDTO.Type,
                     Trips = new List<TripModel>(),
                     AveragePrice = entertainmentDTO.AveragePrice,
                     Images = entertainmentDTO.Images,

@@ -29,8 +29,6 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(entertainment);
             Assert.AreEqual(testEntertainment, entertainment);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -44,8 +42,6 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(realEvent);
             Assert.AreEqual(realEvent, testEvent);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -63,9 +59,6 @@ namespace CityTraveler.Tests
             {
                 Assert.AreEqual(item.Address.Street, street);
             }
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -83,9 +76,6 @@ namespace CityTraveler.Tests
             {
                 Assert.AreEqual(item.Address.Street.Title, streetTitle);
             }
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -99,8 +89,6 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(realEvents);
             Assert.AreEqual(testEvents, realEvents);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -113,8 +101,6 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(testEvents);
             Assert.AreEqual(testEvents.Count(), realEvents.Count());
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -128,8 +114,6 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(testEvent);
             Assert.AreEqual(testEvent, address.Entertaiment);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -144,8 +128,6 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(testEvent);
             Assert.AreEqual(testEvent, address.Entertaiment);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
     }
 }

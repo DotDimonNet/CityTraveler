@@ -36,7 +36,7 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("name/{name}")]
-        public IActionResult GetUsersByName(string name)
+        public IActionResult GetUsersByName([FromQuery] string name)
         {
             return Json(_service.GetUsersByName(name));
         }

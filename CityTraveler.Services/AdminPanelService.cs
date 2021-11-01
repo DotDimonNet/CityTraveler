@@ -41,8 +41,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                throw new Exception("Couldn`t filter users");
-                //return null;
+                throw new Exception($"Couldn`t filter users, {e.Message}");
             }
         }
     }

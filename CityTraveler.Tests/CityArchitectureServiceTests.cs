@@ -113,7 +113,7 @@ namespace CityTraveler.Tests
                     ApartmentNumber = "24",
                     Street = new StreetModel()
                 },
-                Type = EntertainmentType.Event,
+                Type = EntertainmentType.Event.Id,
                 AveragePrice = new EntertaimentPriceModel() { Title = "Average price", Value = 4567 },
                 Title = "Lorem",
                 Description = "Ipsum"
@@ -125,7 +125,7 @@ namespace CityTraveler.Tests
 
             var newContextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
             Assert.IsTrue(isAdded);
-            Assert.IsTrue(contextLenght == newContextLenght - 1);
+            Assert.AreNotEqual(contextLenght, newContextLenght);
         }
     }
 }
