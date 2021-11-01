@@ -54,9 +54,9 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEventByTitle(string title)
+        public IEnumerable<EntertaimentModel> GetEventByTitle(string title)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Title == title
+            return _context.Entertaiments.Where(x => x.Title.Contains(title)
                 && x.Type == EntertainmentType.Event);
         }
 
@@ -82,8 +82,8 @@ namespace CityTraveler.Services
 
         //TODO
         public IEnumerable<EntertaimentModel> GetEventByBeginingDay(DateTime begin)
-    {
-        throw new NotImplementedException();
-    }
+        {
+            throw new NotImplementedException();
+        }
     }
 }

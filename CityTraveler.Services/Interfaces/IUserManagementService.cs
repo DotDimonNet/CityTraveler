@@ -9,7 +9,7 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IUserManagementService : IServiceMetadata
     {
-        public Task<ApplicationUserModel> GetUserById(Guid userId);
+        public ApplicationUserModel GetUserById(Guid userId);
         public IEnumerable<ApplicationUserModel> GetUsersByBirthday(DateTime userbirthday);
         public IEnumerable<ApplicationUserModel> GetUsersByName(string name);
         public IEnumerable<ApplicationUserModel> GetUsersByGender(string gender);

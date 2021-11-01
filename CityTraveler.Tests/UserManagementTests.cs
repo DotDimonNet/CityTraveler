@@ -19,12 +19,12 @@ namespace CityTraveler.Tests
 
         [Test]
 
-        public async Task GetUserByIdTest()
+        public void GetUserByIdTest()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
                 .FirstOrDefault();
             var service = new UserManagementService(ArrangeTests.ApplicationContext);
-            var user = await service.GetUserById(userModel.Id);
+            var user = service.GetUserById(userModel.Id);
 
             Assert.IsNotNull(user);
             Assert.AreEqual(user.Id, userModel.Id);
