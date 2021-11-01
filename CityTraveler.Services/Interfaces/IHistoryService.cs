@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    interface IHistoryService
+    public interface IHistoryService
     {
-        // last trip,
+        
     }
 }
