@@ -71,8 +71,50 @@ namespace CityTraveler.Services.Extensions
             catch (Exception)
             { 
                 throw new Exception("EntertainmentDTO isn't correct");
-            }
-            
+            }     
+        }
+        public static TripModel ToTrip(this TripDTO tripDTO)
+        {
+            return new TripModel
+            {
+                TripStart = tripDTO.TripStart,
+                TripEnd = tripDTO.TripEnd,
+                Title = tripDTO.Title,
+                Description = tripDTO.Description,
+               // TripStatus = tripDTO.TripStatus,
+                TagSting = tripDTO.TagSting,
+                Images = new List<TripImageModel>(),
+                Reviews = new List<TripReviewModel>(),
+                Entertaiment = new List<EntertaimentModel>()
+            };
+        }
+        public static TripModel ToNewTrip(this AddNewTripDTO newTripDTO)
+        {
+            return new TripModel 
+            {
+                Title = newTripDTO.Title,
+                Description = newTripDTO.Description,
+                TripStart = newTripDTO.TripStart,
+                Entertaiment = new List<EntertaimentModel>(),
+                //TripStatus = newTripDTO.TripStatus
+            };
+        }
+
+        public static TripModel ToDefaultTrip(this DefaultTripDTO defaultTripDTO)
+        {
+            return new TripModel
+            {
+                Title = defaultTripDTO.Title,
+                Description = defaultTripDTO.Description,
+                TagSting = defaultTripDTO.TagSting,
+                AverageRating = defaultTripDTO.AverageRating,
+                Price = new TripPriceModel(),
+                OptimalSpent = defaultTripDTO.OptimalSpent,
+                Images = new List<TripImageModel>(),
+                Reviews = new List<TripReviewModel>(),
+                Entertaiment = new List<EntertaimentModel>(),
+                DafaultTrip =defaultTripDTO.DefaultTrip
+            };
         }
     }
 }
