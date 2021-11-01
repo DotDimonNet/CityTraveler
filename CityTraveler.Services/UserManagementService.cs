@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    public class UserManagementService: IUserManagementService
+    public class UserManagementService : IUserManagementService
     {
         private ApplicationContext _context;
         public UserManagementService(ApplicationContext context)
@@ -28,7 +28,7 @@ namespace CityTraveler.Services
         public string Title { get; set; }
         public string Description { get; set; }
 
-        
+
         public ApplicationUserModel GetUserById(Guid userId)
         {
             if (_context.Users.FirstOrDefault(x => x.Id == userId) == null)
@@ -38,16 +38,16 @@ namespace CityTraveler.Services
 
             return _context.Users.FirstOrDefault(x => x.Id == userId);
         }
-        public IEnumerable<ApplicationUserModel> GetUsersByBirthday (DateTime userbirthday)
+        public IEnumerable<ApplicationUserModel> GetUsersByBirthday(DateTime userbirthday)
         {
             if (_context.Users.Where(x => x.Profile.Birthday.Date == userbirthday).Count() == 0)
                 throw new UserManagemenServicetException("Users not found");
             if (userbirthday.Date > DateTime.Now)
                 throw new UserManagemenServicetException("Invalid argument");
 
-                return _context.Users.Where(x => x.Profile.Birthday.Date == userbirthday.Date);
+            return _context.Users.Where(x => x.Profile.Birthday.Date == userbirthday.Date);
         }
-        public IEnumerable<ApplicationUserModel> GetUsersByName (string name)
+        public IEnumerable<ApplicationUserModel> GetUsersByName(string name)
         {
             if (_context.Users.Where(x => x.Profile.Name == name).Count() == 0)
                 throw new UserManagemenServicetException("Users not found");
@@ -64,22 +64,23 @@ namespace CityTraveler.Services
         }
         public IEnumerable<ApplicationUserModel> GetUsersRange(int skip = 0, int take = 10)
         {
-            if (skip < 0 || take < 0 )
-                 throw new UserManagemenServicetException("Invalid arguments");
+            if (skip < 0 || take < 0)
+                throw new UserManagemenServicetException("Invalid arguments");
             return _context.Users.Skip(skip).Take(take);
         }
         public IEnumerable<ApplicationUserModel> GetUsers(IEnumerable<Guid> guids)
         {
             return _context.Users.Where(x => guids.Contains(x.Id));
         }
-        public async Task<ApplicationUserModel> GetUserByEmail(string email)
+        public ApplicationUserModel GetUserByEmail(string email)
         {
-            if(email == null)
+            if (email == null)
                 throw new UserManagemenServicetException("Invalid argument");
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email); 
+            if (_context.Users.FirstOrDefault(x => x.Email == email) == null)
+                throw new UserManagemenServicetException("User not found");
+            return _context.Users.FirstOrDefault(x => x.Email == email);
         }
 
-        
     }
 
         

@@ -89,9 +89,9 @@ namespace CityTraveler.Services
             return _context.Trips.Where(x => x.TripStart > start && x.TripStart < end);
         }
 
-        public async Task<TripModel> GetTripByLowPrice()
+        public IEnumerable<TripModel> GetTripsByLowPrice(int count = 3)
         {
-            return await _context.Trips.OrderBy(x => x.Price).FirstOrDefaultAsync();
+            return _context.Trips.OrderBy(x => x.Price.Value).Take(count);
             
         }
 
@@ -105,23 +105,26 @@ namespace CityTraveler.Services
             }
             catch(Exception e)
             {
-                throw new InfoServiceException("Failed to get registered users");
+                throw new InfoServiceException($"Failed to get registered users: {e.Message}");
             }
            
         }
-        /*public async Task<TripModel> GetMostlyUsedTemplate()
+        public IEnumerable<TripModel> GetMostlyUsedTemplates(int count = 5)
         {
             try
             {
-                var templateId = _context.Trips.Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
-            return await _context.Trips.FirstOrDefaultAsync(x => x.Id == templateId);
+                var templateIds = _context.Trips.Select(x => x.TemplateId).GroupBy(x => x)
+                    .OrderByDescending(g => g.Count())
+                    .Select(x => x.Key)
+                    .Take(count);
+                return _context.Trips.Where(x => templateIds.Contains(x.Id));
             }
             catch (Exception e)
             {
-                throw new InfoServiceException("Failed to get mostly used template");
+                throw new InfoServiceException($"Failed to get mostly used templates: {e.Message}");
             }
             
-        }*/
+        }
 
         public int GetUsersCountTripsDateRange(DateTime start, DateTime end)
         {

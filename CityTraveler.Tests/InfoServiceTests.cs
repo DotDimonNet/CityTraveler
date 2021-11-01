@@ -174,24 +174,21 @@ namespace CityTraveler.Tests
                 .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
-        /*[Test]
+        [Test]
 
-        public async Task GetMostlyUsedTemplateTest()
+        public void GetMostlyUsedTemplatesTest()
         {
-            var templateId = ArrangeTests.ApplicationContext.Trips
-                .Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
-            var templateExpected = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x => x.TemplateId == templateId);
+            var count = 5;
+            var templateIds = ArrangeTests.ApplicationContext.Trips
+                .Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).Select(x => x.Key).Take(count);
 
             var service = new InfoService(ArrangeTests.ApplicationContext);
-            var templateActual = await service.GetMostlyUsedTemplate();
+            var templatesActual = service.GetMostlyUsedTemplates(count);
 
-            Assert.IsNotNull(templateActual);
-            Assert.AreEqual(templateExpected, templateActual);
-            Assert.AreEqual(templateExpected.Id, templateActual.Id);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }*/
+            Assert.IsNotEmpty(templatesActual);
+            Assert.AreEqual(templateIds,templatesActual.Select(x => x.Id));
+            Assert.AreEqual(templatesActual.Count(), count);
+        }    
 
         [Test]
 
