@@ -127,19 +127,91 @@ namespace CityTraveler.Infrastucture.Data
             context.SaveChanges();
             context.Entertaiments.AddRange(entertainments);
             context.SaveChanges();
-        }
-        private static Random random = new Random();
-        public static string RandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-        public static Guid ToGuid(int value)
-        {
-            byte[] bytes = new byte[16];
-            BitConverter.GetBytes(value).CopyTo(bytes, 0);
-            return new Guid(bytes);
+            //Profiles
+            /*var users = new List<UserProfileModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var user = new UserProfileModel()
+                {
+                    Birthday = new DateTime(2018 - i, 9, 13),
+                    Id = Guid.NewGuid(),
+                    User = new ApplicationUserModel
+                    {
+                        Trips = new List<TripModel>
+                        {
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                        }
+                    }
+                };
+
+                users.Add(user);
+            }
+           context.UserProfiles.AddRangeAsync(users);
+           context.SaveChanges();*/
+            /* var reviews = new List<ReviewModel>();
+             for (int i = 0; i < 10; i++)
+             {
+                 var review = new TripReviewModel()
+                 {
+                     Title = $"Review-{i}",
+                     Description = $"Review description-{i}",
+                     User = new ApplicationUserModel { Profile = context.UserProfiles.FirstOrDefault() },
+                     TripId = context.Trips.FirstOrDefault().Id,
+                     Rating = new RatingModel { 
+                         Value = 5,
+                         //User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
+                     }
+                 };
+
+                 reviews.Add(review);
+
+             }
+             context.Reviews.AddRange(reviews);
+             context.SaveChanges();*/
+            
+            context.Ratings.Add(new RatingModel
+            {
+                Value = 5,
+                Review = new EntertainmentReviewModel
+                {
+                    Title = "Review",
+                    Description = "Review description",
+                    EntertaimentId = context.Entertaiments.FirstOrDefault().Id,
+                    UserId = context.Users.FirstOrDefault().Id
+                },
+                UserId = context.Users.FirstOrDefault().Id
+
+            });
+            /*context.Reviews.Add(new EntertainmentReviewModel
+            {
+                Title = "Review",
+                Description = "Review description",
+                User = new ApplicationUserModel { Profile = context.UserProfiles.FirstOrDefault() },
+                EntertaimentId = context.Entertaiments.FirstOrDefault().Id,
+                Rating = new RatingModel
+                {
+                    Value = 5,
+                    //User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
+                }
+            });*/
+            context.SaveChanges();
         }
     }
 }

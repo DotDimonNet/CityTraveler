@@ -2,12 +2,11 @@
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Services;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CityTraveler.Tests
 {
@@ -50,20 +49,37 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-        public async Task SetEntertainmentTest()
+        public async Task AddEntertainmentsTest()
         {
-            var entertainments = ArrangeTests.ApplicationContext.Entertaiments
-                .Where(x=>x.Address.Street== ArrangeTests.ApplicationContext.Streets
-                .FirstOrDefault());
+            var entertainmentsDTO = new List<EntertainmentDTO>()
+            {
+                new EntertainmentDTO()
+                {
+                    Address = new EntertainmentAddressDTO()
+                    {
+                        Coordinates = new CoordinatesDTO(){},
+                    },
+                    StreetTitle = "12354",
+                    Type = EntertainmentType.Event.Id,
+                },
+                new EntertainmentDTO()
+                {
+                    Address = new EntertainmentAddressDTO()
+                    {
+                        Coordinates = new CoordinatesDTO(){},
+                    },
+                    StreetTitle = "3566",
+                    Type = EntertainmentType.Event.Id,
+                },
+            };
+            var contextSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
 
-            var isSeted = await service.SetEntertaiment(entertainments);
+            var isSeted = await service.AddEntertainments(entertainmentsDTO);
+            var newContexSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
             Assert.IsTrue(isSeted);
-            foreach (var item in entertainments)
-            {
-                Assert.IsTrue(ArrangeTests.ApplicationContext.Entertaiments.Contains(item));
-            }
+            Assert.AreNotEqual(contextSize, newContexSize);
         }
 
         [Test]
@@ -106,15 +122,21 @@ namespace CityTraveler.Tests
         {
             var dto = new EntertainmentDTO()
             {
-                Address = new AddressModel()
+                Address = new EntertainmentAddressDTO()
                 {
-                    Coordinates = new CoordinatesModel() { Latitude = 345, Longitude = 534 },
+                    Coordinates = new CoordinatesDTO()
+                    {
+                        Latitude = 234,
+                        Longitude = 543,
+                    },
                     HouseNumber = "23",
-                    ApartmentNumber = "24",
-                    Street = new StreetModel()
+                    ApartmentNumber = "34"
                 },
+                StreetTitle = "2355",
+                StreetDescription = "",
                 Type = EntertainmentType.Event.Id,
-                AveragePrice = new EntertaimentPriceModel() { Title = "Average price", Value = 4567 },
+                PriceTitle = "Average price",
+                PriceValue = 4567,
                 Title = "Lorem",
                 Description = "Ipsum"
             };

@@ -39,7 +39,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task SetEntertaiment(IEnumerable<EntertainmentDTO> entertaiments)
+        public async Task<bool> AddEntertainments(IEnumerable<EntertainmentDTO> entertaiments)
         {
             try
             {
@@ -48,17 +48,19 @@ namespace CityTraveler.Services
 
                 foreach (var ent in entertaiments)
                 {
-                    var model = ent.ToEntertaiment();
+                    var street = _context.Streets.FirstOrDefault(x => x.Title == ent.StreetTitle);
+                    var model = ent.ToEntertaiment(street);
                     model.Type = types.FirstOrDefault(x => x.Id == ent.Type);
                     models.Add(model);
                 }
 
                 _context.Entertaiments.AddRange(models);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to set entertainments: {}");
+                throw new Exception($"Failed to set entertainments: {e}");
             }
         }
 
@@ -89,7 +91,8 @@ namespace CityTraveler.Services
         {
             try
             {
-                var model = entertaimentDTO.ToEntertaiment();
+                var street = _context.Streets.FirstOrDefault(x => x.Title == entertaimentDTO.StreetTitle);
+                var model = entertaimentDTO.ToEntertaiment(street);
                 model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertaimentDTO.Type);
                 _context.Entertaiments.Add(model);
                 await _context.SaveChangesAsync();
@@ -97,7 +100,6 @@ namespace CityTraveler.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 return false;
             }
         }
@@ -152,11 +154,6 @@ namespace CityTraveler.Services
                 //return false;
             }
             return true;
-        }
-
-        public async Task<bool> ValidateCityMap()
-        {
-            return validateAddresses().Result && validateEntertainments().Result;
         }
 
         public async Task<bool> validateEntertainments() 

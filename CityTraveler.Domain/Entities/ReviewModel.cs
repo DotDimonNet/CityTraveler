@@ -26,4 +26,9 @@ namespace CityTraveler.Domain.Entities
         public virtual TripModel Trip { get; set; }
         public virtual Guid TripId { get; set; }
     }
+    /*public class RatingReviewModel : ReviewModel
+    {
+        public virtual Guid RatingId { get; set; }
+        public virtual RatingModel Rating { get; set; }
+    }*/
 }
