@@ -12,6 +12,7 @@ namespace CityTraveler.Services.Interfaces
         Task<EntertainmentReviewModel> AddReviewEntertainment(Guid enterId, EntertainmentReviewModel rev);
         Task<TripReviewModel> AddReviewTrip(Guid tripId, TripReviewModel rev);
         Task<bool> RemoveReview(Guid reviewId);
+        Task<bool> RemoveRaiting (Guid ratingId);
         IEnumerable<ReviewModel> GetReviews(int skip = 0, int take = 10);
         IEnumerable<ReviewModel> GetUserReviews(Guid userId);
         IEnumerable<ReviewModel> GetObjectReviews(Guid objectId);
@@ -24,6 +25,7 @@ namespace CityTraveler.Services.Interfaces
         IEnumerable<ReviewModel> GetReviewsByDescription(string description);
         IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting);
         IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment);
+        Task<ReviewModel> GetReviewById(Guid Id);
 
     }
 }

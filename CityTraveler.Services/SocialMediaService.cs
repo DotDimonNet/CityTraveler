@@ -25,6 +25,8 @@ namespace CityTraveler.Services
         }
         public async Task<EntertainmentReviewModel> AddReviewEntertainment(Guid enterId, EntertainmentReviewModel rev)
         {
+            if (_dbContext.Entertaiments.Where(x => x.Id == enterId).Count() == 0)
+                throw new SocialMediaServiceException("Entertainment not found");
             try
             {
                 rev.EntertaimentId = enterId;
@@ -41,6 +43,8 @@ namespace CityTraveler.Services
 
         public async Task<TripReviewModel> AddReviewTrip(Guid tripId, TripReviewModel rev)
         {
+            if (_dbContext.Trips.Where(x => x.Id == tripId).Count() == 0)
+                throw new SocialMediaServiceException("Trip not found");
             try
             {
                 rev.TripId = tripId;
@@ -69,23 +73,26 @@ namespace CityTraveler.Services
 
         public IEnumerable<ReviewModel> GetReviews(int skip = 0, int take = 10)
         {
+            if (skip < 0|| take<0|| skip>take)
+                throw new SocialMediaServiceException("Invalid arguments");
             return _dbContext.Reviews.Skip(skip).Take(take);
         }
 
         public IEnumerable<ReviewModel> GetUserReviews(Guid userId)
         {
-            return _dbContext.Reviews.Where(x=>x.UserId == userId);
+            if (_dbContext.Users.Where(x => x.Id == userId).Count() == 0)
+                throw new SocialMediaServiceException("User not found");
+            return _dbContext.Reviews.Where(x => x.UserId == userId);
         }
 
         public async Task<ReviewModel> PostRating(RatingModel rating, Guid reviewId)
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
             try
             {
                 ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
-                _dbContext.Reviews.Remove(re);
-               // re.Rating = rating;
-                re.RatingId = rating.Id;
-                _dbContext.Reviews.Add(re);
+                _dbContext.Ratings.Add(rating);
                 return re;
             }
             catch (Exception e) 
@@ -98,23 +105,32 @@ namespace CityTraveler.Services
 
         public async Task<bool> RemoveReview(Guid reviewId)
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
             try
             {
-                ReviewModel re =await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
-                if(re==null)
-                    throw new SocialMediaServiceException("Review not found");
-                _dbContext.Reviews.Remove(re);
+                ReviewModel review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                var raiting = _dbContext.Ratings.FirstOrDefault(x => x.ReviewId == review.Id);
+                var removeRaiting = _dbContext.Ratings.Remove(raiting);
+                _dbContext.SaveChanges();
+                for (int i = 0; i < review.Images.Count; i++)
+                    _dbContext.Images.Remove(review.Images.ElementAt(i));
+                _dbContext.SaveChanges();
+                _dbContext.Reviews.Remove(review);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw new SocialMediaServiceException("Failed to remove review");
                 //return false;
             }
         }
         public async Task<bool> AddComment(CommentModel comment, Guid reviewId) 
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
             try
             {
                 comment.ReviewId = reviewId;
@@ -130,11 +146,16 @@ namespace CityTraveler.Services
         }
         public async Task<bool> RemoveComment(Guid commentId, Guid reviewId)
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
+            if (_dbContext.Comments.Where(x => x.Id == commentId).Count() == 0)
+                throw new SocialMediaServiceException("Comment not found");
+            if (_dbContext.Comments.Where(x => x.ReviewId == reviewId && x.Id == commentId).Count()==0)
+                throw new SocialMediaServiceException("No relation between given comment and review");
+
             try
             {
                 CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=>x.ReviewId == reviewId && x.Id == commentId);
-                if(comment == null)
-                    throw new SocialMediaServiceException("Comment not found");
                 _dbContext.Comments.Remove(comment);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -147,6 +168,8 @@ namespace CityTraveler.Services
         }
         public async Task<bool> AddImage(ReviewImageModel image, Guid reviewId) 
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
             try
             {
                 image.ReviewId = reviewId;
@@ -162,11 +185,13 @@ namespace CityTraveler.Services
         }
         public async Task<bool> RemoveImage(Guid reviewImageId, Guid reviewId) 
         {
+            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
+            if (_dbContext.Images.Where(x => x.Id == reviewImageId).Count() == 0)
+                throw new SocialMediaServiceException("Image not found");
             try
             {
                 ReviewImageModel image = (ReviewImageModel) await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
-                if(image == null)
-                    throw new SocialMediaServiceException("Image not found");
                 _dbContext.Images.Remove(image);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -185,9 +210,7 @@ namespace CityTraveler.Services
 
         public IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting)
         {
-
-            //return _dbContext.Reviews.Where(x=>x.Rating == raiting);
-            return null;
+            return _dbContext.Reviews.Where(x=>x.Rating.Value == raiting);
         }
 
         public IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment)
@@ -198,6 +221,18 @@ namespace CityTraveler.Services
         public IEnumerable<ReviewModel> GetReviewsByDescription(string description)
         {
             return _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
+        }
+
+        public async Task<ReviewModel> GetReviewById(Guid Id)
+        {
+            if (_dbContext.Reviews.Where(x => x.Id == Id).Count() == 0)
+                throw new SocialMediaServiceException("Review not found");
+            return await _dbContext.Reviews.FirstOrDefaultAsync(x=>x.Id == Id);
+        }
+
+        public Task<bool> RemoveRaiting(Guid ratingId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

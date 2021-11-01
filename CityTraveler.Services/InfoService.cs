@@ -1,4 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services
 {
-    class InfoService : IInfoService
+    public class InfoService : IInfoService
     {
-        ApplicationContext _context;
+        private ApplicationContext _context;
 
         public InfoService(ApplicationContext context)
         {
@@ -24,67 +25,143 @@ namespace CityTraveler.Services
 
         public async Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default)
         {
-            return userId != Guid.Empty
+            try
+            {
+                return userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
-                    .SelectMany(x => x.Entertaiment).GroupBy(x => x.Trips.Count).FirstOrDefault().FirstOrDefault()
+                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderByDescending(x => x.Trips.Count).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).GroupBy(x => x.Trips.Count).FirstOrDefault().FirstOrDefault();
+                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderByDescending(x => x.Trips.Count).FirstOrDefault();
+             }
+            catch(Exception e)
+            {
+                throw new InfoServiceException("Failed to get the most popular entertaiment in trips");
+
+            }
+           
         }
         public async Task<TripModel> GetTripByMaxChoiceOfUsers()
         {
-            return await  _context.Trips.OrderBy(x => x.Users.Count).FirstOrDefaultAsync();
+            try
+            {
+                return await  _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                throw new InfoServiceException("Failed to get the most popular trip ");
+            }
+            
         }
-        public async Task<ReviewModel> GetReviewByMaxComment(Guid userId = default)
+        public async Task<ReviewModel> GetReviewByMaxComments(Guid userId = default)
         {
-            return userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.OrderBy(x => x.Comments.Count).FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Reviews).OrderBy(x => x.Comments.Count).FirstOrDefault();
+            try
+            {
+                return userId != Guid.Empty
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.AsEnumerable().OrderByDescending(x => x.Comments.Count).FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Reviews).OrderByDescending(x => x.Comments.Count).AsEnumerable().FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                throw new InfoServiceException("Failed to get the review ");
+            }
+            
         }
 
         public async Task<TripModel> GetTripByMaxReview(Guid userId = default)
         {
-            return userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderBy(x => x.Reviews.Count).FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Trips).OrderBy(x => x.Reviews.Count).FirstOrDefault();
+            try
+            {
+                return userId != Guid.Empty
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderByDescending(x => x.Reviews.Count).AsEnumerable().FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Trips).OrderByDescending(x => x.Reviews.Count).AsEnumerable().FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                throw new InfoServiceException("Failed to get the trip");
+            }
+
         }
 
-        public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime srart, DateTime end)
+        public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime start, DateTime end)
         {
-            return _context.Trips.Where(x => x.TripStart > srart && x.TripStart < end);
+            if (start > end)
+                throw new InfoServiceException("Invalid arguments");
+            return _context.Trips.Where(x => x.TripStart > start && x.TripStart < end);
         }
-        public async Task<TripModel> GetTripByLowPrice()
+
+        public IEnumerable<TripModel> GetTripsByLowPrice(int count = 3)
         {
-            return await _context.Trips.OrderBy(x => x.Price).FirstOrDefaultAsync();
+            return _context.Trips.OrderBy(x => x.Price.Value).Take(count);
             
         }
 
-        public async Task<int> GetRegisteredUserByPeriod(DateTime start, DateTime end)
+        public async Task<int> GetRegisteredUsersByPeriod(DateTime start, DateTime end)
         {
-           return await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
+            if (start > end)
+                throw new InfoServiceException("Invalid arguments");
+            try
+            {
+                return await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
+            }
+            catch(Exception e)
+            {
+                throw new InfoServiceException($"Failed to get registered users: {e.Message}");
+            }
+           
         }
-        public async Task<TripModel> GetMostlyUsedTemplate()
+        public IEnumerable<TripModel> GetMostlyUsedTemplates(int count = 5)
         {
-            var templateId = _context.Trips.Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
-            return await _context.Trips.FirstOrDefaultAsync(x => x.Id == templateId);
+            try
+            {
+                var templateIds = _context.Trips.Select(x => x.TemplateId).GroupBy(x => x)
+                    .OrderByDescending(g => g.Count())
+                    .Select(x => x.Key)
+                    .Take(count);
+                return _context.Trips.Where(x => templateIds.Contains(x.Id));
+            }
+            catch (Exception e)
+            {
+                throw new InfoServiceException($"Failed to get mostly used templates: {e.Message}");
+            }
+            
         }
 
         public int GetUsersCountTripsDateRange(DateTime start, DateTime end)
         {
+            if (start > end)
+                throw new InfoServiceException("Invalid arguments");
             return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).SelectMany(x => x.Users).Distinct().Count();
         }
 
         public async Task<TripModel> GetLongestTrip()
         {
-            return await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                throw new InfoServiceException("The trip not found");
+            }
         }
 
         public async Task<TripModel> GetShortestTrip()
         {
-            return await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
+            }
+            catch(Exception e)
+            {
+                throw new InfoServiceException("The trip not found");
+            }
+          
         }
 
         public int GetTripsCreatedByPeriod(DateTime start, DateTime end)
         {
+            if (start > end)
+                throw new InfoServiceException("Invalid arguments");
             return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count();
         }
 

@@ -1,13 +1,13 @@
-using AutoMapper;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Infrastructure.Authorization;
 using CityTraveler.Infrastructure.Settings;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Mapping;
+using CityTraveler.Services;
+using CityTraveler.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -107,13 +107,20 @@ namespace CityTraveler
                 x.AddProfile<MappingProfile>();
             });
             services.AddOptions();
+            services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddScoped<DbInitializer>();
+            services.AddTransient<ITripService, TripService>();
+            services.AddTransient<IEntertainmentService, EntertainmentService>();
+            services.AddTransient<ICityArchitectureService, CityArchitectureService>();
+            services.AddTransient<ISocialMediaService, SocialMediaService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>
             {
                 options.EnableEndpointRouting = false;
-            }).SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
+            }).AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            ).SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
 
 
 
@@ -127,6 +134,7 @@ namespace CityTraveler
             {
                 document.Info.Version = "v1";
                 document.Info.Title = "CityTraveler API";
+                document.DocumentPath = "/swagger";
             });
         }
 

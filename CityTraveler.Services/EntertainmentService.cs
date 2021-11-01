@@ -30,10 +30,11 @@ namespace CityTraveler.Services
             return _context.Entertaiments;
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesModel coordinates)
+        public async Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesDTO coordinatesDto)
         {
             return await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Address.Coordinates == coordinates);
+                .FirstOrDefaultAsync(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
         }
 
         public async Task<EntertaimentModel> GetEntertainmentById(Guid id)
@@ -42,21 +43,15 @@ namespace CityTraveler.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(StreetModel street)
-        {
-            return _context.Entertaiments
-                .Where(x => x.Address.Street == street);
-        }
-
         public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle)
         {
             return _context.Entertaiments
                 .Where(x => x.Address.Street.Title == streetTitle);
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByTitle(string title)
+        public IEnumerable<EntertaimentModel> GetEntertainmentByTitle(string title)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x=>x.Title == title);
+            return _context.Entertaiments.Where(x=>x.Title.Contains(title));
         }
 
         public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids)
@@ -64,17 +59,13 @@ namespace CityTraveler.Services
             return _context.Entertaiments.Where(x => ids.Contains(x.Id));
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(AddressModel address)
+        public async Task<EntertaimentModel> GetEntertainmentByAddress(AddressDTO addressDto)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address == address);
+            return await _context.Entertaiments
+                .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartsmentNumber
+                && x.Address.HouseNumber == addressDto.HouseNumber
+                && x.Address.Street.Title.Contains(addressDto.StreetTitle));
         }
-
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle)
-        {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber 
-            && x.Address.ApartmentNumber == apartmentNumber && x.Address.Street.Title == streetTitle);
-        }
-
         public double GetAverageRating(EntertaimentModel entertaiment)
         {
             if (entertaiment.Reviews.Count() > 0)
