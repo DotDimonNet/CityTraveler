@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Tests
 {
-    class UserManagementTests
+    public class UserManagementTests
     {
         [SetUp]
         public async Task Setup()
@@ -19,12 +19,12 @@ namespace CityTraveler.Tests
 
         [Test]
 
-        public async Task GetUserByIdTest()
+        public void GetUserByIdTest()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
                 .FirstOrDefault();
             var service = new UserManagementService(ArrangeTests.ApplicationContext);
-            var user = await service.GetUserById(userModel.Id);
+            var user = service.GetUserById(userModel.Id);
 
             Assert.IsNotNull(user);
             Assert.AreEqual(user.Id, userModel.Id);
@@ -78,7 +78,7 @@ namespace CityTraveler.Tests
             }
         }
         [Test]
-        /*public async Task GetUsersByEmailTests()
+        public async Task GetUsersByEmailTests()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
                 .FirstOrDefault();
@@ -89,7 +89,7 @@ namespace CityTraveler.Tests
             Assert.IsNotNull(userResult);
             Assert.AreEqual(userModel.Email, userResult.Email);
         }
-        [Test]*/
+        [Test]
         public void GetUsersTests()
         {
             var usersGuids = ArrangeTests.ApplicationContext.Users

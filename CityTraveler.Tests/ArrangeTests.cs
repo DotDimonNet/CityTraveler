@@ -135,9 +135,24 @@ namespace CityTraveler.Tests
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed},
-                           new TripModel {AverageRating = i+ 1,TripStatus= TripStatus.Passed},
-                           new TripModel {AverageRating = i+ 4,TripStatus= TripStatus.InProgress}
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           {
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                               new EntertaimentModel(),
+                           }},
                         }
                     }
                 };
@@ -158,13 +173,29 @@ namespace CityTraveler.Tests
                 var user = new UserProfileModel()
                 {
                     Name = $"name{i}",
-                    Birthday = new DateTime(),
+                    Birthday = new DateTime(2018 - i, 9, 13),
                     Gender = "male",
                     User = new ApplicationUserModel()
                     {
-                        UserId = new Guid(),
+                        UserId = Guid.NewGuid(),
                         UserName = $"email{i}@email",
                         Email = $"email{i}@email",
+                        Trips = new List<TripModel>
+                        {
+                            new TripModel
+                            {
+                                Entertaiment = new List<EntertaimentModel>
+                                {
+                                    new EntertaimentModel(),
+                                    new EntertaimentModel(),
+                                },
+                                Reviews = new List<TripReviewModel>
+                                {
+                                   new TripReviewModel(),
+                                   new TripReviewModel(),
+                                }
+                            }
+                         }   
                     }
                 };
 
@@ -177,6 +208,8 @@ namespace CityTraveler.Tests
         private static async Task GenerateReviews()
         {
             var reviews = new List<ReviewModel>();
+
+
             for (int i = 0; i < 10; i++)
             {
                 var review = new TripReviewModel()
@@ -187,6 +220,7 @@ namespace CityTraveler.Tests
                 };
 
                 reviews.Add(review);
+
             }
             await ApplicationContext.Reviews.AddRangeAsync(reviews);
             await ApplicationContext.SaveChangesAsync();
@@ -230,6 +264,17 @@ namespace CityTraveler.Tests
             await ApplicationContext.SaveChangesAsync();
         }
 
+
+        private static async Task GenerateDifferrentImages()
+        {
+            var images = new List<ImageModel>();
+            for (int i = 0; i < 4; i++)
+            {
+                var userImage = new UserImageModel();
+            }
+        }
+
+
         private static async Task GenerateTrips()
         {
             var trips = new List<TripModel>();
@@ -246,8 +291,8 @@ namespace CityTraveler.Tests
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}"
-                };
+                    TagSting = $"tripTagString{i}",
+                 };
                 if (i % 2 == 0)
                 {
                     trip.DafaultTrip = true;
