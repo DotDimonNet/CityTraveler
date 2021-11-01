@@ -39,7 +39,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task SetEntertaiment(IEnumerable<EntertainmentDTO> entertaiments)
+        public async Task<bool> AddEntertainments(IEnumerable<EntertainmentDTO> entertaiments)
         {
             try
             {
@@ -55,10 +55,11 @@ namespace CityTraveler.Services
 
                 _context.Entertaiments.AddRange(models);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception e)
             {
-                throw new Exception("Failed to set entertainments: {}");
+                throw new Exception($"Failed to set entertainments: {e}");
             }
         }
 
@@ -152,11 +153,6 @@ namespace CityTraveler.Services
                 //return false;
             }
             return true;
-        }
-
-        public async Task<bool> ValidateCityMap()
-        {
-            return validateAddresses().Result && validateEntertainments().Result;
         }
 
         public async Task<bool> validateEntertainments() 

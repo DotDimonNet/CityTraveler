@@ -40,6 +40,7 @@ namespace CityTraveler.Tests
 
             var testEntertainment = await service.GetEntertainmentByCoordinates(entertainment.Address.Coordinates);
 
+            Assert.IsNotNull(entertainment);
             Assert.IsNotNull(testEntertainment);
             Assert.AreEqual(entertainment, testEntertainment);
         }
@@ -53,6 +54,7 @@ namespace CityTraveler.Tests
 
             var entertainments = service.GetEntertainmentsByStreet(street);
 
+            Assert.IsNotNull(street);
             Assert.IsNotNull(entertainments);
             foreach (var entertainment in entertainments)
             {
@@ -69,6 +71,7 @@ namespace CityTraveler.Tests
 
             var entertainments = service.GetEntertainmentsByStreet(streetTitle);
 
+            Assert.IsNotNull(streetTitle);
             Assert.IsNotNull(entertainments);
             foreach (var entertainment in entertainments)
             {
@@ -85,6 +88,7 @@ namespace CityTraveler.Tests
 
             var testEntertainments = service.GetEntertainmentByTitle("2").ToList();
 
+            Assert.IsNotNull(entertainments);
             Assert.IsNotNull(testEntertainments);
             Assert.AreEqual(testEntertainments, entertainments);
         }
@@ -98,6 +102,7 @@ namespace CityTraveler.Tests
 
             var entertainments = service.GetEntertainments(entertainmentsIds);
 
+            Assert.IsNotNull(entertainmentsIds);
             Assert.IsNotNull(entertainments);
             Assert.AreEqual(entertainments.Count(), entertainmentsIds.Count());
         }
@@ -111,6 +116,7 @@ namespace CityTraveler.Tests
 
             var entertainment = await service.GetEntertainmentByAddress(address);
 
+            Assert.IsNotNull(address);
             Assert.IsNotNull(entertainment);
             Assert.AreEqual(entertainment, address.Entertaiment);
         }
@@ -125,6 +131,7 @@ namespace CityTraveler.Tests
             var entertainment = await service.GetEntertainmentByAddress(address.HouseNumber, 
                 address.ApartmentNumber, address.Street.Title);
 
+            Assert.IsNotNull(address);
             Assert.IsNotNull(entertainment);
             Assert.AreEqual(entertainment, address.Entertaiment);
         }
@@ -138,6 +145,7 @@ namespace CityTraveler.Tests
 
             var averageRating = service.GetAverageRating(entertainment);
 
+            Assert.IsNotNull(entertainment);
             Assert.IsNotNull(averageRating);
         }
     }

@@ -2,12 +2,11 @@
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Services;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CityTraveler.Tests
 {
@@ -50,20 +49,22 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-        public async Task SetEntertainmentTest()
+        public async Task AddEntertainmentsTest()
         {
-            var entertainments = ArrangeTests.ApplicationContext.Entertaiments
-                .Where(x=>x.Address.Street== ArrangeTests.ApplicationContext.Streets
-                .FirstOrDefault());
+            var entertainmentsDTO = new List<EntertainmentDTO>()
+            {
+                new EntertainmentDTO(){ Type = 1 },
+                new EntertainmentDTO(){ Type = 2 },
+                new EntertainmentDTO(){ Type = 3 },
+            };
+            var contextSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
 
-            var isSeted = await service.SetEntertaiment(entertainments);
+            var isSeted = await service.AddEntertainments(entertainmentsDTO);
+            var newContexSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
             Assert.IsTrue(isSeted);
-            foreach (var item in entertainments)
-            {
-                Assert.IsTrue(ArrangeTests.ApplicationContext.Entertaiments.Contains(item));
-            }
+            Assert.AreNotEqual(contextSize, newContexSize);
         }
 
         [Test]
