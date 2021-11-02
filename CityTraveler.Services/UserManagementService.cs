@@ -32,55 +32,42 @@ namespace CityTraveler.Services
         public ApplicationUserModel GetUserById(Guid userId)
         {
             if (_context.Users.FirstOrDefault(x => x.Id == userId) == null)
+            {
                 throw new UserManagemenServicetException("Users not found");
+            }
+                
             if (userId == Guid.Empty)
+            {
                 throw new UserManagemenServicetException("Invalid argument");
+            }
 
             return _context.Users.FirstOrDefault(x => x.Id == userId);
         }
-        public IEnumerable<ApplicationUserModel> GetUsersByBirthday(DateTime userbirthday)
-        {
-            if (_context.Users.Where(x => x.Profile.Birthday.Date == userbirthday).Count() == 0)
-                throw new UserManagemenServicetException("Users not found");
-            if (userbirthday.Date > DateTime.Now)
-                throw new UserManagemenServicetException("Invalid argument");
-
-            return _context.Users.Where(x => x.Profile.Birthday.Date == userbirthday.Date);
-        }
-        public IEnumerable<ApplicationUserModel> GetUsersByName(string name)
-        {
-            if (_context.Users.Where(x => x.Profile.Name == name).Count() == 0)
-                throw new UserManagemenServicetException("Users not found");
-            if (name == null)
-                throw new UserManagemenServicetException("Invalid argument");
-            return _context.Users.Where(x => x.Profile.Name == name);
-        }
-        public IEnumerable<ApplicationUserModel> GetUsersByGender(string gender)
-        {
-            if (gender == null)
-                throw new UserManagemenServicetException("Invalid argument");
-
-            return _context.Users.Where(x => x.Profile.Gender == gender);
-        }
+                
         public IEnumerable<ApplicationUserModel> GetUsersRange(int skip = 0, int take = 10)
         {
             if (skip < 0 || take < 0)
+            {
                 throw new UserManagemenServicetException("Invalid arguments");
+            }
+                
             return _context.Users.Skip(skip).Take(take);
         }
         public IEnumerable<ApplicationUserModel> GetUsers(IEnumerable<Guid> guids)
         {
             return _context.Users.Where(x => guids.Contains(x.Id));
         }
-        public ApplicationUserModel GetUserByEmail(string email)
+        public IEnumerable<ApplicationUserModel> GetUsersByPropeties(string name = "", string email = "", string gender = "", DateTime birthday = default)
         {
-            if (email == null)
-                throw new UserManagemenServicetException("Invalid argument");
-            if (_context.Users.FirstOrDefault(x => x.Email == email) == null)
-                throw new UserManagemenServicetException("User not found");
-            return _context.Users.FirstOrDefault(x => x.Email == email);
+            if (_context.Users
+                .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender.Contains(gender) && x.Email
+                .Contains(email) && x.Profile.Birthday.Date == birthday.Date) == null)
+            {
+                throw new UserManagemenServicetException("Users not found");
+            }
+            return _context.Users
+                .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender.Contains(gender) && x.Email.Contains(email) && x.Profile.Birthday.Date == birthday.Date);
         }
-
     }
 
         

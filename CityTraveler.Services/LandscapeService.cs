@@ -27,12 +27,15 @@ namespace CityTraveler.Services
 
         public IEnumerable<EntertaimentModel> GetAll()
         {
-            return (IEnumerable<EntertaimentModel>)_context.Entertaiments;
+            return (IEnumerable<EntertaimentModel>)_context.Entertaiments
+                .Where(x => x.Type == EntertainmentType.Landskape);
         }
 
-        public async Task<EntertaimentModel> GetLandscapeByCoordinates(CoordinatesModel coordinates)
+        public async Task<EntertaimentModel> GetLandscapeByCoordinates(CoordinatesDTO coordinatesDto)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.Coordinates == coordinates
+            return await _context.Entertaiments
+                .FirstOrDefaultAsync(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                && x.Address.Coordinates.Longitude == coordinatesDto.Longitude
                 && x.Type == EntertainmentType.Landskape);
         }
 
@@ -42,21 +45,15 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Landskape);
         }
 
-        public IEnumerable<EntertaimentModel> GetLandscapesByStreet(StreetModel street)
-        {
-            return _context.Entertaiments.Where(x => x.Address.Street == street
-                && x.Type == EntertainmentType.Landskape);
-        }
-
         public IEnumerable<EntertaimentModel> GetLandscapesByStreet(string streetTitle)
         {
-            return _context.Entertaiments.Where(x => x.Address.Street.Title == streetTitle
+            return _context.Entertaiments.Where(x => x.Address.Street.Title.Contains(streetTitle)
                 && x.Type == EntertainmentType.Landskape);
         }
 
-        public IEnumerable<EntertaimentModel> GetLandscapeByTitle(string title)
+        public IEnumerable<EntertaimentModel> GetLandscapesByTitle(string title)
         {
-            return  _context.Entertaiments.Where(x => x.Title.Contains(title)
+            return _context.Entertaiments.Where(x => x.Title.Contains(title)
                 && x.Type == EntertainmentType.Landskape);
         }
 
@@ -66,18 +63,13 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Landskape);
         }
 
-        public async Task<EntertaimentModel> GetLandscapeByAddress(AddressModel address)
+        public async Task<EntertaimentModel> GetLandscapeByAddress(AddressDTO addressDto)
         {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address == address
+            return await _context.Entertaiments
+                .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartsmentNumber
+                && x.Address.HouseNumber == addressDto.HouseNumber
+                && x.Address.Street.Title.Contains(addressDto.StreetTitle)
                 && x.Type == EntertainmentType.Landskape);
-        }
-
-        public async Task<EntertaimentModel> GetLandscapeByAddress(string houseNumber, string apartmentNumber, string streetTitle)
-        {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber
-            && x.Address.ApartmentNumber == apartmentNumber
-            && x.Address.Street.Title == streetTitle
-            && x.Type == EntertainmentType.Landskape);
         }
     }
 }

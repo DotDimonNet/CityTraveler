@@ -66,15 +66,6 @@ namespace CityTraveler.Services
                 && x.Address.HouseNumber == addressDto.HouseNumber
                 && x.Address.Street.Title.Contains(addressDto.StreetTitle));
         }
-
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle)
-        {
-            return await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber 
-                && x.Address.ApartmentNumber == apartmentNumber 
-                && x.Address.Street.Title == streetTitle);
-        }
-
         public double GetAverageRating(EntertaimentModel entertaiment)
         {
             if (entertaiment.Reviews.Count() > 0)
