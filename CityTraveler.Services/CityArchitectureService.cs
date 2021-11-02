@@ -38,6 +38,7 @@ namespace CityTraveler.Services
 
                 if (entertainment != null)
                 {
+                    _logger.LogInformation(entertainment.ToString());
                     _context.Entertaiments.Remove(entertainment);
                     await _context.SaveChangesAsync();
                     return true;
@@ -51,7 +52,7 @@ namespace CityTraveler.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.Message}");
-                throw new Exception($"Failed to remove entertainment: {ex.Message}");
+                return false;
             }
         }
 
@@ -107,7 +108,7 @@ namespace CityTraveler.Services
             try
             {
                 var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(entertainmentDTO);
-                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainmentDTO.StreetId);
+                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id.ToString() == entertainmentDTO.StreetId);
                 model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainmentDTO.Type);
                 
                 _context.Entertaiments.Add(model);
