@@ -61,8 +61,7 @@ namespace CityTraveler.Services.Extensions
                 {
                     street = new StreetModel()
                     {
-                        Title = entertainmentDTO.StreetTitle,
-                        Description = entertainmentDTO.StreetDescription
+                        Id = entertainmentDTO.StreetId
                     };
                 }
                 var result = new EntertaimentModel()
