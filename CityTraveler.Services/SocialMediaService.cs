@@ -1,9 +1,11 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using AutoMapper;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,37 +16,47 @@ namespace CityTraveler.Services
 {
     public class SocialMediaService : ISocialMediaService
     {
+        private readonly ILogger<SocialMediaService> _logger;
         private readonly ApplicationContext _dbContext;
+        private readonly IMapper _mapper;
 
         public bool IsActive { get; set; }
         public string Version { get; set; }
 
-        public SocialMediaService(ApplicationContext dbContext)
+        public SocialMediaService(ApplicationContext context, IMapper mapper, ILogger<SocialMediaService> logger)
         {
-            _dbContext = dbContext;
+            _dbContext = context;
+            _mapper = mapper;
+            _logger = logger;
         }
-        public async Task<EntertainmentReviewModel> AddReviewEntertainment(Guid enterId, EntertainmentReviewModel rev)
+        public async Task<EntertainmentReviewModel> AddReviewEntertainment(Guid enterId, EntertainmentReviewModel review)
         {
-            if (_dbContext.Entertaiments.Where(x => x.Id == enterId).Count() == 0)
-                throw new SocialMediaServiceException("Entertainment not found");
+            if (!_dbContext.Entertaiments.Any(x => x.Id == enterId))
+            {
+                _logger.LogWarning("Entertainment not found");
+                return null;
+            }
             try
             {
-                rev.EntertaimentId = enterId;
-                _dbContext.Reviews.Add(rev);
+                review.EntertaimentId = enterId;
+                _dbContext.Reviews.Add(review);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception e) 
             {
-                 throw new SocialMediaServiceException("Failed to add review to entertainment");
-                //return rev;
+                _logger.LogWarning($"Failed to add review to entertainment {e.Message}");
+                return null;
             }
-            return rev;
+            return review;
         }
 
         public async Task<TripReviewModel> AddReviewTrip(Guid tripId, TripReviewModel rev)
         {
-            if (_dbContext.Trips.Where(x => x.Id == tripId).Count() == 0)
-                throw new SocialMediaServiceException("Trip not found");
+            if (!_dbContext.Trips.Any(x => x.Id == tripId))
+            {
+                _logger.LogWarning("Trip not found");
+                return null;
+            }
             try
             {
                 rev.TripId = tripId;
@@ -53,8 +65,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                throw new SocialMediaServiceException("Failed to add review to trip");
-                //return rev;
+                _logger.LogWarning($"Failed to add review to trip {e.Message}");
+                return null;
             }
             return rev;
         }
@@ -64,31 +76,47 @@ namespace CityTraveler.Services
             EntertaimentModel e = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
             TripModel t = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
             if (e != null)
+            {
                 return e.Reviews;
+            }
             else if (t != null)
+            {
                 return t.Reviews;
+            }
             else
-                throw new SocialMediaServiceException("Object not found");
+            {
+                _logger.LogWarning("Object not found");
+                return null;
+            }
         }
 
         public IEnumerable<ReviewModel> GetReviews(int skip = 0, int take = 10)
         {
-            if (skip < 0|| take<0|| skip>take)
-                throw new SocialMediaServiceException("Invalid arguments");
+            if (skip < 0 || take < 0)
+            {
+                _logger.LogWarning("Invalid arguments");
+                return null;
+            }
             return _dbContext.Reviews.Skip(skip).Take(take);
         }
 
         public IEnumerable<ReviewModel> GetUserReviews(Guid userId)
         {
-            if (_dbContext.Users.Where(x => x.Id == userId).Count() == 0)
-                throw new SocialMediaServiceException("User not found");
+            if (!_dbContext.Users.Any(x => x.Id == userId))
+            {
+                _logger.LogWarning("User not found");
+                return null;
+            }
             return _dbContext.Reviews.Where(x => x.UserId == userId);
         }
 
         public async Task<ReviewModel> PostRating(RatingModel rating, Guid reviewId)
         {
-            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
+            if (_dbContext.Reviews.Any(x => x.Id == reviewId))
+            {
+                _logger.LogWarning("Review not found");
+                return null;
+            }
             try
             {
                 ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
@@ -97,8 +125,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                throw new SocialMediaServiceException("Failed to post raiting");
-                //return null;
+                _logger.LogWarning($"Failed to post rating {e.Message}");
+                return null;
             }
 
         }
@@ -106,7 +134,10 @@ namespace CityTraveler.Services
         public async Task<bool> RemoveReview(Guid reviewId)
         {
             if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
+            {
+                _logger.LogWarning("Review not found");
+                return false;
+            }
             try
             {
                 ReviewModel review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
@@ -122,9 +153,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                throw new SocialMediaServiceException("Failed to remove review");
-                //return false;
+                _logger.LogWarning($"Failed to remove review {e.Message}");
+                return false;
             }
         }
         public async Task<bool> AddComment(CommentModel comment, Guid reviewId) 
@@ -140,36 +170,38 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                throw new SocialMediaServiceException("Failed to add comment");
-                //return false;
+                _logger.LogWarning($"Failed to add comment {e.Message}");
+                return false;
             }
         }
-        public async Task<bool> RemoveComment(Guid commentId, Guid reviewId)
+        public async Task<bool> RemoveComment(Guid commentId)
         {
-            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
-            if (_dbContext.Comments.Where(x => x.Id == commentId).Count() == 0)
-                throw new SocialMediaServiceException("Comment not found");
-            if (_dbContext.Comments.Where(x => x.ReviewId == reviewId && x.Id == commentId).Count()==0)
-                throw new SocialMediaServiceException("No relation between given comment and review");
+            if (!_dbContext.Comments.Any(x => x.Id == commentId))
+            {
+                return false;
+                _logger.LogWarning("Comment not found");
+            }
 
             try
             {
-                CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=>x.ReviewId == reviewId && x.Id == commentId);
+                CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=> x.Id == commentId);
                 _dbContext.Comments.Remove(comment);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                throw new SocialMediaServiceException("Failed to remove comment");
-                //return false;
+                _logger.LogWarning($"Failed to remove comment {e}");
+                return false;
             }
         }
         public async Task<bool> AddImage(ReviewImageModel image, Guid reviewId) 
         {
-            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
+            if (!_dbContext.Reviews.Any(x => x.Id == reviewId))
+            {
+                _logger.LogWarning("Review not found");
+                return false;
+            }
             try
             {
                 image.ReviewId = reviewId;
@@ -179,38 +211,39 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                throw new SocialMediaServiceException("Failed to add image");
-                //return false;
+                _logger.LogWarning($"Failed to add image {e}");
+                return false;
             }
         }
-        public async Task<bool> RemoveImage(Guid reviewImageId, Guid reviewId) 
+        public async Task<bool> RemoveImage(Guid reviewImageId) 
         {
-            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
-            if (_dbContext.Images.Where(x => x.Id == reviewImageId).Count() == 0)
-                throw new SocialMediaServiceException("Image not found");
+            if (!_dbContext.Images.Any(x => x.Id == reviewImageId))
+            {
+                _logger.LogWarning("Image not found"); 
+                return false;
+            }
             try
             {
-                ReviewImageModel image = (ReviewImageModel) await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
+                ImageModel image = await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
                 _dbContext.Images.Remove(image);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                throw new SocialMediaServiceException("Failed to remove image");
-                //return false;
+                _logger.LogWarning($"Failed to remove image {e}");
+                return false;
             }
         }
 
-        public IEnumerable<ReviewModel> GetReviewsByTitle(string title)
+        public IEnumerable<ReviewModel> GetReviewsByTitle(string title = "")
         {
-            return _dbContext.Reviews.Where(x => x.Title.Contains(title ?? ""));
+            return _dbContext.Reviews.Where(x => x.Title.Contains(title));
         }
 
-        public IEnumerable<ReviewModel> GetReviewsByAverageRaiting(double raiting)
+        public IEnumerable<ReviewModel> GetReviewsByAverageRating(double rating)
         {
-            return _dbContext.Reviews.Where(x=>x.Rating.Value == raiting);
+            return _dbContext.Reviews.Where(x=>x.Rating.Value == rating);
         }
 
         public IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment)
@@ -225,14 +258,23 @@ namespace CityTraveler.Services
 
         public async Task<ReviewModel> GetReviewById(Guid Id)
         {
-            if (_dbContext.Reviews.Where(x => x.Id == Id).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
-            return await _dbContext.Reviews.FirstOrDefaultAsync(x=>x.Id == Id);
+            if (!_dbContext.Reviews.Any(x => x.Id == Id))
+            {
+                _logger.LogWarning("Review not found");
+                return null;
+            }
+            return await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == Id);
         }
 
-        public Task<bool> RemoveRaiting(Guid ratingId)
+        public async Task<bool> RemoveRating(Guid ratingId)
         {
-            throw new NotImplementedException();
+            if (!_dbContext.Ratings.Any(x => x.Id == ratingId))
+            {
+                _logger.LogWarning("Rating not found");
+                return false;
+            }
+             _dbContext.Ratings.Remove(await _dbContext.Ratings.FirstOrDefaultAsync(x => x.Id == ratingId));
+            return true;
         }
     }
 }

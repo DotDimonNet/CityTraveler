@@ -144,7 +144,6 @@ namespace CityTraveler.Services
             catch (Exception e)
             {
                 throw new SearchServiceException("Couldn`t filter users");
-                //return null;
             }
         }
 
@@ -187,7 +186,6 @@ namespace CityTraveler.Services
             catch (Exception e)
             {
                 throw new SearchServiceException("Couldn`t get alike trips");
-               // return null;
             }
         }
 
@@ -195,42 +193,48 @@ namespace CityTraveler.Services
         {
             try
             {
-                if (e.Type != null && e.Address!=null)
+                if (e.Type != null && e.Address != null)
+                {
                     return _dbContext.Entertaiments.Where(x =>
                                    x.Title.Contains(e.Title ?? "")
                                 && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
                                 && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? "")
                                 && x.Type == e.Type
-                                && x.Description.Contains(e.Description ?? "")
-                                );
+                                && x.Description.Contains(e.Description ?? ""));
+                }
                 else if (e.Type == null && e.Address == null)
+                {
                     return _dbContext.Entertaiments.Where(x =>
                                x.Title.Contains(e.Title ?? ""));
-                else if (e.Type!=null && e.Address == null)
+                }
+                else if (e.Type != null && e.Address == null)
+                {
                     return _dbContext.Entertaiments.Where(x =>
                                    x.Title.Contains(e.Title ?? "")
                                 && x.Type == e.Type
-                                && x.Description.Contains(e.Description ?? "")
-                                );
+                                && x.Description.Contains(e.Description ?? ""));
+                }
                 else
+                {
                     return _dbContext.Entertaiments.Where(x =>
                                    x.Title.Contains(e.Title ?? "")
                                 && x.Address.Street.Title.Contains(e.Address.Street.Title ?? "")
                                 && x.Address.HouseNumber.Contains(e.Address.HouseNumber ?? "")
-                                && x.Description.Contains(e.Description ?? "")
-                                );
+                                && x.Description.Contains(e.Description ?? ""));
+                }
 
-            } catch (Exception)
+            } catch (Exception ex)
             {
-                throw new SearchServiceException("Couldn`t get alike entertainmens");
-                //return null;
+                throw new SearchServiceException($"Couldn`t get alike entertainmens {ex.Message} ");
             }
         }
-        public IEnumerable<ApplicationUserModel> GetUsersByName(string name)
+        public IEnumerable<ApplicationUserModel> GetUsersByName(string name = "")
         {
-            if (name == null)
-                throw new UserManagemenServicetException("Invalid argument");
-            return _dbContext.Users.Where(x => x.Profile.Name == name);
+            return _dbContext.Users.Where(x => x.Profile.Name.Contains(name));
+        }
+        public IEnumerable<TripModel> GetTripByName(string name = "")
+        {
+            return _dbContext.Trips.Where(x => x.Title.Contains(name));
         }
     }
 }
