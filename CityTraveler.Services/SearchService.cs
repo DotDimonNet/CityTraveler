@@ -1,4 +1,5 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
@@ -31,6 +32,7 @@ namespace CityTraveler.Services
                 throw new SearchServiceException("PriceMore can`t be more than priceLess. The same is for rating.");
             }
             IEnumerable<TripModel> trips = _svContext.TripService.GetTripsByName(filter.TripName ?? "");
+            
             try
             {
                 if (filter.Type != -1)

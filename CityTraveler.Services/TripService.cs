@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using CityTraveler.Domain.DTO;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
@@ -11,15 +12,26 @@ using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Extensions;
 using CityTraveler.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CityTraveler.Services
 {
     public class TripService : ITripService
     {
-        private ApplicationContext _context;
-        public TripService(ApplicationContext context)
+        private readonly ApplicationContext _context;
+        private readonly ILogger<TripService> _logger;
+        private readonly IMapper _mapper;
+        public TripService(ApplicationContext context, IMapper mapper, ILogger<TripService> logger)
         {
             _context = context;
+            _logger = logger;
+            _mapper = mapper;
+        }
+
+        public TripService(ApplicationContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
         }
 
         public bool IsActive { get; set; }
@@ -34,13 +46,15 @@ namespace CityTraveler.Services
         {
             try
             {
-                _context.Trips.Add(newTrip.ToNewTrip());
+                var model = _mapper.Map<AddNewTripDTO, TripModel>(newTrip);
+                _context.Trips.Add(model);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception on adding new trip", e);
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on adding new trip! {e.Message}");
             }
         }
 
@@ -53,43 +67,94 @@ namespace CityTraveler.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception on deleting trip", e);
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on deleting trip! {e.Message}");
             }
         }
 
-        public TripModel GetTripById(Guid tripId)
+        public async Task<bool> AddDefaultTrip(DefaultTripDTO newDefaultTrip)
         {
-            return _context.Trips.FirstOrDefault(x => x.Id == tripId);
+            try
+            {
+                var model = _mapper.Map<DefaultTripDTO, TripModel>(newDefaultTrip);
+                _context.Trips.Add(model);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on adding new default trip! {e.Message}");
+            }
         }
 
-        public IEnumerable<TripModel> GetTrips(string title, double rating, TimeSpan optimalSpent, double price, string tag, int skip = 0, int take = 10)
+        public IEnumerable<DefaultTripDTO> GetDefaultTrips(int skip = 0, int take = 10)
         {
-            
-            return _context.Trips.Skip(skip)
+            var trips = _context.Trips.Where(x => x.DafaultTrip == true).Skip(skip).Take(take);
+            return trips.Select(x => _mapper.Map<TripModel, DefaultTripDTO>(x));
+        }
+
+        public async Task<bool> SetTripAsDefault(Guid tripId)
+        {
+            try
+            {
+                var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
+                trip.DafaultTrip = true;
+                _context.Update(trip);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on setting default as defaut trip! {e.Message}");
+            }
+        }
+
+        public async Task<bool> RemooveTripFromDefault(Guid tripId)
+        {
+            try
+            {
+                var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
+                trip.DafaultTrip = false;
+                _context.Update(trip);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on removing trip from default! {e.Message}");
+            }
+        }
+
+        public TripDTO GetTripById(Guid tripId)
+        {
+            var trip = _context.Trips.FirstOrDefault(x => x.Id == tripId);
+            var model = _mapper.Map<TripModel, TripDTO>(trip);
+            return model;
+        }
+
+        public IEnumerable<TripDTO> GetTrips(string title, double rating, TimeSpan optimalSpent, double price, string tag, int skip = 0, int take = 10)
+        {         
+            var trips= _context.Trips.Skip(skip)
                 .Take(take)
-                .Where(x => x.Title.Contains("") && x.AverageRating == rating && x.OptimalSpent == optimalSpent && x.Price.Value == price && x.TagSting.Contains(""));
+                .Where(x => x.Title.Contains("") && x.AverageRating == rating 
+                && x.OptimalSpent == optimalSpent && x.Price.Value == price 
+                && x.TagSting.Contains(""));
+       
+            return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));            
         }
 
-        public IEnumerable<TripModel> GetTripsByDate(DateTime date)
+        public IEnumerable<TripModel> GetTripsByName(string tripName)
         {
-            return _context.Trips.Where(x => x.TripStart == date);
-        }
-
-        public async Task<IEnumerable<TripModel>> GetTripsByEntertainmentAsync(Guid entertainmentId)
-        {
-            var ent = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertainmentId);
-            return _context.Trips.Where(x => x.Entertaiment == ent);
-        }
-
-        public IEnumerable<TripModel> GetTripsByEntartainmentName(string name)
-        {
-            return _context.Trips.Where(x => x.Title == name);
+            return _context.Trips.Where(x => x.Title == tripName);
         }
 
         public IEnumerable<TripModel> GetTripsByStatus(TripStatus status)
-        {
+        {         
             return _context.Trips.Where(x => x.TripStatus == status);
         }
 
@@ -102,12 +167,13 @@ namespace CityTraveler.Services
                 trip.TripStatus = status;
                 _context.Update(trip);
                 await _context.SaveChangesAsync();
+                return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception On  Updating Trip Status!", e);
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on  updating trip status! {e.Message}");
             }
-            return true;
         }
 
         public async Task<bool> UpdateTripTitleAsync(Guid tripId, string newTitle)
@@ -118,12 +184,15 @@ namespace CityTraveler.Services
                 trip.Title = newTitle;
                 _context.Update(trip);
                 _context.SaveChanges();
+
+                _logger.LogInformation($"Trip with id:{tripId} was updated.");
+                return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception on updating trip title!", e);
-            }
-            return true;
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on updating trip title! {e.Message}");
+            }       
         }
 
         public async Task<bool> UpdateTripDescriptionAsync(Guid tripId, string newDecription)
@@ -134,29 +203,35 @@ namespace CityTraveler.Services
                 trip.Description = newDecription;
                 _context.Update(trip);
                 _context.SaveChanges();
+
+                _logger.LogInformation($"Trip with id:{tripId} was updated.");
+                return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception on updating trip description!", e);
-            }
-            return true;
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on updating trip description! {e.Message}");
+            }      
         }
 
         public async Task<bool> AddEntertainmetToTripAsync(Guid tripId, EntertainmentDTO newEntertainment)
         {
             try
             {
+                var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(newEntertainment);
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
-                trip.Entertaiment.Add(newEntertainment.ToEntertaiment());
+                trip.Entertaiment.Add(model);
                 _context.Update(trip);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception on adding new entertainment to trip!", e);
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Exception on adding new entertainment to trip! {e.Message}");
             }
-            return true;
         }
+
         public async Task<bool> DeleteEntertainmentFromTrip(Guid tripId, Guid entertainmentId)
         {
             try
@@ -166,49 +241,13 @@ namespace CityTraveler.Services
                 trip.Entertaiment.Remove(entertainment);
                 _context.Update(trip);
                 _context.SaveChanges();
-
+                return true;
             }
-            catch (TripServiceException e)
+            catch (Exception e)
             {
-                throw new TripServiceException("Exception on deleting entertainment from trip!", e);
+                _logger.LogError($"Error: {e.Message}");
+                throw new TripServiceException($"Exception on deleting entertainment from trip! {e.Message}");
             }
-            return true;
-        }
-
-        public IEnumerable<TripModel> GetDefaultTrips(int skip = 0, int take = 10)
-        {
-            return _context.Trips.Where(x => x.DafaultTrip == true).Skip(skip).Take(take);
-        }
-
-        public async Task<bool> SetTripAsDefault(Guid tripId)
-        {
-            try
-            {
-                var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
-                trip.DafaultTrip =true;
-                _context.Update(trip);
-                await _context.SaveChangesAsync();
-            }
-            catch (TripServiceException e)
-            {
-                throw new TripServiceException("Exception on setting default as defaut trip", e);
-            }
-            return true;
-        }
-        public async Task<bool> RemooveTripFromDefault(Guid tripId)
-        {
-            try
-            {
-                var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
-                trip.DafaultTrip = false;
-                _context.Update(trip);
-                await _context.SaveChangesAsync();
-            }
-            catch (TripServiceException e)
-            {
-                throw new TripServiceException("Exception on removing trip from default", e);
-            }
-            return true;
         }
     }
 }

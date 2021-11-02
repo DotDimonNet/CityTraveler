@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IImageService<T> where T:ImageModel, IServiceMetadata
+    public interface IImageService<T> where T:ImageModel
     {
         public Task<bool> AddNewImage(T image);
         public Task<bool> DeleteImage(Guid imageId);

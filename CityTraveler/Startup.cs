@@ -105,6 +105,7 @@ namespace CityTraveler
             services.AddAutoMapper(x => 
             {
                 x.AddProfile<MappingProfile>();
+                x.AddProfile<TripMapping>();
             });
             services.AddOptions();
             services.AddTransient<IUserManagementService, UserManagementService>();
