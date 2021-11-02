@@ -1,5 +1,6 @@
 ﻿using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
+using CityTraveler.Domain.DTO;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CityTraveler.Tests
 {
@@ -28,9 +30,8 @@ namespace CityTraveler.Tests
             var testEntertainment = await service.GetEventById(entertainment.Id);
 
             Assert.IsNotNull(entertainment);
+            Assert.IsNotNull(testEntertainment);
             Assert.AreEqual(testEntertainment, entertainment);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -38,14 +39,18 @@ namespace CityTraveler.Tests
         {
             var realEvent = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x => x.Type == EntertainmentType.Event && x.Address.Coordinates!=null);
+            var coordinatesDto = new CoordinatesDTO()
+            {
+                Latitude = realEvent.Address.Coordinates.Latitude,
+                Longitude = realEvent.Address.Coordinates.Longitude
+            };
             var service = new EventService(ArrangeTests.ApplicationContext);
 
-            var testEvent = await service.GetEventByCoordinates(realEvent.Address.Coordinates);
+            var testEvent = await service.GetEventByCoordinates(coordinatesDto);
 
             Assert.IsNotNull(realEvent);
+            Assert.IsNotNull(realEvent);
             Assert.AreEqual(realEvent, testEvent);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -55,17 +60,14 @@ namespace CityTraveler.Tests
                 .FirstOrDefault();
             var service = new EventService(ArrangeTests.ApplicationContext);
 
-            var events = service.GetEventsByStreet(street);
+            var events = service.GetEventsByStreet(street.Title);
 
+            Assert.IsNotNull(street);
             Assert.IsNotNull(events);
-
             foreach (var item in events)
             {
                 Assert.AreEqual(item.Address.Street, street);
             }
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -77,15 +79,12 @@ namespace CityTraveler.Tests
 
             var events = service.GetEventsByStreet(streetTitle);
 
+            Assert.IsNotNull(streetTitle);
             Assert.IsNotNull(events);
-
             foreach (var item in events)
             {
                 Assert.AreEqual(item.Address.Street.Title, streetTitle);
             }
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -98,9 +97,8 @@ namespace CityTraveler.Tests
             var testEvents = service.GetEventByTitle("2").ToList();
 
             Assert.IsNotNull(realEvents);
+            Assert.IsNotNull(testEvents);
             Assert.AreEqual(testEvents, realEvents);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -111,10 +109,9 @@ namespace CityTraveler.Tests
 
             var testEvents = service.GetEvents(realEvents.Select(x=>x.Id));
 
+            Assert.IsNotNull(realEvents);
             Assert.IsNotNull(testEvents);
             Assert.AreEqual(testEvents.Count(), realEvents.Count());
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -122,30 +119,29 @@ namespace CityTraveler.Tests
         {
             var address = ArrangeTests.ApplicationContext.Addresses
                 .FirstOrDefault(x=>x.Entertaiment.Type==EntertainmentType.Event);
+            var addressDto = new AddressDTO()
+            {
+                ApartsmentNumber = address.ApartmentNumber,
+                HouseNumber = address.HouseNumber,
+                StreetTitle = address.Street.Title
+            };
             var service = new EventService(ArrangeTests.ApplicationContext);
 
-            var testEvent = await service.GetEventByAddress(address);
+            var testEvent = await service.GetEventByAddress(addressDto);
 
+            Assert.IsNotNull(address);
             Assert.IsNotNull(testEvent);
             Assert.AreEqual(testEvent, address.Entertaiment);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
-        public async Task GetEventByAddressStringTest()
+        public void GetEventByBeginingDayTest()
         {
-            var address = ArrangeTests.ApplicationContext.Addresses
-                .FirstOrDefault(x=>x.Entertaiment.Type==EntertainmentType.Event);
             var service = new EventService(ArrangeTests.ApplicationContext);
 
-            var testEvent = await service.GetEventByAddress(address.HouseNumber,
-                address.ApartmentNumber, address.Street.Title);
+            var testEvents = service.GetEventByBeginingDay(DateTime.Now.AddDays(-3));
 
-            Assert.IsNotNull(testEvent);
-            Assert.AreEqual(testEvent, address.Entertaiment);
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
+            Assert.IsNotNull(testEvents);
         }
     }
 }

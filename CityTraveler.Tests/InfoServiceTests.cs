@@ -18,7 +18,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetMostPopularUserEntertaimentTripsTests()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
@@ -101,7 +100,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetTripByMaxReviewTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Users
@@ -135,7 +133,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public void GetlastTripByPeriodTest()
         {
             var startDateTime = DateTime.Now;
@@ -174,27 +171,26 @@ namespace CityTraveler.Tests
                 .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
-        /*[Test]
-
-        public async Task GetMostlyUsedTemplateTest()
+        [Test]
+        public void GetMostlyUsedTemplatesTest()
         {
-            var templateId = ArrangeTests.ApplicationContext.Trips
-                .Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
-            var templateExpected = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x => x.TemplateId == templateId);
+            var count = 5;
+            var templateIds = ArrangeTests.ApplicationContext.Trips
+                .Select(x => x.TemplateId)
+                .GroupBy(x => x)
+                .OrderByDescending(g => g.Count())
+                .Select(x => x.Key)
+                .Take(count);
 
             var service = new InfoService(ArrangeTests.ApplicationContext);
-            var templateActual = await service.GetMostlyUsedTemplate();
+            var templatesActual = service.GetMostlyUsedTemplates(count);
 
-            Assert.IsNotNull(templateActual);
-            Assert.AreEqual(templateExpected, templateActual);
-            Assert.AreEqual(templateExpected.Id, templateActual.Id);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }*/
+            Assert.IsNotEmpty(templatesActual);
+            Assert.AreEqual(templateIds,templatesActual.Select(x => x.Id));
+            Assert.AreEqual(templatesActual.Count(), count);
+        }    
 
         [Test]
-
         public void GetUsersCountTripsDateRangeTest()
         {
             var startOfPeriod = DateTime.Now;
@@ -210,7 +206,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetLongestTripTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Trips
@@ -223,7 +218,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
         public async Task GetShortestTripTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Trips
@@ -237,7 +231,6 @@ namespace CityTraveler.Tests
 
         [Test]
         public void GetTripsCreatedByPeriod()
-
         {
             var startOfPeriod = DateTime.Now;
             var endOfPeriod = DateTime.Now.AddMilliseconds(4);
@@ -248,16 +241,19 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(tripscreatedActual);
             Assert.AreEqual(tripsCreatedExpected, tripscreatedActual);
-
         }
 
+        [Test]
+        public void GetTripsByLowPriceTest()
+        {
+            var count = 3;
+            var trips = ArrangeTests.ApplicationContext
+                .Trips.OrderBy(x => x.Price.Value).Take(count);
+            var service = new InfoService(ArrangeTests.ApplicationContext);
+            var tripsByLowPrice = service.GetTripsByLowPrice(count);
 
-
-
-
-
-
-
+            Assert.IsNotEmpty(tripsByLowPrice);
+            Assert.AreEqual(tripsByLowPrice.Count(), count);
+        }
     }
-
 }

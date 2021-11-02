@@ -24,7 +24,5 @@ namespace CityTraveler.Domain.Entities
         public virtual TripStatus TripStatus { get; set; }
         public bool DafaultTrip { get; set; }
         public string TagSting { get; set; }
-
-
     }
 }

@@ -9,54 +9,73 @@ using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.DTO;
 using CityTraveler.Services.Extensions;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace CityTraveler.Services
 {
     public class CityArchitectureService : ICityArchitectureService
     {
+        private readonly ILogger<CityArchitectureService> _logger;
         private readonly ApplicationContext _context;
+        private readonly IMapper _mapper; 
 
         public bool IsActive { get; set; }
         public string Version { get; set; }
 
-        public CityArchitectureService(ApplicationContext context)
+        public CityArchitectureService(ApplicationContext context, IMapper mapper, ILogger<CityArchitectureService> logger)
         {
+            _logger = logger;
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<bool> RemoveEntertainment(Guid id)
         {
             try
             {
-                _context.Entertaiments.Remove(await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id));
-                await _context.SaveChangesAsync();
-                return true;
+                var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (entertainment != null)
+                {
+                    _context.Entertaiments.Remove(entertainment);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    _logger.LogWarning($"Entertainment was not found by id: {id}");
+                    return false;
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception("Failed to remove entertainment");
+                _logger.LogError($"Error: {ex.Message}");
+                throw new Exception($"Failed to remove entertainment: {ex.Message}");
             }
         }
 
-        public async Task<bool> SetEntertaiment(IEnumerable<EntertaimentModel> entertaiments)
+        public async Task<bool> AddEntertainments(IEnumerable<EntertainmentDTO> entertaiments)
         {
             try
             {
-                foreach (var item in _context.Entertaiments)
+                var models = new List<EntertaimentModel>();
+
+                foreach (var entertainment in entertaiments)
                 {
-                    _context.Entertaiments.Remove(item);
+                    var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(entertainment);
+                    model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainment.Type);
+                    models.Add(model);
                 }
-                await _context.SaveChangesAsync();
-                foreach (var item in entertaiments)
-                {
-                    _context.Entertaiments.Add(item);
-                }
+
+                _context.Entertaiments.AddRange(models);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception("Failed to set entertainments");
+                _logger.LogError($"Error: {ex.Message}");
+                throw new Exception($"Failed to set entertainments: {ex.Message}");
             }
         }
 
@@ -65,19 +84,17 @@ namespace CityTraveler.Services
             try
             {
                 var model = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id);
-                if (model==null)
+                if (model == null)
                 {
                     _context.Entertaiments.Add(entertaiment);
-                    await _context.SaveChangesAsync();
-                    return true;
                 }
                 else
                 {
                     _context.Entertaiments.Update(model.UpdateEntertainmentWith(entertaiment));
-                    await _context.SaveChangesAsync();
-                    return true;
                 }
-                
+
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex) 
             {
@@ -85,17 +102,21 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> AddEntertainment(EntertainmentDTO entertaimentDTO)
+        public async Task<bool> AddEntertainment(EntertainmentDTO entertainmentDTO)
         {
             try
             {
-                _context.Entertaiments.Add(entertaimentDTO.ToEntertaiment());
+                var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(entertainmentDTO);
+                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainmentDTO.StreetId);
+                model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainmentDTO.Type);
+                
+                _context.Entertaiments.Add(model);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return false;
             }
         }
 
@@ -105,13 +126,11 @@ namespace CityTraveler.Services
             {
                 _context.Streets.Add(street);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 throw new CityArchitectureServiceException("Failed to add street");
-                //return false;
             }
             return true;
         }
@@ -153,11 +172,6 @@ namespace CityTraveler.Services
             return true;
         }
 
-        public async Task<bool> ValidateCityMap()
-        {
-            return validateAddresses().Result && validateEntertainments().Result;
-        }
-
         public async Task<bool> validateEntertainments() 
         {
             try
@@ -177,44 +191,15 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> validateAddresses()
+        public bool ValidateAddresses()
         {
-            try
-            {
-                AddressModel ad = await _context.Addresses.FirstOrDefaultAsync(x => x.Coordinates == null);
-                AddressModel ad1 = await _context.Addresses.FirstOrDefaultAsync(x => x.Street == null);
-                if (ad == null && ad1 == null)
-                    return true;
-                else
-                    return false;
-
-            }
-            catch (Exception e)
-            {
-                throw new CityArchitectureServiceException("Failed to validate addresses");
-                //return false;
-            }
+            return _context.Addresses.Any(x => x.Street == null || x.Coordinates == null);
         }
 
-        public async Task<StreetModel> FindStreetByCoordinates(Guid coordID)
+        public IEnumerable<StreetModel> FindStreetByCoordinates(double longtitude, double latitude) 
         {
-            try
-            {
-                AddressModel ad = await _context.Addresses.FirstOrDefaultAsync(x => x.CoordinatesId == coordID);
-                return ad.Street;
-            }
-            catch (Exception e) 
-            {
-                throw new CityArchitectureServiceException("Failed to find street by coordinates");
-            }
-        }
-
-        public async Task<StreetModel> FindStreetByCoordinates(double longtitude, double latitude) 
-        {
-            AddressModel ad = await _context.Addresses.FirstOrDefaultAsync(x => x.Coordinates.Longitude == longtitude && x.Coordinates.Latitude == latitude);
-            if (ad == null)
-                throw new CityArchitectureServiceException("Coordinates not found");
-            return ad.Street;
+            return _context.Streets.Where(x => x.Addresses
+                .Any(x => x.Coordinates.Latitude == longtitude && x.Coordinates.Latitude == latitude));
         }
 
         public async Task<AddressModel> FindAddressByCoordinates(Guid coordID)

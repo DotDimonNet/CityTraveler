@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Domain.Entities;
+using System.Web;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Controllers
 {
@@ -24,56 +26,58 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetTrips(int skip = 0, int take = 10)
+        [HttpGet("get")]
+        public IActionResult GetTrips([FromQuery] double rating, [FromQuery] TimeSpan optimalSpent,
+            [FromQuery] double price, [FromQuery] string tag,  
+            [FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] string title = "")
         {
-            return Json(_service.GetTrips(skip, take));
+            return Json(_service.GetTrips(title, rating, optimalSpent, price, tag, skip, take));
         }
 
-        [HttpGet]
-        [Route("getById")]
+        [HttpGet("get-by-id")]
         public async Task<IActionResult> GetTripById(Guid tripId)
-        {
-            TripModel trip;
-            try
-            {         
-                trip = _service.GetTripById(tripId);
-            }
-            catch (TripControllerException e) when (tripId == null)
+        { 
+            if (tripId == Guid.Empty)
             {
-
-                throw new TripControllerException($"Trip with Id={tripId} not found", e);
+                return Json(_service.GetTripById(tripId));
             }
-            catch (TripControllerException e)
+            else
             {
-                throw new TripControllerException("Exception on finding trip by Id", e);
-            }
-            return (Json(trip));
-     
+                return new NotFoundResult();
+            }     
         }
 
-        [HttpGet]
-        [Route("getTripsByName")]
-        public async Task<IActionResult> GetTripsName(string tripName)
+        [HttpPost("trip")]
+        public async Task<IActionResult> AddNewTrip(AddNewTripDTO trip)
         {
-            IEnumerable<TripModel> trips;
-            try
-            {
-                trips = _service.GetTripsByName(tripName);
-            }
-            catch (TripControllerException e) when (tripName == null)
-            {
-
-                throw new TripControllerException($"Trip with Tirle={tripName} not found");
-            }
-            catch (TripControllerException e)
-            {
-
-                throw new TripControllerException("Exception on finding trip by Title", e);
-            }
-            return Json(trips);
+            await _service.AddNewTripAsync(trip);
+            return RedirectToAction();
         }
-        
+
+        [HttpDelete("trip")]
+        public async Task<IActionResult> DeleteTrip(Guid tripId)
+        {      
+            await _service.DeleteTripAsync(tripId);
+            return RedirectToAction();                  
+        }
+
+        [HttpPut("entertainment-to-trip")]
+        public async Task<IActionResult> AddEntertainmentToTrip([FromBody]Guid tripId, EntertainmentDTO entertainment)
+        {      
+            await _service.AddEntertainmetToTripAsync(tripId, entertainment);
+            return RedirectToAction();
+        }
+
+        [HttpDelete("entertainment-from-trip")]
+        public async Task<IActionResult> DeleteEntertainmentFromTrip([FromQuery] Guid tripID, [FromQuery]Guid entertainmentId)
+        {
+            await _service.DeleteEntertainmentFromTrip(tripID, entertainmentId);
+            return RedirectToAction();
+        }
+        [HttpGet ("default-trips")]
+        public async Task<IActionResult> GetDafaultTrips([FromQuery] int skip=0, [FromQuery] int take=10 )
+        {
+            return Json(_service.GetDefaultTrips(skip, take));
+        }
     }
 }

@@ -64,9 +64,10 @@ namespace CityTraveler.Tests
         {
             var trip = new TripModel();        
             var service = new TripService(ArrangeTests.ApplicationContext);
-            var newTrip = await service.AddNewTripAsync(trip);
-            Assert.True(newTrip);
-
+            Assert.ThrowsAsync<Exception>(async () =>
+            {
+                var newTrip = await service.AddNewTripAsync(trip);
+            });
             ArrangeTests.UserManagerMock
                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }

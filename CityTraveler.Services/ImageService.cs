@@ -53,10 +53,10 @@ namespace CityTraveler.Services
 
         public async Task<T> GetImageByIdAsync(Guid imageId)
         {
-            return (T)await _context.Images.FirstOrDefaultAsync(x=>x.Id==imageId);
+            return (T)await _context.Images.FirstOrDefaultAsync(x=>x.Id == imageId);
         }
 
-        public IEnumerable<T> GetImages(int skip = 0, int take=7)
+        public IEnumerable<T> GetImages(int skip = 0, int take = 7)
         {
             return (IEnumerable<T>)_context.Images.Skip(skip).Take(take);
         }

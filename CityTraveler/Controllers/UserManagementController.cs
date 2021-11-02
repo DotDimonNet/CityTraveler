@@ -1,5 +1,6 @@
 ﻿using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
+using CityTraveler.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace CityTraveler.Controllers
 {
     [ApiController]
-    [Route("api/userManagement")]
+    [Route("api/user")]
     public class UserManagementController : Controller
     {
         private readonly ILogger<UserManagementController> _logger;
@@ -22,63 +23,32 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("get/user/id/{userId}")]
-
-        public async Task<IActionResult> GetUserById(Guid userId)
+        [HttpGet("id/{userId}")]
+        public IActionResult GetUserById([FromQuery] Guid userId)
         {
             return Json(_service.GetUserById(userId));
         }
 
-        [HttpGet]
-        [Route("get/user/birthday/{userbirthday}")]
 
-        public async Task<IActionResult> GetUsersByBirthday(DateTime userbirthday)
-        {
-            return Json(_service.GetUsersByBirthday(userbirthday));
-        }
-
-        [HttpGet]
-        [Route("get/user/name/{name}")]
-
-        public async Task<IActionResult> GetUsersByName(string name)
-        {
-            return Json(_service.GetUsersByName(name));
-        }
-
-        [HttpGet]
-        [Route("get/user/gender/{gender}")]
-
-        public async Task<IActionResult> GetUsersByGender(string gender)
-        {
-            return Json(_service.GetUsersByGender(gender));
-        }
-
-        [HttpGet]
-        [Route("get/user")]
-
-        public async Task<IActionResult> GetUsers(int skip = 0, int take = 10)
+        [HttpGet("users")]
+        public IActionResult GetUsers([FromQuery] int skip = 0, int take = 10)
         {
             return Json(_service.GetUsersRange(skip, take));
         }
+             
 
-        [HttpGet]
-        [Route("get/user/email/{email}")]
-
-        public async Task<IActionResult> GetUserByEmail(string email)
-        {
-            return Json(_service.GetUserByEmail (email));
-        }
-
-        [HttpGet]
-        [Route("get/user/id/{guids}")]
-
-        public async Task<IActionResult> GetUsers (IEnumerable<Guid> guids)
+        [HttpGet("users-by-id")]
+        public IActionResult GetUsers ([FromQuery] IEnumerable<Guid> guids)
         {
             return Json(_service.GetUsers(guids));
         }
 
+        [HttpGet("users-name-email-gender-birthday")]
 
+        public IActionResult GetUsersByPropeties([FromQuery] string name = "", string email = "", string gender = "", DateTime birthday = default)
+        {
+            return Json(_service.GetUsersByPropeties(name, email, gender, birthday));
+        }
 
     }
 }

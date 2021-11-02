@@ -22,7 +22,7 @@ namespace CityTraveler.Services
 
         public ServiceContext(ApplicationContext dbContext)
         {
-            _dbContext = dbContext;
+            /*_dbContext = dbContext;
             SocialMediaService = new SocialMediaService(_dbContext);
             TripService = new TripService(_dbContext);
             UserManagementService = new UserManagementService(_dbContext);
@@ -30,7 +30,7 @@ namespace CityTraveler.Services
             CityArchitectureService = new CityArchitectureService(_dbContext);
             StatisticService = new StatisticService(_dbContext);
             HistoryService = new HistoryService(_dbContext);
-            // AuthService = new AuthService(_dbContext);
+            // AuthService = new AuthService(_dbContext);*/
 
         }
         /*public IServiceMetadata GetService(string serviceName)
