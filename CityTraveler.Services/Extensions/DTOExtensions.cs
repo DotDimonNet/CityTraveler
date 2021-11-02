@@ -61,7 +61,7 @@ namespace CityTraveler.Services.Extensions
                 {
                     street = new StreetModel()
                     {
-                        Id = entertainmentDTO.StreetId
+                        Id = Guid.Parse(entertainmentDTO.StreetId)
                     };
                 }
                 var result = new EntertaimentModel()
