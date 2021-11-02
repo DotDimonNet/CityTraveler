@@ -14,6 +14,7 @@ namespace CityTraveler.Mapping
         {
             CreateMap<CoordinatesDTO, CoordinatesModel>();
             CreateMap<EntertainmentAddressDTO, AddressModel>()
+                .ForMember(x => x.ApartmentNumber, o => o.MapFrom(z => z.ApartmentNumber))
                 .ForMember(x => x.StreetId, o => o.Ignore());
             CreateMap<EntertainmentDTO, EntertaimentModel>()
                 .ForMember(x => x.Address, o => o.MapFrom(z => z.Address))
