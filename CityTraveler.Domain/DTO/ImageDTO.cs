@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace CityTraveler.Controllers
+namespace CityTraveler.Domain.DTO
 {
-    public class ImageController
+    public class ImageDTO<T>
     {
 
     }
