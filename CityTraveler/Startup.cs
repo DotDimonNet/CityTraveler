@@ -113,6 +113,7 @@ namespace CityTraveler
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
             services.AddTransient<ISocialMediaService, SocialMediaService>();
+            services.AddTransient(typeof(IImageService<>), typeof(ImageService<>));
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>

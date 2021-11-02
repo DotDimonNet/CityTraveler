@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace CityTraveler.Tests
 {
@@ -23,7 +24,7 @@ namespace CityTraveler.Tests
         {
             var entertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
 
             var isRemoved = await service.RemoveEntertainment(entertainment.Id);
 
