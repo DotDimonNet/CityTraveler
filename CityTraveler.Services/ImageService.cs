@@ -30,29 +30,33 @@ namespace CityTraveler.Services
         public bool IsActive { get; set ; }
         public string Version { get; set; }
 
-        public async Task AddNewImage(T image)
+        public async Task<bool> AddNewImage(T image)
         {
             try
             {
                 _context.Add(image);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new ImageServiceException($"Exception on adding new image! {e.Message}");
             }
         }
 
-        public async Task DeleteImage(Guid imageId)
+        public async Task<bool> DeleteImage(Guid imageId)
         {
             try
             {
                 var image = await _context.Images.FirstOrDefaultAsync(x=>x.Id==imageId);
                 _context.Images.Remove(image);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new ImageServiceException($"Exception on deleting image! {e.Message}");
             }
         }
@@ -67,20 +71,22 @@ namespace CityTraveler.Services
             return (IEnumerable<T>)_context.Images.Skip(skip).Take(take);
         }
 
-        public async Task AddAvatarToUserProfile(string src)
+        public async Task<bool> AddAvatarToUserProfile(string src)
         {
             try
             {
                 _context.Add(src);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new ImageServiceException($"Exception on adding avatar to user profile! {e.Message}");
             }
         }
 
-        public async Task UpdatAvatarForUserProfile(string src, Guid userId)
+        public async Task<bool> UpdatAvatarForUserProfile(string src, Guid userId)
         {
             try
             {
@@ -88,9 +94,11 @@ namespace CityTraveler.Services
                 user.AvatarSrc = src;
                 _context.Update(user);
                 _context.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new ImageServiceException($"Exception on updating avatar to user profile! {e.Message}");
             }
         }

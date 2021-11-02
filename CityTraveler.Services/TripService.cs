@@ -53,6 +53,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on adding new trip! {e.Message}");
             }
         }
@@ -68,6 +69,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on deleting trip! {e.Message}");
             }
         }
@@ -83,6 +85,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on adding new default trip! {e.Message}");
             }
         }
@@ -90,14 +93,7 @@ namespace CityTraveler.Services
         public IEnumerable<DefaultTripDTO> GetDefaultTrips(int skip = 0, int take = 10)
         {
             var trips = _context.Trips.Where(x => x.DafaultTrip == true).Skip(skip).Take(take);
-            var models = new List<DefaultTripDTO>();
-
-            foreach (var trip in trips)
-            {
-                var model = _mapper.Map<TripModel, DefaultTripDTO>(trip);
-                models.Add(model);
-            }
-            return models;
+            return trips.Select(x => _mapper.Map<TripModel, DefaultTripDTO>(x));
         }
 
         public async Task<bool> SetTripAsDefault(Guid tripId)
@@ -112,6 +108,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on setting default as defaut trip! {e.Message}");
             }
         }
@@ -128,6 +125,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on removing trip from default! {e.Message}");
             }
         }
@@ -146,16 +144,8 @@ namespace CityTraveler.Services
                 .Where(x => x.Title.Contains("") && x.AverageRating == rating 
                 && x.OptimalSpent == optimalSpent && x.Price.Value == price 
                 && x.TagSting.Contains(""));
-
-            var models = new List<TripDTO>();
-
-            foreach (var trip in trips)
-            {
-                var model = _mapper.Map<TripModel, TripDTO>(trip);
-                models.Add(model);
-            }
-
-            return models;            
+       
+            return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));            
         }
 
         public IEnumerable<TripModel> GetTripsByName(string tripName)
@@ -163,22 +153,8 @@ namespace CityTraveler.Services
             return _context.Trips.Where(x => x.Title == tripName);
         }
 
-       /* public IEnumerable<TripDTO> GetTripsByName(string tripName)
-        {
-            var trips = _context.Trips.Where(x => x.Title == tripName);
-            var models = new List<TripDTO>();
-
-            foreach (var trip in trips)
-            {
-                var model = _mapper.Map<TripModel, TripDTO>(trip);
-                models.Add(model);
-            }
-
-            return models;
-        }*/
-
         public IEnumerable<TripModel> GetTripsByStatus(TripStatus status)
-        {
+        {         
             return _context.Trips.Where(x => x.TripStatus == status);
         }
 
@@ -195,6 +171,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on  updating trip status! {e.Message}");
             }
         }
@@ -207,10 +184,13 @@ namespace CityTraveler.Services
                 trip.Title = newTitle;
                 _context.Update(trip);
                 _context.SaveChanges();
+
+                _logger.LogInformation($"Trip with id:{tripId} was updated.");
                 return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on updating trip title! {e.Message}");
             }       
         }
@@ -223,10 +203,13 @@ namespace CityTraveler.Services
                 trip.Description = newDecription;
                 _context.Update(trip);
                 _context.SaveChanges();
+
+                _logger.LogInformation($"Trip with id:{tripId} was updated.");
                 return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on updating trip description! {e.Message}");
             }      
         }
@@ -262,6 +245,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on deleting entertainment from trip! {e.Message}");
             }
         }
