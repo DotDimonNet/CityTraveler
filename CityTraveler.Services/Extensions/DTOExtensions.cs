@@ -53,7 +53,7 @@ namespace CityTraveler.Services.Extensions
             };
             return user;
         }
-        public static EntertaimentModel ToEntertaiment(this EntertainmentDTO entertainmentDTO, StreetModel street)
+        public static EntertaimentModel ToEntertaiment(this EntertainmentGetDTO entertainmentDTO, StreetModel street)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace CityTraveler.Services.Extensions
             }
             catch (Exception ex)
             { 
-                throw new Exception("EntertainmentDTO isn't correct");
+                throw new Exception($"EntertainmentDTO isn't correct: {ex.Message}");
             }     
         }
         public static TripModel ToTrip(this TripDTO tripDTO)
@@ -136,10 +136,7 @@ namespace CityTraveler.Services.Extensions
                 Entertaiment = new List<EntertaimentModel>(),
                 DafaultTrip =defaultTripDTO.DefaultTrip
             };
-                throw new Exception($"EntertainmentDTO isn't correct: {ex.Message}");
-            }
-            
-
+                throw new Exception($"EntertainmentDTO isn't correct");
         }
     }
 }

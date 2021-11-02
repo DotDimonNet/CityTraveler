@@ -60,13 +60,13 @@ namespace CityTraveler.Controllers
             await _service.DeleteTripAsync(tripId);
             return RedirectToAction();                  
         }
-
+/*
         [HttpPut("entertainment-to-trip")]
         public async Task<IActionResult> AddEntertainmentToTrip([FromBody]Guid tripId, EntertainmentDTO entertainment)
         {      
             await _service.AddEntertainmetToTripAsync(tripId, entertainment);
             return RedirectToAction();
-        }
+        }*/
 
         [HttpDelete("entertainment-from-trip")]
         public async Task<IActionResult> DeleteEntertainmentFromTrip([FromQuery] Guid tripID, [FromQuery]Guid entertainmentId)

@@ -16,6 +16,6 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<EntertaimentModel> GetLandscapesByTitle(string title);
         public IEnumerable<EntertaimentModel> GetLandscapesByStreet(string streetTitle);
         public Task<EntertaimentModel> GetLandscapeByCoordinates(CoordinatesDTO coordinates);
-        public Task<EntertaimentModel> GetLandscapeByAddress(AddressDTO address);
+        public Task<EntertaimentModel> GetLandscapeByAddress(AddressGetDTO address);
     }
 }
