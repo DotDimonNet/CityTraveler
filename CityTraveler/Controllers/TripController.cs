@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Domain.Entities;
 using System.Web;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Controllers
 {
@@ -25,15 +26,15 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("get")]
-        public IActionResult GetTrips([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] string name = "")
+        [HttpGet("get")]
+        public IActionResult GetTrips([FromQuery] double rating, [FromQuery] TimeSpan optimalSpent,
+            [FromQuery] double price, [FromQuery] string tag,  
+            [FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] string title = "")
         {
-            return Json(_service.GetTrips(skip, take));
+            return Json(_service.GetTrips(title, rating, optimalSpent, price, tag, skip, take));
         }
 
-        [HttpGet]
-        [Route("getById")]
+        [HttpGet("get-by-id")]
         public async Task<IActionResult> GetTripById(Guid tripId)
         { 
             if (tripId == Guid.Empty)
@@ -46,55 +47,37 @@ namespace CityTraveler.Controllers
             }     
         }
 
-        [HttpGet("get-trips-by-name")]
-        public async Task<IActionResult> GetTripsName(string tripName)
-        {
-            if (String.IsNullOrEmpty(tripName))
-            {
-                return Json(_service.GetTripsByName(tripName));
-            }
-            else
-            {
-                return new StatusCodeResult(404);   
-            }
-        }
-
-        [HttpPost]
-        [Route("postNewTrip")]
-        public async Task<IActionResult> AddNewTrip(TripModel trip)
+        [HttpPost("trip")]
+        public async Task<IActionResult> AddNewTrip(AddNewTripDTO trip)
         {
             await _service.AddNewTripAsync(trip);
             return RedirectToAction();
         }
 
-        [HttpDelete]
-        [Route("deleteTrip")]
+        [HttpDelete("trip")]
         public async Task<IActionResult> DeleteTrip(Guid tripId)
-        {
-            try
-            {
-                await _service.DeleteTripAsync(tripId);
-            }
-            catch 
-            {
-                return new StatusCodeResult(500);     
-            }
+        {      
+            await _service.DeleteTripAsync(tripId);
+            return RedirectToAction();                  
+        }
+
+        [HttpPut("entertainment-to-trip")]
+        public async Task<IActionResult> AddEntertainmentToTrip([FromBody]Guid tripId, EntertainmentDTO entertainment)
+        {      
+            await _service.AddEntertainmetToTripAsync(tripId, entertainment);
             return RedirectToAction();
         }
 
-        [HttpPut]
-        [Route("addTripToEntertainment")]
-        public async Task<IActionResult> AddEntertainmentToTrip(Guid tripId, EntertaimentModel entertainment)
+        [HttpDelete("entertainment-from-trip")]
+        public async Task<IActionResult> DeleteEntertainmentFromTrip([FromQuery] Guid tripID, [FromQuery]Guid entertainmentId)
         {
-            try
-            {
-                await _service.AddEntertainmetToTripAsync(tripId, entertainment);
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult(500);
-            }
+            await _service.DeleteEntertainmentFromTrip(tripID, entertainmentId);
             return RedirectToAction();
+        }
+        [HttpGet ("default-trips")]
+        public async Task<IActionResult> GetDafaultTrips([FromQuery] int skip=0, [FromQuery] int take=10 )
+        {
+            return Json(_service.GetDefaultTrips(skip, take));
         }
     }
 }
