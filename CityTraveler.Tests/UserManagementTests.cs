@@ -31,64 +31,7 @@ namespace CityTraveler.Tests
             Assert.AreEqual(user.Profile.Name, userModel.Profile.Name);
             Assert.AreEqual(user.Email, userModel.Email);
           }
-
-        [Test]
-        public void GetUsersByBirthdayTests()
-        {
-            var birthdayOfUser = ArrangeTests.ApplicationContext.Users
-                .FirstOrDefault().Profile.Birthday;
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
-
-            var users = service.GetUsersByBirthday(birthdayOfUser);
-
-            Assert.IsNotEmpty(users);
-
-            foreach (var user in users)
-            {
-                Assert.AreEqual(user.Profile.Birthday, birthdayOfUser);
-            }
-        }
-
-        [Test]
-        public void GetUsersByNameTests()
-        {
-            var userModel = ArrangeTests.ApplicationContext.Users
-                .LastOrDefault();
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
-            var users = service.GetUsersByName(userModel.Profile.Name);
-
-            Assert.IsNotEmpty(users);
-            foreach (var user in users)
-            {
-                Assert.AreEqual(user.Profile.Name, userModel.Profile.Name);
-            }
-        }
-        [Test]
-        public void GetUsersByGenderTests()
-        {
-            var userGender = ArrangeTests.ApplicationContext.Users
-                .FirstOrDefault().Profile.Gender;
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
-            var users = service.GetUsersByGender(userGender);
-           
-            Assert.IsNotEmpty(users);
-            foreach (var user in users)
-            {
-                Assert.AreEqual(user.Profile.Gender, userGender);
-            }
-        }
-        [Test]
-        public void GetUsersByEmailTests()
-        {
-            var userModel = ArrangeTests.ApplicationContext.Users
-                .FirstOrDefault();
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
-
-            var userResult = service.GetUserByEmail(userModel.Email);
-
-            Assert.IsNotNull(userResult);
-            Assert.AreEqual(userModel.Email, userResult.Email);
-        }
+       
         [Test]
         public void GetUsersTests()
         {
@@ -111,6 +54,26 @@ namespace CityTraveler.Tests
             Assert.IsNotEmpty(users);
             Assert.AreEqual(usersRange.Count(), users.Count());
             Assert.AreEqual(users.Select(x => x.Profile.Name), usersRange.Select(x => x.Profile.Name));
+        }
+
+        [Test]
+        public void GetUsersByPropeties()
+        {
+            var userModel = ArrangeTests.ApplicationContext
+                .Users.LastOrDefault();
+            var service = new UserManagementService(ArrangeTests.ApplicationContext);
+            var users = service.GetUsersByPropeties("", "", "", userModel.Profile.Birthday);
+
+            Assert.IsNotEmpty(users);
+
+            foreach (var user in users)
+            {
+                Assert.AreEqual(userModel.Profile.Name, user.Profile.Name);
+                Assert.AreEqual(userModel.Profile.Gender, user.Profile.Gender);
+                Assert.AreEqual(userModel.Profile.Birthday, user.Profile.Birthday);
+                Assert.AreEqual(userModel.Email, user.Email);
+                Assert.AreEqual(userModel.Id, user.Id);
+            }
         }
     }
 }

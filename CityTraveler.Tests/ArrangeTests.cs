@@ -292,6 +292,7 @@ namespace CityTraveler.Tests
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
                     TagSting = $"tripTagString{i}",
+                    TemplateId = Guid.NewGuid()
                  };
                 if (i % 2 == 0)
                 {
