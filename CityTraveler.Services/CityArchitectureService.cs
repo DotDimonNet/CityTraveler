@@ -9,19 +9,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.DTO;
 using CityTraveler.Services.Extensions;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace CityTraveler.Services
 {
     public class CityArchitectureService : ICityArchitectureService
     {
+        private readonly ILogger<CityArchitectureService> _logger;
         private readonly ApplicationContext _context;
+        private readonly IMapper _mapper; 
 
         public bool IsActive { get; set; }
         public string Version { get; set; }
 
-        public CityArchitectureService(ApplicationContext context)
+        public CityArchitectureService(ApplicationContext context, IMapper mapper, ILogger<CityArchitectureService> logger)
         {
+            _logger = logger;
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<bool> RemoveEntertainment(Guid id)
@@ -29,13 +35,23 @@ namespace CityTraveler.Services
             try
             {
                 var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id);
-                _context.Entertaiments.Remove(entertainment);
-                await _context.SaveChangesAsync();
-                return true;
+
+                if (entertainment != null)
+                {
+                    _context.Entertaiments.Remove(entertainment);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    _logger.LogWarning($"Entertainment was not found by id: {id}");
+                    return false;
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception("Failed to remove entertainment");
+                _logger.LogError($"Error: {ex.Message}");
+                throw new Exception($"Failed to remove entertainment: {ex.Message}");
             }
         }
 
@@ -44,13 +60,11 @@ namespace CityTraveler.Services
             try
             {
                 var models = new List<EntertaimentModel>();
-                var types = _context.EntertainmentType;
 
-                foreach (var ent in entertaiments)
+                foreach (var entertainment in entertaiments)
                 {
-                    var street = _context.Streets.FirstOrDefault(x => x.Title == ent.StreetTitle);
-                    var model = ent.ToEntertaiment(street);
-                    model.Type = types.FirstOrDefault(x => x.Id == ent.Type);
+                    var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(entertainment);
+                    model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainment.Type);
                     models.Add(model);
                 }
 
@@ -58,9 +72,10 @@ namespace CityTraveler.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception($"Failed to set entertainments: {e}");
+                _logger.LogError($"Error: {ex.Message}");
+                throw new Exception($"Failed to set entertainments: {ex.Message}");
             }
         }
 
@@ -87,13 +102,14 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> AddEntertainment(EntertainmentDTO entertaimentDTO)
+        public async Task<bool> AddEntertainment(EntertainmentDTO entertainmentDTO)
         {
             try
             {
-                var street = _context.Streets.FirstOrDefault(x => x.Title == entertaimentDTO.StreetTitle);
-                var model = entertaimentDTO.ToEntertaiment(street);
-                model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertaimentDTO.Type);
+                var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(entertainmentDTO);
+                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainmentDTO.StreetId);
+                model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainmentDTO.Type);
+                
                 _context.Entertaiments.Add(model);
                 await _context.SaveChangesAsync();
                 return true;
