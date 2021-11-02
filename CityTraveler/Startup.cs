@@ -105,9 +105,11 @@ namespace CityTraveler
             services.AddAutoMapper(x => 
             {
                 x.AddProfile<MappingProfile>();
+                x.AddProfile<UserMappingProfile>();
             });
             services.AddOptions();
             services.AddTransient<IUserManagementService, UserManagementService>();
+            services.AddTransient<IInfoService, InfoService>();
             services.AddScoped<DbInitializer>();
             services.AddTransient<ITripService, TripService>();
             services.AddTransient<IEntertainmentService, EntertainmentService>();
