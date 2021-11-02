@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using CityTraveler.Domain.DTO;
 using CityTraveler.Domain.Entities;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Repository.DbContext;
@@ -29,7 +31,7 @@ namespace CityTraveler.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<EntertainmentReviewModel> AddReviewEntertainment(Guid enterId, EntertainmentReviewModel review)
+        public async Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO review)
         {
             if (!_dbContext.Entertaiments.Any(x => x.Id == enterId))
             {
@@ -38,8 +40,10 @@ namespace CityTraveler.Services
             }
             try
             {
-                review.EntertaimentId = enterId;
-                _dbContext.Reviews.Add(review);
+                review.EntertainmentId = enterId;
+                var model = _mapper.Map<EntertainmentReviewDTO, EntertainmentReviewModel>(review);
+                //_dbContext.Ratings.Add(model.Rating);
+                _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception e) 
@@ -50,7 +54,7 @@ namespace CityTraveler.Services
             return review;
         }
 
-        public async Task<TripReviewModel> AddReviewTrip(Guid tripId, TripReviewModel rev)
+        public async Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO review)
         {
             if (!_dbContext.Trips.Any(x => x.Id == tripId))
             {
@@ -59,8 +63,9 @@ namespace CityTraveler.Services
             }
             try
             {
-                rev.TripId = tripId;
-                _dbContext.Reviews.Add(rev);
+                review.TripId = tripId;
+                var model = _mapper.Map<TripReviewDTO, TripReviewModel>(review);
+                _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception e)
@@ -68,7 +73,7 @@ namespace CityTraveler.Services
                 _logger.LogWarning($"Failed to add review to trip {e.Message}");
                 return null;
             }
-            return rev;
+            return review;
         }
 
         public IEnumerable<ReviewModel> GetObjectReviews(Guid objectId)
@@ -110,23 +115,17 @@ namespace CityTraveler.Services
             return _dbContext.Reviews.Where(x => x.UserId == userId);
         }
 
-        public async Task<ReviewModel> PostRating(RatingModel rating, Guid reviewId)
+        public async Task<bool> PostRating(RatingModel rating)
         {
-            if (_dbContext.Reviews.Any(x => x.Id == reviewId))
-            {
-                _logger.LogWarning("Review not found");
-                return null;
-            }
             try
             {
-                ReviewModel re = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
                 _dbContext.Ratings.Add(rating);
-                return re;
+                return true;
             }
             catch (Exception e) 
             {
                 _logger.LogWarning($"Failed to post rating {e.Message}");
-                return null;
+                return false;
             }
 
         }
@@ -157,14 +156,14 @@ namespace CityTraveler.Services
                 return false;
             }
         }
-        public async Task<bool> AddComment(CommentModel comment, Guid reviewId) 
+        public async Task<bool> AddComment(CommentDTO comment) 
         {
-            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
-                throw new SocialMediaServiceException("Review not found");
             try
             {
-                comment.ReviewId = reviewId;
-                _dbContext.Comments.Add(comment);
+                var model = _mapper.Map<CommentDTO, CommentModel>(comment);
+                model.Status = _dbContext.CommentStatuses.FirstOrDefault(x => x.Id == comment.Status);
+
+                _dbContext.Comments.Add(model);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -195,16 +194,10 @@ namespace CityTraveler.Services
                 return false;
             }
         }
-        public async Task<bool> AddImage(ReviewImageModel image, Guid reviewId) 
+        public async Task<bool> AddImage(ReviewImageModel image) 
         {
-            if (!_dbContext.Reviews.Any(x => x.Id == reviewId))
-            {
-                _logger.LogWarning("Review not found");
-                return false;
-            }
             try
             {
-                image.ReviewId = reviewId;
                 _dbContext.Images.Add(image);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -276,5 +269,6 @@ namespace CityTraveler.Services
              _dbContext.Ratings.Remove(await _dbContext.Ratings.FirstOrDefaultAsync(x => x.Id == ratingId));
             return true;
         }
+        
     }
 }

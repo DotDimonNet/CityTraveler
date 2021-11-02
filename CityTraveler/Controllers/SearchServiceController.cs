@@ -12,7 +12,7 @@ namespace CityTraveler.Controllers
     public class SearchServiceController
     {
         [ApiController]
-        [Route("api/search-service")]
+        [Route("api/search")]
         public class SocialMediaController : Controller
         {
             private readonly ILogger<SearchServiceController> _logger;
@@ -24,21 +24,21 @@ namespace CityTraveler.Controllers
                 _logger = logger;
             }
 
-            [HttpGet("filter-users")]
+            [HttpGet("users")]
             public async Task<IActionResult> FilterUsers(FilterUsers user)
             {
                 IEnumerable<ApplicationUserModel> users =await _service.FilterUsers(user);
                 return (Json(users));
             }
 
-            [HttpGet("filter-trips")]
+            [HttpGet("trips")]
             public async Task<IActionResult> FilterTrips(FilterTrips trip)
             {
                 IEnumerable<TripModel> trips = _service.FilterTrips(trip);
                 return (Json(trips));
             }
 
-            [HttpGet("filter-entertainments")]
+            [HttpGet("entertainments")]
             public async Task<IActionResult> FilterEntertainments(FilterEntertainment entertainment)
             {
                 IEnumerable<EntertaimentModel> entertainments = _service.FilterEntertainments(entertainment);

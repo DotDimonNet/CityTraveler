@@ -105,6 +105,7 @@ namespace CityTraveler
             services.AddAutoMapper(x => 
             {
                 x.AddProfile<MappingProfile>();
+                x.AddProfile<ReviewMapping>();
             });
             services.AddOptions();
             services.AddTransient<IUserManagementService, UserManagementService>();
@@ -113,6 +114,7 @@ namespace CityTraveler
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
             services.AddTransient<ISocialMediaService, SocialMediaService>();
+            services.AddTransient<ISearchService, SearchService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>

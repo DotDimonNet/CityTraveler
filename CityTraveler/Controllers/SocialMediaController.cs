@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.Errors;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Controllers
 {
@@ -25,28 +26,27 @@ namespace CityTraveler.Controllers
         }
 
         [HttpPut("add-review-entertainment")]
-        public async Task<IActionResult> AddReview(EntertainmentReviewModel review, Guid entertainmentId)
+        public async Task<IActionResult> AddReview(EntertainmentReviewDTO review, Guid entertainmentId)
         {
             return Json(await _service.AddReviewEntertainment(entertainmentId, review)) ;
         }
 
         [HttpPut("add-review-trip")]
-        public async Task<IActionResult> AddReview(TripReviewModel review, Guid tripId)
+        public async Task<IActionResult> AddReview(TripReviewDTO review, Guid tripId)
         {
             return Json(await _service.AddReviewTrip(tripId, review));
         }
 
         [HttpPut("comment")]
-        public async Task<IActionResult> AddComment(CommentModel comment, Guid reviewId)
+        public async Task<IActionResult> AddComment(CommentDTO comment)
         {
-            return Json(await _service.AddComment(comment, reviewId));
+            return Json(await _service.AddComment(comment));
         }
 
         [HttpPut("image")]
-        public async Task<IActionResult> AddComment(ReviewImageModel image, Guid reviewId)
+        public async Task<IActionResult> AddImage(ReviewImageModel image)
         {
-            _logger.LogInformation($"");
-            return Json(await _service.AddImage(image, reviewId));
+            return Json(await _service.AddImage(image));
         }
 
         [HttpDelete("delete-review")]
@@ -56,15 +56,15 @@ namespace CityTraveler.Controllers
         }
 
         [HttpDelete("delete-comment")]
-        public async Task<IActionResult> DeleteComment(Guid commentId, Guid reviewId)
+        public async Task<IActionResult> DeleteComment(Guid commentId)
         {
-            return Json(await _service.RemoveComment(commentId, reviewId));
+            return Json(await _service.RemoveComment(commentId));
         }
 
         [HttpDelete("delete-image")]
-        public async Task<IActionResult> DeleteImage(Guid reviewImageId, Guid reviewId)
+        public async Task<IActionResult> DeleteImage(Guid reviewImageId)
         {
-            return Json(await _service.RemoveImage(reviewImageId, reviewId));
+            return Json(await _service.RemoveImage(reviewImageId));
         }
 
         [HttpGet("get-by-id")]
@@ -92,6 +92,12 @@ namespace CityTraveler.Controllers
         public async Task<IActionResult> GetReviewsByDescription([FromQuery] string description)
         {
             IEnumerable<ReviewModel> reviews = _service.GetReviewsByDescription(description);
+            return (Json(reviews));
+        }
+        [HttpGet("get-reviews")]
+        public async Task<IActionResult> GetReviewsByDescription([FromQuery] int skip, [FromQuery] int take)
+        {
+            IEnumerable<ReviewModel> reviews = _service.GetReviews(skip,take);
             return (Json(reviews));
         }
 

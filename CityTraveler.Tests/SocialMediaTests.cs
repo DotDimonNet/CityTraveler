@@ -216,7 +216,7 @@ namespace CityTraveler.Tests
               .FirstOrDefaultAsync(x => x.Comments.Count() > 0);
             var comment = await ArrangeTests.ApplicationContext.Comments.FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var review = await service.RemoveComment(comment.Id, firstReview.Id);
+            var review = await service.RemoveComment(comment.Id);
             Assert.True(review);
             Assert.True(!ArrangeTests.ApplicationContext.Comments.Contains(comment));
         }
@@ -225,7 +225,7 @@ namespace CityTraveler.Tests
         {
             var comment = await ArrangeTests.ApplicationContext.Comments.FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = service.RemoveComment(comment.Id, Guid.NewGuid()); 
+            var result = service.RemoveComment(comment.Id); 
             Assert.That(result, null);
         }
         [Test]
@@ -234,7 +234,7 @@ namespace CityTraveler.Tests
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
              .FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = service.RemoveComment(Guid.NewGuid(), firstReview.Id);
+            var result = service.RemoveComment(Guid.NewGuid());
             Assert.That(result, null);
         }
         [Test]
@@ -308,7 +308,7 @@ namespace CityTraveler.Tests
             var image = await ArrangeTests.ApplicationContext.Images.FirstOrDefaultAsync(
                 x => x.Id == firstReview.Images.ElementAt(0).Id);
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var review = await service.RemoveImage(image.Id, firstReview.Id);
+            var review = await service.RemoveImage(image.Id);
             Assert.True(review);
             Assert.True(!ArrangeTests.ApplicationContext.Images.Contains(image));
         }
@@ -317,7 +317,7 @@ namespace CityTraveler.Tests
         {
             var image = await ArrangeTests.ApplicationContext.Images.FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = service.RemoveImage( image.Id, Guid.NewGuid()); ;
+            var result = service.RemoveImage( image.Id); ;
             Assert.That(result, null);
         }
         [Test]
@@ -326,7 +326,7 @@ namespace CityTraveler.Tests
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
              .FirstOrDefaultAsync();
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
-            var result = service.RemoveImage(Guid.NewGuid(), firstReview.Id);
+            var result = service.RemoveImage(Guid.NewGuid());
             Assert.That(result, null); ;
         }
     }

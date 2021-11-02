@@ -16,18 +16,18 @@ namespace CityTraveler.Services
     public class SearchService : ISearchService
     {
         private readonly ApplicationContext _dbContext;
-        private readonly ServiceContext _svContext;
         private readonly IMapper _mapper;
         private readonly ILogger<SearchService> _logger;
+        private readonly IEntertainmentService _entertainmentService;
         public bool IsActive { get; set; }
         public string Version { get; set; }
 
-        public SearchService(ApplicationContext dbContext, ServiceContext sc, IMapper mapper, ILogger<SearchService> logger)
+        public SearchService(ApplicationContext dbContext, IMapper mapper, ILogger<SearchService> logger, IEntertainmentService entertainmentService)
         {
             _dbContext = dbContext;
-            _svContext = sc;
             _mapper = mapper;
             _logger = logger;
+            _entertainmentService = entertainmentService;
         }
         public IEnumerable<EntertaimentModel> FilterEntertainments(FilterEntertainment filter)
         {
@@ -83,7 +83,7 @@ namespace CityTraveler.Services
             try
             {
                 IEnumerable<ApplicationUserModel> users = GetUsersByName(filter.User ?? "");
-                IEnumerable<EntertaimentModel> enter =  _svContext.EntertainmentService.GetEntertainmentByTitle(filter.EntertaimentName??"");
+                IEnumerable<EntertaimentModel> enter =  _entertainmentService.GetEntertainmentByTitle(filter.EntertaimentName ?? "");
                 if (filter.TripStatus != -1)
                 {
                     return _dbContext.Trips.Where(x =>
@@ -129,7 +129,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                IEnumerable<EntertaimentModel> entertaiments =  _svContext.EntertainmentService.GetEntertainmentByTitle(filter.EntertainmentName);
+                IEnumerable<EntertaimentModel> entertaiments =  _entertainmentService.GetEntertainmentByTitle(filter.EntertainmentName);
                 IEnumerable<TripModel> tripsWithGivenEntrtainments = _dbContext.Trips.Where(
                 x => x.Entertaiment.Where(y => entertaiments.Contains(y)).Any());
                 return _dbContext.Users.Where(x =>
