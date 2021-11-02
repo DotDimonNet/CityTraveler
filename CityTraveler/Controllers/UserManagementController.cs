@@ -24,45 +24,30 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("id/{userId}")]
-        public IActionResult GetUserById(Guid userId)
+        public IActionResult GetUserById([FromQuery] Guid userId)
         {
             return Json(_service.GetUserById(userId));
         }
 
-        [HttpGet("birthday/{date}")]
-        public IActionResult GetUsersByBirthday(DateTime date)
-        {
-            return Json(_service.GetUsersByBirthday(date));
-        }
-
-        [HttpGet("name/{name}")]
-        public IActionResult GetUsersByName([FromQuery] string name)
-        {
-            return Json(_service.GetUsersByName(name));
-        }
-
-        [HttpGet("gender/{gender}")]
-        public IActionResult GetUsersByGender(string gender)
-        {
-            return Json(_service.GetUsersByGender(gender));
-        }
 
         [HttpGet("users")]
-        public IActionResult GetUsers(int skip = 0, int take = 10)
+        public IActionResult GetUsers([FromQuery] int skip = 0, int take = 10)
         {
             return Json(_service.GetUsersRange(skip, take));
         }
-
-        [HttpGet("email/{email}")]
-        public IActionResult GetUserByEmail(string email)
-        {
-            return Json(_service.GetUserByEmail (email));
-        }
+             
 
         [HttpGet("users-by-id")]
-        public IActionResult GetUsers (IEnumerable<Guid> guids)
+        public IActionResult GetUsers ([FromQuery] IEnumerable<Guid> guids)
         {
             return Json(_service.GetUsers(guids));
+        }
+
+        [HttpGet("users-name-email-gender-birthday")]
+
+        public IActionResult GetUsersByPropeties([FromQuery] string name = "", string email = "", string gender = "", DateTime birthday = default)
+        {
+            return Json(_service.GetUsersByPropeties(name, email, gender, birthday));
         }
 
     }

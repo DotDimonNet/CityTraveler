@@ -35,22 +35,17 @@ namespace CityTraveler.Services
              }
             catch(Exception e)
             {
-                throw new InfoServiceException("Failed to get the most popular entertaiment in trips");
-
-            }
-           
+                throw new InfoServiceException($"Failed to get the most popular entertaiment in trips: {e.Message}");
+            }  
         }
         public async Task<TripModel> GetTripByMaxChoiceOfUsers()
         {
-            try
+            if(_context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefault() == null)
             {
-                return await  _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();
+                throw new InfoServiceException($"Trip is not found");
             }
-            catch (Exception e)
-            {
-                throw new InfoServiceException("Failed to get the most popular trip ");
-            }
-            
+
+            return await  _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();      
         }
         public async Task<ReviewModel> GetReviewByMaxComments(Guid userId = default)
         {
@@ -62,9 +57,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                throw new InfoServiceException("Failed to get the review ");
-            }
-            
+                throw new InfoServiceException($"Failed to get the review: {e.Message}");
+            }          
         }
 
         public async Task<TripModel> GetTripByMaxReview(Guid userId = default)
@@ -77,37 +71,32 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                throw new InfoServiceException("Failed to get the trip");
+                throw new InfoServiceException($"Failed to get the trip: {e.Message}");
             }
-
         }
 
         public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime start, DateTime end)
         {
             if (start > end)
+            {
                 throw new InfoServiceException("Invalid arguments");
+            }
+                
             return _context.Trips.Where(x => x.TripStart > start && x.TripStart < end);
         }
 
         public IEnumerable<TripModel> GetTripsByLowPrice(int count = 3)
         {
             return _context.Trips.OrderBy(x => x.Price.Value).Take(count);
-            
         }
 
         public async Task<int> GetRegisteredUsersByPeriod(DateTime start, DateTime end)
         {
             if (start > end)
+            {
                 throw new InfoServiceException("Invalid arguments");
-            try
-            {
-                return await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
-            }
-            catch(Exception e)
-            {
-                throw new InfoServiceException($"Failed to get registered users: {e.Message}");
-            }
-           
+            }        
+            return await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);    
         }
         public IEnumerable<TripModel> GetMostlyUsedTemplates(int count = 5)
         {
@@ -129,42 +118,31 @@ namespace CityTraveler.Services
         public int GetUsersCountTripsDateRange(DateTime start, DateTime end)
         {
             if (start > end)
+            {
                 throw new InfoServiceException("Invalid arguments");
+            }
+                
             return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).SelectMany(x => x.Users).Distinct().Count();
         }
 
         public async Task<TripModel> GetLongestTrip()
         {
-            try
-            {
-                return await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
-            }
-            catch (Exception e)
-            {
-                throw new InfoServiceException("The trip not found");
-            }
+          return await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
         }
 
         public async Task<TripModel> GetShortestTrip()
         {
-            try
-            {
-                return await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
-            }
-            catch(Exception e)
-            {
-                throw new InfoServiceException("The trip not found");
-            }
-          
+            return await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();                 
         }
 
         public int GetTripsCreatedByPeriod(DateTime start, DateTime end)
         {
             if (start > end)
+            {
                 throw new InfoServiceException("Invalid arguments");
+            }
+
             return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count();
         }
-
-        
     }
 }
