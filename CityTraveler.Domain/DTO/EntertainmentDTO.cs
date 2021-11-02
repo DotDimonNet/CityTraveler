@@ -11,7 +11,7 @@ namespace CityTraveler.Domain.DTO
     public class EntertainmentDTO
     {
         public EntertainmentAddressDTO Address { get; set; }
-        public Guid StreetId { get; set; }
+        public string StreetId { get; set; }
         public int Type { get; set; }
         public string PriceTitle { get; set; }
         public double PriceValue { get; set; }
