@@ -35,7 +35,7 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("get-by-id")]
-        public async Task<IActionResult> GetTripById(Guid tripId)
+        public IActionResult GetTripById(Guid tripId)
         { 
             if (tripId == Guid.Empty)
             {
@@ -48,36 +48,58 @@ namespace CityTraveler.Controllers
         }
 
         [HttpPost("trip")]
-        public async Task<IActionResult> AddNewTrip(AddNewTripDTO trip)
+        public async Task<IActionResult> AddNewTrip([FromBody] AddNewTripDTO trip)
         {
             await _service.AddNewTripAsync(trip);
             return RedirectToAction();
         }
 
         [HttpDelete("trip")]
-        public async Task<IActionResult> DeleteTrip(Guid tripId)
+        public async Task<IActionResult> DeleteTrip([FromQuery] Guid tripId)
         {      
             await _service.DeleteTripAsync(tripId);
             return RedirectToAction();                  
         }
 
         [HttpPut("entertainment-to-trip")]
-        public async Task<IActionResult> AddEntertainmentToTrip([FromBody]Guid tripId, EntertainmentDTO entertainment)
+        public async Task<IActionResult> AddEntertainmentToTrip([FromQuery] Guid tripId, [FromBody] EntertainmentDTO entertainment)
         {      
             await _service.AddEntertainmetToTripAsync(tripId, entertainment);
             return RedirectToAction();
         }
 
         [HttpDelete("entertainment-from-trip")]
-        public async Task<IActionResult> DeleteEntertainmentFromTrip([FromQuery] Guid tripID, [FromQuery]Guid entertainmentId)
+        public async Task<IActionResult> DeleteEntertainmentFromTrip([FromQuery] Guid tripId, [FromQuery] Guid entertainmentId)
         {
-            await _service.DeleteEntertainmentFromTrip(tripID, entertainmentId);
+            await _service.DeleteEntertainmentFromTrip(tripId, entertainmentId);
             return RedirectToAction();
         }
-        [HttpGet ("default-trips")]
-        public async Task<IActionResult> GetDafaultTrips([FromQuery] int skip=0, [FromQuery] int take=10 )
+
+        [HttpGet("default-trips")]
+        public IActionResult GetDafaultTrips([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
             return Json(_service.GetDefaultTrips(skip, take));
+        }
+
+        [HttpPost("default-trip")]
+        public async Task<IActionResult> AddDefaultTrip([FromBody] DefaultTripDTO defaultTrip)
+        {
+            await _service.AddDefaultTrip(defaultTrip);
+            return RedirectToAction();
+        }
+
+        [HttpPut("trip-title")]
+        public async Task<IActionResult> UpdateTripTitle([FromQuery] Guid tripId, [FromBody] string newtitle) 
+        {
+            await _service.UpdateTripTitleAsync(tripId, newtitle);
+            return RedirectToAction();
+        }
+
+        [HttpPut("trip-description")]
+        public async Task<IActionResult> UpdateTripDescription([FromQuery] Guid tripId, [FromBody] string newDescription)
+        {
+            await _service.UpdateTripDescriptionAsync(tripId, newDescription);
+            return RedirectToAction();
         }
     }
 }

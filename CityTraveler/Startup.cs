@@ -68,7 +68,7 @@ namespace CityTraveler
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + "åæøÅÆØ";
+                options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + "Ã¥Ã¦Ã¸Ã…Ã†Ã˜";
                 options.Tokens.PasswordResetTokenProvider = nameof(PasswordResetTokenProvider);
             });
 
@@ -104,6 +104,7 @@ namespace CityTraveler
 
             services.AddAutoMapper(x => 
             {
+                x.AddProfile<TripMapping>();
                 x.AddProfile<MappingProfile>();
                 x.AddProfile<UserMappingProfile>();
             });
@@ -115,6 +116,7 @@ namespace CityTraveler
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
             services.AddTransient<ISocialMediaService, SocialMediaService>();
+            services.AddTransient(typeof(IImageService<>), typeof(ImageService<>));
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>
