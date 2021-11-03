@@ -16,7 +16,7 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<EntertaimentModel> GetEventByTitle(string title);
         public IEnumerable<EntertaimentModel> GetEventsByStreet(string streetTitle);
         public Task<EntertaimentModel> GetEventByCoordinates(CoordinatesDTO coordinates);
-        public Task<EntertaimentModel> GetEventByAddress(AddressDTO address);
+        public Task<EntertaimentModel> GetEventByAddress(AddressGetDTO address);
         public IEnumerable<EntertaimentModel> GetEventByBeginingDay(DateTime begin);
     }
 }
