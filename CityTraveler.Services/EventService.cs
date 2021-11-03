@@ -63,19 +63,24 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Event);
         }
 
-        public async Task<EntertaimentModel> GetEventByAddress(AddressDTO addressDto)
+        /*public async Task<EntertaimentModel> GetEventByAddress(AddressDTO addressDto)
         {
             return await _context.Entertaiments
                 .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartsmentNumber
                 && x.Address.HouseNumber == addressDto.HouseNumber
                 && x.Address.Street.Title.Contains(addressDto.StreetTitle)
                 && x.Type == EntertainmentType.Event);
-        }
+        }*/
 
         public IEnumerable<EntertaimentModel> GetEventByBeginingDay(DateTime begin)
         {
             return _context.Entertaiments.Where(x => x.Begin >= begin
             && x.Type == EntertainmentType.Event); 
+        }
+
+        public Task<EntertaimentModel> GetEventByAddress(AddressGetDTO address)
+        {
+            throw new NotImplementedException();
         }
     }
 }

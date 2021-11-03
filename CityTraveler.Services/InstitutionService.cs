@@ -63,13 +63,18 @@ namespace CityTraveler.Services
                 && x.Type == EntertainmentType.Institution);
         }
 
-        public async Task<EntertaimentModel> GetInstitutionByAddress(AddressDTO addressDto)
+        public Task<EntertaimentModel> GetInstitutionByAddress(AddressGetDTO address)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*public async Task<EntertaimentModel> GetInstitutionByAddress(AddressDTO addressDto)
         {
             return await _context.Entertaiments
                 .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartsmentNumber
                 && x.Address.HouseNumber == addressDto.HouseNumber
                 && x.Address.Street.Title.Contains(addressDto.StreetTitle)
                 && x.Type == EntertainmentType.Institution);
-        }
+        }*/
     }
 }

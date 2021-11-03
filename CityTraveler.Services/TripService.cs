@@ -96,6 +96,12 @@ namespace CityTraveler.Services
             return trips.Select(x => _mapper.Map<TripModel, DefaultTripDTO>(x));
         }
 
+        public DefaultTripDTO GetDefaultTripById(Guid defaltTripId)
+        {
+            var trip = _context.Trips.FirstOrDefault(x => x.Id == defaltTripId);
+            return _mapper.Map<TripModel, DefaultTripDTO>(trip);
+        }
+
         public async Task<bool> SetTripAsDefault(Guid tripId)
         {
             try
@@ -113,7 +119,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> RemooveTripFromDefault(Guid tripId)
+        public async Task<bool> RemoveTripFromDefault(Guid tripId)
         {
             try
             {
@@ -133,8 +139,7 @@ namespace CityTraveler.Services
         public TripDTO GetTripById(Guid tripId)
         {
             var trip = _context.Trips.FirstOrDefault(x => x.Id == tripId);
-            var model = _mapper.Map<TripModel, TripDTO>(trip);
-            return model;
+            return _mapper.Map<TripModel, TripDTO>(trip);       
         }
 
         public IEnumerable<TripDTO> GetTrips(string title, double rating, TimeSpan optimalSpent, double price, string tag, int skip = 0, int take = 10)
@@ -214,11 +219,11 @@ namespace CityTraveler.Services
             }      
         }
 
-        public async Task<bool> AddEntertainmetToTripAsync(Guid tripId, EntertainmentDTO newEntertainment)
+        public async Task<bool> AddEntertainmetToTripAsync(Guid tripId, EntertainmentGetDTO newEntertainment)
         {
             try
             {
-                var model = _mapper.Map<EntertainmentDTO, EntertaimentModel>(newEntertainment);
+                var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(newEntertainment);
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
                 trip.Entertaiment.Add(model);
                 _context.Update(trip);

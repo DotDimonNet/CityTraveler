@@ -62,8 +62,8 @@ namespace CityTraveler.Controllers
         }
 
         [HttpPut("entertainment-to-trip")]
-        public async Task<IActionResult> AddEntertainmentToTrip([FromQuery] Guid tripId, [FromBody] EntertainmentDTO entertainment)
-        {      
+        public async Task<IActionResult> AddEntertainmentToTrip([FromQuery] Guid tripId, [FromBody] EntertainmentGetDTO entertainment)
+        {
             await _service.AddEntertainmetToTripAsync(tripId, entertainment);
             return RedirectToAction();
         }
