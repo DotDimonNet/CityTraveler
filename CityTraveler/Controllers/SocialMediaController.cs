@@ -25,79 +25,90 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpPut("add-review-entertainment")]
+        [HttpPost("review-entertainment")]
         public async Task<IActionResult> AddReview(EntertainmentReviewDTO review, Guid entertainmentId)
         {
             return Json(await _service.AddReviewEntertainment(entertainmentId, review)) ;
         }
 
-        [HttpPut("add-review-trip")]
+        [HttpPost("review-trip")]
         public async Task<IActionResult> AddReview(TripReviewDTO review, Guid tripId)
         {
             return Json(await _service.AddReviewTrip(tripId, review));
         }
 
-        [HttpPut("comment")]
+        [HttpPost("comment")]
         public async Task<IActionResult> AddComment(CommentDTO comment)
         {
             return Json(await _service.AddComment(comment));
         }
 
-        [HttpPut("image")]
-        public async Task<IActionResult> AddImage(ReviewImageModel image)
+        [HttpPost("image")]
+        public async Task<IActionResult> AddImage(ReviewImageDTO image)
         {
             return Json(await _service.AddImage(image));
         }
+        [HttpPut("comment")]
+        public async Task<IActionResult> UpdateComment(CommentModel comment)
+        {
+            return Json(await _service.UpdateComment(comment));
+        }
 
-        [HttpDelete("delete-review")]
+        [HttpPut("image")]
+        public async Task<IActionResult> UpdateReview(ReviewModel review)
+        {
+            return Json(await _service.UpdateReview(review));
+        }
+
+        [HttpDelete("review")]
         public async Task<IActionResult> DeleteReview(Guid reviewId)
         {
             return Json(await _service.RemoveReview(reviewId));
         }
 
-        [HttpDelete("delete-comment")]
+        [HttpDelete("comment")]
         public async Task<IActionResult> DeleteComment(Guid commentId)
         {
             return Json(await _service.RemoveComment(commentId));
         }
 
-        [HttpDelete("delete-image")]
+        [HttpDelete("image")]
         public async Task<IActionResult> DeleteImage(Guid reviewImageId)
         {
             return Json(await _service.RemoveImage(reviewImageId));
         }
 
-        [HttpGet("get-by-id")]
+        [HttpGet("by-id")]
         public async Task<IActionResult> GetReview(Guid reviewId)
         {
-            ReviewModel review = await _service.GetReviewById(reviewId);
+            ReviewDTO review = await _service.GetReviewById(reviewId);
             return (Json(review));
         }
 
-        [HttpGet("get-by-title")]
-        public async Task<IActionResult> GetReviewByTitle(string title)
+        [HttpGet("by-title")]
+        public IActionResult GetReviewByTitle(string title)
         {
-            IEnumerable<ReviewModel> review =_service.GetReviewsByTitle(title);
+            IEnumerable<ReviewDTO> review =_service.GetReviewsByTitle(title);
             return (Json(review));
 
         }
 
-        [HttpGet("get-reviews-by-average-raiting")]
-        public async Task<IActionResult> GetReviewsByAverageRaiting(double raiting)
+        [HttpGet("by-average-raiting")]
+        public IActionResult GetReviewsByAverageRaiting(double raiting)
         {
-            IEnumerable<ReviewModel> review = _service.GetReviewsByAverageRating(raiting);
+            IEnumerable<ReviewDTO> review = _service.GetReviewsByAverageRating(raiting);
             return (Json(review));
         }
-        [HttpGet("get-reviews-by-description")]
-        public async Task<IActionResult> GetReviewsByDescription([FromQuery] string description)
+        [HttpGet("by-description")]
+        public IActionResult GetReviewsByDescription([FromQuery] string description)
         {
-            IEnumerable<ReviewModel> reviews = _service.GetReviewsByDescription(description);
+            IEnumerable<ReviewDTO> reviews = _service.GetReviewsByDescription(description);
             return (Json(reviews));
         }
-        [HttpGet("get-reviews")]
-        public async Task<IActionResult> GetReviewsByDescription([FromQuery] int skip, [FromQuery] int take)
+        [HttpGet("reviews")]
+        public IActionResult GetReviewsByDescription([FromQuery] int skip, int take)
         {
-            IEnumerable<ReviewModel> reviews = _service.GetReviews(skip,take);
+            IEnumerable<ReviewDTO> reviews = _service.GetReviews(skip,take);
             return (Json(reviews));
         }
 

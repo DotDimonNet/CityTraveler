@@ -25,6 +25,9 @@ namespace CityTraveler.Mapping
                 ForMember(x => x.Comments, o => o.Ignore());
             CreateMap<EntertainmentReviewDTO, EntertainmentReviewModel>();
             CreateMap<TripReviewDTO, TripReviewModel>();
+            CreateMap<TripReviewModel, TripReviewDTO>().ReverseMap();
+            CreateMap<EntertainmentReviewModel, EntertainmentReviewDTO>().ReverseMap();
+            CreateMap<ReviewModel, ReviewDTO>().ReverseMap();
         }
     }
 }
