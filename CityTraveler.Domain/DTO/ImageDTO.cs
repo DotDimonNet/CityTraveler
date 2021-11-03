@@ -13,6 +13,7 @@ namespace CityTraveler.Domain.DTO
         public string Title { get; set; }
         public string Description { get; set; }
     }
+  
     public class ImageShowDTO
     {
         public string Source { get; set; }

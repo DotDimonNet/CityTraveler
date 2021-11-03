@@ -1,4 +1,5 @@
-﻿using CityTraveler.Repository.DbContext;
+﻿using CityTraveler.Domain.DTO;
+using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -24,30 +25,38 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("id/{userId}")]
-        public IActionResult GetUserById([FromQuery] Guid userId)
+        public async Task<IActionResult> GetUserById([FromQuery] Guid userId)
         {
-            return Json(_service.GetUserById(userId));
+            var user = await _service.GetUserById(userId);
+            return Json(user);
         }
 
 
         [HttpGet("users")]
-        public IActionResult GetUsers([FromQuery] int skip = 0, int take = 10)
+        public IActionResult GetUsers([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            return Json(_service.GetUsersRange(skip, take));
+            var users = _service.GetUsersRange(skip, take);
+            return Json(users);
         }
              
 
         [HttpGet("users-by-id")]
         public IActionResult GetUsers ([FromQuery] IEnumerable<Guid> guids)
         {
-            return Json(_service.GetUsers(guids));
+            var users = _service.GetUsers(guids);
+            return Json(users);
         }
 
         [HttpGet("users-name-email-gender-birthday")]
 
-        public IActionResult GetUsersByPropeties([FromQuery] string name = "", string email = "", string gender = "", DateTime birthday = default)
+        public IActionResult GetUsersByPropeties(
+            [FromQuery] string name = "", 
+            [FromQuery] string email = "", 
+            [FromQuery] string gender = "", 
+            [FromQuery] DateTime birthday = default)
         {
-            return Json(_service.GetUsersByPropeties(name, email, gender, birthday));
+            var users = _service.GetUsersByPropeties(name, email, gender, birthday);
+            return Json(users);
         }
 
     }

@@ -108,26 +108,26 @@ namespace CityTraveler.Tests
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips(
+            var result = service.FilterTrips(
                 new FilterTrips
                 {
                     PriceLess = 100,
                     PriceMore = 200
-                }));
-            Assert.AreEqual(result.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
+                });
+            Assert.AreEqual(result, null);
         }
         [Test]
         public void FilterTripsThrowsRaitingTest()
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips(
+            var result = service.FilterTrips(
                 new FilterTrips
                 {
                     AverageRatingLess = 100,
                     AverageRatingMore = 200
-                }));
-            Assert.AreEqual(result.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
+                });
+            Assert.AreEqual(result,null);
         }
         [Test]
         public void FilterEntertainmentsNullFieldsTest()
@@ -178,26 +178,24 @@ namespace CityTraveler.Tests
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var ex = Assert.Throws<SearchServiceException>(() =>
-            service.FilterEntertainments(new FilterEntertainment
+            var result = service.FilterEntertainments(new FilterEntertainment
             {
                 PriceLess = 100,
                 PriceMore = 200
-            }));
-            Assert.AreEqual(ex.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
+            });
+            Assert.AreEqual(result, null);
         }
         [Test]
         public void FilterEntertainmentThrowsRaitingTest()
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
                 new ServiceContext(ArrangeTests.ApplicationContext));
-            var ex = Assert.Throws<SearchServiceException>(() =>
-            service.FilterEntertainments(new FilterEntertainment
+            var ex = service.FilterEntertainments(new FilterEntertainment
             {
                 RatingLess = 100,
                 RatingMore = 200
-            }));
-            Assert.AreEqual(ex.Message, "PriceMore can`t be more than priceLess. The same is for rating.");
+            });
+            Assert.AreEqual(ex, null);
         }
         [Test]
         public void FilterUsersAlikeNullFieldsTest()

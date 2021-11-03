@@ -6,19 +6,24 @@ using CityTraveler.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-
+using AutoMapper;
+using Microsoft.Extensions.Logging;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services
 {
     public class UserManagementService : IUserManagementService
     {
         private ApplicationContext _context;
-        public UserManagementService(ApplicationContext context)
+        private readonly ILogger<UserManagementService> _logger;
+        private readonly IMapper _mapper;
+
+        public UserManagementService(ApplicationContext context, IMapper mapper, ILogger<UserManagementService> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
         public bool IsActive { get; set; }
         public string Version { get; set; }
@@ -29,9 +34,9 @@ namespace CityTraveler.Services
         public string Description { get; set; }
 
 
-        public ApplicationUserModel GetUserById(Guid userId)
+        public async Task<UserDTO> GetUserById(Guid userId)
         {
-            if (_context.Users.FirstOrDefault(x => x.Id == userId) == null)
+            if (_context.Users.FirstOrDefaultAsync(x => x.Id == userId) == null)
             {
                 throw new UserManagemenServicetException("Users not found");
             }
@@ -40,33 +45,59 @@ namespace CityTraveler.Services
             {
                 throw new UserManagemenServicetException("Invalid argument");
             }
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
-            return _context.Users.FirstOrDefault(x => x.Id == userId);
+            return _mapper.Map<ApplicationUserModel, UserDTO>(user);
         }
                 
-        public IEnumerable<ApplicationUserModel> GetUsersRange(int skip = 0, int take = 10)
+        public IEnumerable<UserDTO> GetUsersRange(int skip = 0, int take = 10)
         {
-            if (skip < 0 || take < 0)
+            try
             {
-                throw new UserManagemenServicetException("Invalid arguments");
+                if (skip < 0 || take < 0)
+                {
+                    throw new UserManagemenServicetException("Invalid arguments");
+                }
+
+                var users = _context.Users.Skip(skip).Take(take);
+
+            return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
             }
-                
-            return _context.Users.Skip(skip).Take(take);
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new UserManagemenServicetException($"Users not found: {e.Message}");
+            }
+           
         }
-        public IEnumerable<ApplicationUserModel> GetUsers(IEnumerable<Guid> guids)
+        public IEnumerable<UserDTO> GetUsers(IEnumerable<Guid> guids)
         {
-            return _context.Users.Where(x => guids.Contains(x.Id));
+            var users = _context.Users.Where(x => guids.Contains(x.Id));
+            return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
         }
-        public IEnumerable<ApplicationUserModel> GetUsersByPropeties(string name = "", string email = "", string gender = "", DateTime birthday = default)
+        public IEnumerable<UserDTO> GetUsersByPropeties(string name = "", string email = "", string gender = "", DateTime birthday = default)
         {
-            if (_context.Users
+            try
+            {
+                if (_context.Users
                 .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender.Contains(gender) && x.Email
                 .Contains(email) && x.Profile.Birthday.Date == birthday.Date) == null)
-            {
+                {
                 throw new UserManagemenServicetException("Users not found");
+                }
+
+                var users = _context.Users
+                .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender
+                .Contains(gender) && x.Email.Contains(email) && x.Profile.Birthday.Date == birthday.Date);
+
+                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
             }
-            return _context.Users
-                .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender.Contains(gender) && x.Email.Contains(email) && x.Profile.Birthday.Date == birthday.Date);
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new UserManagemenServicetException($"Users not found: {e.Message}");
+            }
+
         }
     }
 

@@ -136,7 +136,6 @@ namespace CityTraveler.Services.Extensions
                 Entertaiment = new List<EntertaimentModel>(),
                 DafaultTrip =defaultTripDTO.DefaultTrip
             };
-                throw new Exception($"EntertainmentDTO isn't correct");
         }
     }
 }
