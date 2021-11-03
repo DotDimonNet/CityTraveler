@@ -24,7 +24,7 @@ namespace CityTraveler.Tests
         {
             var entertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, null);
 
             var isRemoved = await service.RemoveEntertainment(entertainment.Id);
 
@@ -37,7 +37,7 @@ namespace CityTraveler.Tests
         {
             var entertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, null);
 
             try
             {
@@ -74,7 +74,7 @@ namespace CityTraveler.Tests
                 },
             };
             var contextSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, null);
 
             var isSeted = await service.AddEntertainments(entertainmentsDTO);
             var newContexSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
@@ -92,9 +92,9 @@ namespace CityTraveler.Tests
             var oldModifided = oldEntertainment.Modified;
             var oldCreated = oldEntertainment.Created;
             oldEntertainment.Title = "Updated";
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, null);
 
-            var isUpdated = await service.UpdateEntertainment(oldEntertainment);
+            var isUpdated = await service.UpdateEntertainment(new EntertainmentUpdateDTO()/*oldEntertainment*/);
             
             var newEntertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x=>x.Id==oldEntertainment.Id);
@@ -108,9 +108,9 @@ namespace CityTraveler.Tests
         public async Task UpdateEntertainmentExeptionTest()
         {
             var newEntertainment = new EntertaimentModel();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, null);
 
-            var isUpdated = await service.UpdateEntertainment(newEntertainment);
+            var isUpdated = await service.UpdateEntertainment(new EntertainmentUpdateDTO());
 
             var newEntertainmentAfter = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x => x.Id == newEntertainment.Id);
@@ -121,9 +121,9 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddEntertainmentTest()
         {
-            var dto = new EntertainmentDTO()
+            var dto = new EntertainmentGetDTO()
             {
-                Address = new EntertainmentAddressDTO()
+                Address = new AddressGetDTO()
                 {
                     Coordinates = new CoordinatesDTO()
                     {
@@ -133,15 +133,15 @@ namespace CityTraveler.Tests
                     HouseNumber = "23",
                     ApartmentNumber = "34"
                 },
-                StreetTitle = "2355",
-                StreetDescription = "",
+                //StreetTitle = "2355",
+                //StreetDescription = "",
+                //PriceTitle = "Average price",
+                //PriceValue = 4567,
                 Type = EntertainmentType.Event.Id,
-                PriceTitle = "Average price",
-                PriceValue = 4567,
                 Title = "Lorem",
                 Description = "Ipsum"
             };
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, null);
             var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
             var isAdded = await service.AddEntertainment(dto);
