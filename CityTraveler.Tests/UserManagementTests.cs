@@ -62,7 +62,7 @@ namespace CityTraveler.Tests
             var userModel = ArrangeTests.ApplicationContext
                 .Users.LastOrDefault();
             var service = new UserManagementService(ArrangeTests.ApplicationContext);
-            var users = service.GetUsersByPropeties("", "", "", userModel.Profile.Birthday);
+            var users = service.GetUsersByPropeties(userModel.Profile.Name, "", "", default);
 
             Assert.IsNotEmpty(users);
 

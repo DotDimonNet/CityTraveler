@@ -8,18 +8,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services
 {
     public class InfoService : IInfoService
     {
         private ApplicationContext _context;
+        private readonly ILogger<InfoService> _logger;
+        private readonly IMapper _mapper;
 
-        public InfoService(ApplicationContext context)
+        public InfoService(ApplicationContext context, IMapper mapper, ILogger<InfoService> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
-
         public bool IsActive { get ; set ; }
         public string Version { get ; set ; }
 
@@ -35,6 +41,7 @@ namespace CityTraveler.Services
              }
             catch(Exception e)
             {
+                _logger.LogError( $"Error:{e.Message}");
                 throw new InfoServiceException($"Failed to get the most popular entertaiment in trips: {e.Message}");
             }  
         }
@@ -57,6 +64,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new InfoServiceException($"Failed to get the review: {e.Message}");
             }          
         }
@@ -71,6 +79,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error:{e.Message}");
                 throw new InfoServiceException($"Failed to get the trip: {e.Message}");
             }
         }
@@ -110,6 +119,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error: {e.Message}");
                 throw new InfoServiceException($"Failed to get mostly used templates: {e.Message}");
             }
             
