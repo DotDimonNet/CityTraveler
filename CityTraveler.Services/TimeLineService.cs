@@ -43,8 +43,9 @@ namespace CityTraveler.Services
 
                 foreach (var entertainment in entertainments)
                 {
+                    var streetId = Guid.Parse(entertainment.StreetId);
                     var elemet = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainment);
-                    elemet.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainment.StreetId);
+                    elemet.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
                     elemet.Type = await _context.EntertainmentType.FirstOrDefaultAsync(x => x.Id == entertainment.Type);
                     timeLine.Add(elemet);
                 }
