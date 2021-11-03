@@ -25,6 +25,12 @@ namespace CityTraveler.Services
             _mapper = mapper;
             _logger = logger;
         }
+
+        public UserManagementService(ApplicationContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
         public bool IsActive { get; set; }
         public string Version { get; set; }
         public Guid Id { get; set; }
@@ -34,9 +40,9 @@ namespace CityTraveler.Services
         public string Description { get; set; }
 
 
-        public async Task<UserDTO> GetUserById(Guid userId)
+        public UserDTO GetUserById(Guid userId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = _context.Users.FirstOrDefault(x => x.Id == userId);
             if (user != null)
             {
                 return _mapper.Map<ApplicationUserModel, UserDTO>(user);
