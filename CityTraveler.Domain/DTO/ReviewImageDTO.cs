@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Domain.DTO
 {
-    public class ReviewImageDTO: ImageModel
+    public class ReviewImageDTO: ImageGetDTO
     {
-        public string ReviewDTO { get; set; }
+        public Guid ReviewId { get; set; }
     }
 }

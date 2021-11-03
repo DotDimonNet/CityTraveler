@@ -36,18 +36,16 @@ namespace CityTraveler.Services
 
         public async Task<UserDTO> GetUserById(Guid userId)
         {
-            if (_context.Users.FirstOrDefaultAsync(x => x.Id == userId) == null)
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user != null)
+            {
+                return _mapper.Map<ApplicationUserModel, UserDTO>(user);
+            }
+            else
             {
                 throw new UserManagemenServicetException("Users not found");
             }
-                
-            if (userId == Guid.Empty)
-            {
-                throw new UserManagemenServicetException("Invalid argument");
-            }
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
-            return _mapper.Map<ApplicationUserModel, UserDTO>(user);
         }
                 
         public IEnumerable<UserDTO> GetUsersRange(int skip = 0, int take = 10)

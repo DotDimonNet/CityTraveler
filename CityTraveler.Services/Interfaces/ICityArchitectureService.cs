@@ -12,11 +12,11 @@ namespace CityTraveler.Services.Interfaces
     {
         public Task<bool> AddEntertainments(IEnumerable<EntertainmentGetDTO> entertaiments);
         public Task<bool> AddEntertainment(EntertainmentGetDTO entertaimentDTO);
-        public Task<bool> UpdateEntertainment(EntertaimentModel entertaiment);
+        public Task<bool> UpdateEntertainment(EntertainmentUpdateDTO entertaimentDto);
         public Task<bool> ValidateEntertainments();
         public Task<bool> RemoveEntertainment(Guid id);
         public Task<bool> AddStreet(StreetGetDTO street);
-        public Task<bool> UpdateStreet(StreetModel street);
+        public Task<bool> UpdateStreet(StreetDTO streetDto);
         public Task<bool> ValidateStreets();
         public Task<bool> RemoveStreet(Guid streetId);
         public Task<bool> ValidateAddresses();

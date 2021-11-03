@@ -21,11 +21,15 @@ namespace CityTraveler.Mapping
             CreateMap<AddressModel, AddressShowDTO>();
             CreateMap<AddressGetDTO, AddressModel>()
                 .ForMember(x => x.StreetId, o => o.Ignore());
+            CreateMap<EntertaimentModel, EntertainmentPreviewDTO>();
             CreateMap<EntertaimentModel, EntertainmentShowDTO>()
                 .ForMember(x => x.Type, o => o.Ignore());
             CreateMap<EntertainmentGetDTO, EntertaimentModel>()
                 .ForMember(x => x.Address, o => o.MapFrom(z => z.Address))
-                .ForMember(x => x.AveragePrice, o => o.Ignore())
+                .ForMember(x => x.Type, o => o.Ignore());
+            CreateMap<EntertainmentUpdateDTO, EntertaimentModel>()
+                .ForMember(x => x.Address, o => o.Ignore())
+                .ForMember(x => x.Id, o => o.Ignore())
                 .ForMember(x => x.Type, o => o.Ignore());
         }
     }

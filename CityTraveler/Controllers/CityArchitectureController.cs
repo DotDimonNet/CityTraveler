@@ -57,15 +57,15 @@ namespace CityTraveler.Controllers
         }
 
         [HttpPut("update-entertainment")]
-        public async Task<IActionResult> UpdateEntertainment([FromBody] EntertaimentModel entertainment)
+        public async Task<IActionResult> UpdateEntertainment([FromBody] EntertainmentUpdateDTO entertainmentDto)
         {
-            return Json(await _service.UpdateEntertainment(entertainment));
+            return Json(await _service.UpdateEntertainment(entertainmentDto));
         }
 
         [HttpPut("update-street")]
-        public async Task<IActionResult> UpdateStreet([FromBody] StreetModel street)
+        public async Task<IActionResult> UpdateStreet([FromBody] StreetDTO streetDto)
         {
-            return Json(await _service.UpdateStreet(street));
+            return Json(await _service.UpdateStreet(streetDto));
         }
     }
 }
