@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
+using CityTraveler.Domain.DTO;
 using CityTraveler.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -36,7 +37,9 @@ namespace CityTraveler.Services
                 _logger.LogWarning("PriceMore can`t be more than priceLess. The same is for rating.");
                 return null;
             }
+            
             IEnumerable<TripModel> trips = GetTripByName(filter.TripName ?? "");
+            
             try
             {
                 if (filter.Type != -1)
