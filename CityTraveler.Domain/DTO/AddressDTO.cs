@@ -9,7 +9,7 @@ namespace CityTraveler.Domain.DTO
     public class AddressShowDTO
     {
         public string HouseNumber { set; get; }
-        public string ApartsmentNumber { set; get; }
+        public string ApartmentNumber { set; get; }
         public StreetShowDTO Street { set; get; }
     }
     public class AddressGetDTO

@@ -37,8 +37,9 @@ namespace CityTraveler.Services
 
                 foreach (var entertainment in entertaiments)
                 {
+                    var streetId = Guid.Parse(entertainment.StreetId);
                     var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainment);
-                    model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainment.StreetId);
+                    model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
                     model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainment.Type);
                     models.Add(model);
                 }
@@ -58,8 +59,9 @@ namespace CityTraveler.Services
         {
             try
             {
+                var streetId = Guid.Parse(entertainmentDTO.StreetId);
                 var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainmentDTO);
-                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainmentDTO.StreetId);
+                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
                 model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainmentDTO.Type);
 
                 _context.Entertaiments.Add(model);
