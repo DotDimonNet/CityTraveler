@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.DTO;
-using CityTraveler.Services.Extensions;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 

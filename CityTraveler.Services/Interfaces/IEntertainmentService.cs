@@ -10,19 +10,19 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IEntertainmentService : IServiceMetadata
     {
-        public IEnumerable<EntertainmentShowDTO> GetAllDTO();
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByTitle(string title);
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByTitle(string title);
-        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> guids);
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> guids);
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle);
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByStreet(string streetTitle);
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByCoordinates(CoordinatesDTO coordinates);
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinates);
-        public Task<EntertaimentModel> GetEntertainmentById(Guid guids);
-        public Task<EntertainmentShowDTO> GetEntertainmentDTOById(Guid guids);
-        public Task<EntertaimentModel> GetEntertainmentByAddress(AddressGetDTO address);
-        public Task<EntertainmentShowDTO> GetEntertainmentDTOByAddress(AddressGetDTO address);
+        public IEnumerable<EntertainmentShowDTO> GetAllDTO(int typeId = 0);
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByTitle(string title, int typeId = 0);
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByTitle(string title, int typeId = 0);
+        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> guids, int typeId = 0);
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> guids, int typeId = 0);
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle, int typeId = 0);
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0);
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByCoordinates(CoordinatesDTO coordinates, int typeId = 0);
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinates, int typeId = 0);
+        public Task<EntertaimentModel> GetEntertainmentById(Guid guids, int typeId = 0);
+        public Task<EntertainmentShowDTO> GetEntertainmentDTOById(Guid guids, int typeId = 0);
+        public Task<EntertaimentModel> GetEntertainmentByAddress(AddressGetDTO address, int typeId = 0);
+        public Task<EntertainmentShowDTO> GetEntertainmentDTOByAddress(AddressGetDTO address, int typeId = 0);
         public double GetAverageRating(EntertaimentModel entertaiment);
     }
 }
