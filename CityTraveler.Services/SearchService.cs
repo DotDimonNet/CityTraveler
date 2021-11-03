@@ -86,7 +86,7 @@ namespace CityTraveler.Services
             try
             {
                 IEnumerable<ApplicationUserModel> users = GetUsersByName(filter.User ?? "");
-                IEnumerable<EntertaimentModel> enter =  _entertainmentService.GetEntertainmentByTitle(filter.EntertaimentName ?? "");
+                IEnumerable<EntertaimentModel> enter =  _entertainmentService.GetEntertainmentsByTitle(filter.EntertaimentName ?? "");
                 if (filter.TripStatus != -1)
                 {
                     return _dbContext.Trips.Where(x =>
@@ -132,7 +132,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                IEnumerable<EntertaimentModel> entertaiments =  _entertainmentService.GetEntertainmentByTitle(filter.EntertainmentName);
+                IEnumerable<EntertaimentModel> entertaiments =  _entertainmentService.GetEntertainmentsByTitle(filter.EntertainmentName);
                 IEnumerable<TripModel> tripsWithGivenEntrtainments = _dbContext.Trips.Where(
                 x => x.Entertaiment.Where(y => entertaiments.Contains(y)).Any());
                 return _dbContext.Users.Where(x =>

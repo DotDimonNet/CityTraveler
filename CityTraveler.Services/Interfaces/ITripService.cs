@@ -22,10 +22,11 @@ namespace CityTraveler.Services.Interfaces
         public Task<bool> UpdateTripSatusAsync(Guid tripId, TripStatus newStatus);
         public Task<bool> UpdateTripTitleAsync(Guid tripId, string newTitle);
         public Task<bool> UpdateTripDescriptionAsync(Guid tripId, string newDecription);
-        public Task<bool> AddEntertainmetToTripAsync(Guid tripId, EntertainmentDTO newEntertainment);
+        public Task<bool> AddEntertainmetToTripAsync(Guid tripId, EntertainmentGetDTO newEntertainment);
         public Task<bool> DeleteEntertainmentFromTrip(Guid tripId, Guid entertainmentId);
         public IEnumerable<DefaultTripDTO> GetDefaultTrips(int skip = 0, int take=10);
+        public DefaultTripDTO GetDefaultTripById(Guid defaltTripId);
         public Task<bool> SetTripAsDefault(Guid tripId);
-        public Task<bool> RemooveTripFromDefault(Guid tripId);
+        public Task<bool> RemoveTripFromDefault(Guid tripId);
     }
 }

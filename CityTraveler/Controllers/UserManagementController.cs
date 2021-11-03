@@ -24,7 +24,7 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("id/{userId}")]
+        [HttpGet("id")]
         public async Task<IActionResult> GetUserById([FromQuery] Guid userId)
         {
             var user = await _service.GetUserById(userId);

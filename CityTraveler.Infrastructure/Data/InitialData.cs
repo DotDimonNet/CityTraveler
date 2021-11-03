@@ -193,7 +193,7 @@ namespace CityTraveler.Infrastucture.Data
                 {
                     Title = "Review",
                     Description = "Review description",
-                    EntertaimentId = context.Entertaiments.FirstOrDefault().Id,
+                    EntertainmentId = context.Entertaiments.FirstOrDefault().Id,
                     UserId = context.Users.FirstOrDefault().Id
                 },
                 UserId = context.Users.FirstOrDefault().Id

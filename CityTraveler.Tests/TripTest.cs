@@ -52,6 +52,15 @@ namespace CityTraveler.Tests
             Assert.IsTrue(isAdded);
         } 
 
+        [Test]
+        public async Task GetDefaultTripsTets()
+        {
+            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
+            var defautTrips = service.GetDefaultTrips();
+
+            Assert.IsNotNull(defautTrips);
+            Assert.IsNotEmpty(defautTrips);
+        }
     }
 }
 

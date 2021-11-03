@@ -76,50 +76,55 @@ namespace CityTraveler.Services
             return review;
         }
 
-        public IEnumerable<ReviewModel> GetObjectReviews(Guid objectId)
+        public IEnumerable<ReviewDTO> GetObjectReviews(Guid objectId)
         {
-            EntertaimentModel e = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
-            TripModel t = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
-            if (e != null)
-            {
-                return e.Reviews;
-            }
-            else if (t != null)
-            {
-                return t.Reviews;
-            }
-            else
+            if (!_dbContext.Entertaiments.Any(x => x.Id == objectId) && !_dbContext.Trips.Any(x => x.Id == objectId)) 
             {
                 _logger.LogWarning("Object not found");
                 return null;
             }
+
+            EntertaimentModel e = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
+            TripModel t = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
+            if (_dbContext.Entertaiments.Any(x => x.Id == objectId))
+            {
+                return e.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x));
+            }
+            else
+            {
+                return t.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
+            }
         }
 
-        public IEnumerable<ReviewModel> GetReviews(int skip = 0, int take = 10)
+        public IEnumerable<ReviewDTO> GetReviews(int skip = 0, int take = 10)
         {
             if (skip < 0 || take < 0)
             {
                 _logger.LogWarning("Invalid arguments");
                 return null;
             }
-            return _dbContext.Reviews.Skip(skip).Take(take);
+            IEnumerable<ReviewModel> reviewModels= _dbContext.Reviews.Skip(skip).Take(take);
+            IEnumerable<ReviewDTO> reviews = new List<ReviewDTO>();
+            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
 
-        public IEnumerable<ReviewModel> GetUserReviews(Guid userId)
+        public IEnumerable<ReviewDTO> GetUserReviews(Guid userId)
         {
             if (!_dbContext.Users.Any(x => x.Id == userId))
             {
                 _logger.LogWarning("User not found");
                 return null;
             }
-            return _dbContext.Reviews.Where(x => x.UserId == userId);
+            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.UserId == userId);
+            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
 
-        public async Task<bool> PostRating(RatingModel rating)
+        public async Task<bool> PostRating(RatingDTO rating)
         {
             try
             {
-                _dbContext.Ratings.Add(rating);
+                var model = _mapper.Map<RatingDTO, RatingModel>(rating);
+                _dbContext.Ratings.Add(model);
                 return true;
             }
             catch (Exception e) 
@@ -194,11 +199,12 @@ namespace CityTraveler.Services
                 return false;
             }
         }
-        public async Task<bool> AddImage(ReviewImageModel image) 
+        public async Task<bool> AddImage(ReviewImageDTO image) 
         {
             try
             {
-                _dbContext.Images.Add(image);
+                var model = _mapper.Map<ReviewImageDTO, ReviewImageModel>(image);
+                _dbContext.Images.Add(model);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -229,39 +235,44 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<ReviewModel> GetReviewsByTitle(string title = "")
+        public IEnumerable<ReviewDTO> GetReviewsByTitle(string title = "")
         {
-            return _dbContext.Reviews.Where(x => x.Title.Contains(title));
+            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Title.Contains(title));
+
+            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
 
-        public IEnumerable<ReviewModel> GetReviewsByAverageRating(double rating)
+        public IEnumerable<ReviewDTO> GetReviewsByAverageRating(double rating)
         {
-            return _dbContext.Reviews.Where(x=>x.Rating.Value == rating);
+            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Rating.Value == rating);
+            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
 
-        public IEnumerable<ReviewModel> GetReviewsByComment(CommentModel comment)
+        public async Task<ReviewDTO> GetReviewByComment(Guid comment)
         {
-            return _dbContext.Reviews.Where(x=>x.Comments.Contains(comment));
+            CommentModel commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == comment);
+            return _mapper.Map<ReviewModel, ReviewDTO>(commentModel.Review);
         }
 
-        public IEnumerable<ReviewModel> GetReviewsByDescription(string description)
+        public IEnumerable<ReviewDTO> GetReviewsByDescription(string description)
         {
-            return _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
+            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
+            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
 
-        public async Task<ReviewModel> GetReviewById(Guid Id)
+        public async Task<ReviewDTO> GetReviewById(Guid Id)
         {
             if (!_dbContext.Reviews.Any(x => x.Id == Id))
             {
                 _logger.LogWarning("Review not found");
                 return null;
             }
-            return await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == Id);
+            return _mapper.Map<ReviewModel,ReviewDTO>(await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == Id));
         }
 
         public async Task<bool> RemoveRating(Guid ratingId)
         {
-            if (!_dbContext.Ratings.Any(x => x.Id == ratingId))
+            if (!await _dbContext.Ratings.AnyAsync(x => x.Id == ratingId))
             {
                 _logger.LogWarning("Rating not found");
                 return false;
@@ -269,6 +280,29 @@ namespace CityTraveler.Services
              _dbContext.Ratings.Remove(await _dbContext.Ratings.FirstOrDefaultAsync(x => x.Id == ratingId));
             return true;
         }
-        
+
+        public async Task<bool> UpdateReview(ReviewModel model)
+        {
+            if (! await _dbContext.Reviews.AnyAsync(x => x.Id == model.Id))
+            {
+                _logger.LogWarning("Review not found");
+                return false;
+            }
+            _dbContext.Reviews.Update(model);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateComment(CommentModel model)
+        {
+            if (! await _dbContext.Comments.AnyAsync(x => x.Id == model.Id))
+            {
+                _logger.LogWarning("Comment not found");
+                return false;
+            }
+            _dbContext.Comments.Update(model);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }
