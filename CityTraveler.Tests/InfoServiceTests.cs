@@ -49,7 +49,7 @@ namespace CityTraveler.Tests
             Assert.IsNotNull(entertaiment);
             Assert.AreEqual(mostPopularEntertainment.Id, entertaiment.Id);
             Assert.AreEqual(mostPopularEntertainment.Title, entertaiment.Title);
-            //Assert.AreEqual(mostPopularEntertainment.Trips.Count, entertaiment.Trips.Count);
+            Assert.AreEqual(mostPopularEntertainment.Begin, entertaiment.Begin);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace CityTraveler.Tests
             var serviceInfoService = new InfoService(ArrangeTests.ApplicationContext,ArrangeTests.TestMapper);
             var review = await serviceInfoService.GetReviewByMaxComments(user.Id);
 
-            //Assert.AreEqual(review.Id, userReview.Id);
+            Assert.AreEqual(review.UserId, userReview.UserId);
             Assert.AreEqual(userReview.Comments.Count, review.Comments.Count);
             Assert.IsNotNull(review);
         }
@@ -94,7 +94,7 @@ namespace CityTraveler.Tests
             var serviceInfoservice = new InfoService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var reviewActual = await serviceInfoservice.GetReviewByMaxComments();
 
-            //Assert.AreEqual(reviewExpected.Id, reviewActual.Id);
+            Assert.AreEqual(reviewExpected.UserId, reviewActual.UserId);
             Assert.AreEqual(reviewExpected.Comments.Count, reviewActual.Comments.Count);
             Assert.IsNotNull(reviewActual);
         }
