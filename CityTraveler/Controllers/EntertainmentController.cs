@@ -24,45 +24,45 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("get")]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int typeId = 0)
         {
-            return Json(_service.GetAllDTO());
+            return Json(_service.GetAllDTO(typeId));
         }
 
         [HttpGet("get-by-title")]
-        public IActionResult GetEntertainmentByTitle([FromQuery] string title)
+        public IActionResult GetEntertainmentByTitle([FromQuery] string title, int typeId = 0)
         {
-            return Json(_service.GetEntertainmentsDTOByTitle(title));
+            return Json(_service.GetEntertainmentsDTOByTitle(title, typeId));
         }
 
         [HttpGet("get-by-ids")]
-        public IActionResult GetEntertainments([FromQuery] IEnumerable<Guid> ids)
+        public IActionResult GetEntertainments([FromQuery] IEnumerable<Guid> ids, int typeId = 0)
         {
-            return Json(_service.GetEntertainmentsDTO(ids));
+            return Json(_service.GetEntertainmentsDTO(ids, typeId));
         }
 
         [HttpGet("get-by-street")]
-        public IActionResult GetEntertainmentsByStreet([FromQuery] string streetTitle)
+        public IActionResult GetEntertainmentsByStreet([FromQuery] string streetTitle, int typeId = 0)
         {
-            return Json(_service.GetEntertainmentsDTOByStreet(streetTitle));
+            return Json(_service.GetEntertainmentsDTOByStreet(streetTitle, typeId));
         }
 
         [HttpGet("get-by-coordinates")]
-        public IActionResult GetEntertainmentsByCoordinates([FromQuery] CoordinatesDTO coordinatesDto)
+        public IActionResult GetEntertainmentsByCoordinates([FromQuery] CoordinatesDTO coordinatesDto, int typeId = 0)
         {
-            return Json(_service.GetEntertainmentsDTOByCoordinates(coordinatesDto));
+            return Json(_service.GetEntertainmentsDTOByCoordinates(coordinatesDto, typeId));
         }
 
         [HttpGet("get-by-id")]
-        public IActionResult GetEntertainmentById([FromQuery] Guid id)
+        public async Task<IActionResult> GetEntertainmentById([FromQuery] Guid id, int typeId = 0)
         {
-            return Json(_service.GetEntertainmentDTOById(id));
+            return Json(await _service.GetEntertainmentDTOById(id, typeId));
         }
 
         [HttpGet("get-by-address")]
-        public IActionResult GetEntertainmentByAddress([FromQuery] AddressGetDTO addressDto)
+        public async Task<IActionResult> GetEntertainmentByAddress([FromQuery] AddressGetDTO addressDto, int typeId = 0)
         {
-            return Json(_service.GetEntertainmentDTOByAddress(addressDto));
+            return Json(await _service.GetEntertainmentDTOByAddress(addressDto, typeId));
         }
     }
 }

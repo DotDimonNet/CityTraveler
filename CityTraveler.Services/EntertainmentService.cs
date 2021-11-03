@@ -2,7 +2,6 @@
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Domain.DTO;
-using CityTraveler.Services.Extensions;
 using CityTraveler.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -30,112 +29,313 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetAllDTO()
+        public IEnumerable<EntertainmentShowDTO> GetAllDTO(int typeId = 0)
         {
-            var entertainments = _context.Entertaiments;
+            IEnumerable<EntertaimentModel> entertainments;
 
-            if (entertainments.Count() == 0)
+            if (typeId == 0)
+            {
+                entertainments = _context.Entertaiments;
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainments = _context.Entertaiments.Where(x => x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
+
+            if (!entertainments.Any())
             {
                 return new List<EntertainmentShowDTO>();
             }
             else
             {
-                return entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                var result = new List<EntertainmentShowDTO>();
+                foreach (var model in entertainments)
+                {
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
+                    resultModel.Type = model.Type.Name;
+                    result.Add(resultModel);
+                }
+                return result;
+            }
+        }
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByTitle(string title, int typeId = 0)
+        {
+            if (typeId == 0)
+            {
+                return _context.Entertaiments.Where(x => x.Title.Contains(title));
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                return _context.Entertaiments.Where(x => x.Title.Contains(title) && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
             }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByTitle(string title)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByTitle(string title, int typeId = 0)
         {
-            return _context.Entertaiments.Where(x => x.Title.Contains(title));
-        }
+            IEnumerable<EntertaimentModel> entertainments;
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByTitle(string title)
-        {
-            var entertainments = _context.Entertaiments.Where(x => x.Title.Contains(title));
+            if (typeId == 0)
+            {
+                entertainments = _context.Entertaiments.Where(x => x.Title.Contains(title));
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainments = _context.Entertaiments.Where(x => x.Title.Contains(title) && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
 
-            if (entertainments.Count() == 0)
+            if (!entertainments.Any())
             {
                 return new List<EntertainmentShowDTO>();
             }
             else
             {
-                return entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                var result = new List<EntertainmentShowDTO>();
+                foreach (var model in entertainments)
+                {
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
+                    resultModel.Type = model.Type.Name;
+                    result.Add(resultModel);
+                }
+                return result;
             }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids)
+        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids, int typeId = 0)
         {
-            return _context.Entertaiments.Where(x => ids.Contains(x.Id));
+            if (typeId == 0)
+            {
+                return _context.Entertaiments.Where(x => ids.Contains(x.Id));
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                return _context.Entertaiments.Where(x => ids.Contains(x.Id) && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> ids)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> ids, int typeId = 0)
         {
-            var entertainments = _context.Entertaiments.Where(x => ids.Contains(x.Id));
+            IEnumerable<EntertaimentModel> entertainments;
 
-            if (entertainments.Count() == 0)
+            if (typeId == 0)
+            {
+                entertainments = _context.Entertaiments.Where(x => ids.Contains(x.Id));
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainments = _context.Entertaiments.Where(x => ids.Contains(x.Id) && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
+
+            if (!entertainments.Any())
             {
                 return new List<EntertainmentShowDTO>();
             }
             else
             {
-                return entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                var result = new List<EntertainmentShowDTO>();
+                foreach (var model in entertainments)
+                {
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
+                    resultModel.Type = model.Type.Name;
+                    result.Add(resultModel);
+                }
+                return result;
             }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle)
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle, int typeId = 0)
         {
-            return _context.Entertaiments
-                .Where(x => x.Address.Street.Title == streetTitle);
+            if (typeId == 0)
+            {
+                return _context.Entertaiments
+                    .Where(x => x.Address.Street.Title == streetTitle);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                return _context.Entertaiments
+                    .Where(x => x.Address.Street.Title == streetTitle && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByStreet(string streetTitle)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0)
         {
-            var entertainments = _context.Entertaiments
-                .Where(x => x.Address.Street.Title == streetTitle);
+            IEnumerable<EntertaimentModel> entertainments;
 
-            if (entertainments.Count() == 0)
+            if (typeId == 0)
+            {
+                entertainments = _context.Entertaiments
+                    .Where(x => x.Address.Street.Title == streetTitle);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainments = _context.Entertaiments
+                    .Where(x => x.Address.Street.Title == streetTitle
+                    && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
+
+            if (!entertainments.Any())
             {
                 return new List<EntertainmentShowDTO>();
             }
             else
             {
-                return entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                var result = new List<EntertainmentShowDTO>();
+                foreach (var model in entertainments)
+                {
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
+                    resultModel.Type = model.Type.Name;
+                    result.Add(resultModel);
+                }
+                return result;
             }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByCoordinates(CoordinatesDTO coordinatesDto)
+        public IEnumerable<EntertaimentModel> GetEntertainmentsByCoordinates(CoordinatesDTO coordinatesDto, int typeId = 0)
         {
-            return _context.Entertaiments
-                .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
-                && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
+            if (typeId == 0)
+            {
+                return _context.Entertaiments
+                    .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                    && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                return _context.Entertaiments
+                    .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                    && x.Address.Coordinates.Longitude == coordinatesDto.Longitude && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
+            
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinatesDto)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinatesDto, int typeId = 0)
         {
-            var entertainments = _context.Entertaiments
-                .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
-                && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
+            IEnumerable<EntertaimentModel> entertainments;
 
-            if (entertainments.Count() == 0)
+            if (typeId == 0)
+            {
+                entertainments = _context.Entertaiments
+                    .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                    && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainments = _context.Entertaiments
+                    .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                    && x.Address.Coordinates.Longitude == coordinatesDto.Longitude
+                    && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
+
+            if (!entertainments.Any())
             {
                 return new List<EntertainmentShowDTO>();
             }
             else
             {
-                return entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                var result = new List<EntertainmentShowDTO>();
+                foreach (var model in entertainments)
+                {
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
+                    resultModel.Type = model.Type.Name;
+                    result.Add(resultModel);
+                }
+                return result;
             }
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentById(Guid id)
+        public async Task<EntertaimentModel> GetEntertainmentById(Guid id, int typeId = 0)
         {
-            return await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Id == id);
+            if (typeId == 0)
+            {
+                return await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Id == id);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                return await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Id == id && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
         }
 
-        public async Task<EntertainmentShowDTO> GetEntertainmentDTOById(Guid id)
+        public async Task<EntertainmentShowDTO> GetEntertainmentDTOById(Guid id, int typeId = 0)
         {
-            var entertainment = await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Id == id);
+            EntertaimentModel entertainment;
+
+            if (typeId == 0)
+            {
+                entertainment = await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Id == id);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainment = await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Id == id
+                    && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
 
             if (entertainment == null)
             {
@@ -144,27 +344,77 @@ namespace CityTraveler.Services
             }
             else
             {
-                return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment);
+                var result = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment);
+                result.Type = entertainment.Type.Name;
+                return result;
             }
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(AddressGetDTO addressDto)
+        public async Task<EntertaimentModel> GetEntertainmentByAddress(AddressGetDTO addressDto, int typeId = 0)
         {
-            return await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
-                && x.Address.HouseNumber == addressDto.HouseNumber
-                && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
-                && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude);
+            if (typeId == 0)
+            {
+                return await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
+                    && x.Address.HouseNumber == addressDto.HouseNumber
+                    && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
+                    && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                return await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
+                    && x.Address.HouseNumber == addressDto.HouseNumber
+                    && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
+                    && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude 
+                    && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
         }
 
-        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByAddress(AddressGetDTO addressDto)
+        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByAddress(AddressGetDTO addressDto, int typeId = 0)
         {
-            var entertainment = await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
-                && x.Address.HouseNumber == addressDto.HouseNumber
-                && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
-                && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude);
-            return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment);
+            EntertaimentModel entertainment;
+
+            if (typeId == 0)
+            {
+                entertainment = await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
+                    && x.Address.HouseNumber == addressDto.HouseNumber
+                    && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
+                    && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude);
+            }
+            else if (0 < typeId && typeId < 4)
+            {
+                var type = _context.EntertainmentType.FirstOrDefault(x => x.Id == typeId);
+                entertainment = await _context.Entertaiments
+                    .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
+                    && x.Address.HouseNumber == addressDto.HouseNumber
+                    && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
+                    && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude
+                    && x.Type == type);
+            }
+            else
+            {
+                _logger.LogError("Error: Type ID isn't correct");
+                throw new Exception("Type ID isn't correct");
+            }
+
+            if (entertainment == null)
+            {
+                return null;
+            }
+            else
+            {
+                var result = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment);
+                result.Type = entertainment.Type.Name;
+                return result;
+            }
         }
 
         public double GetAverageRating(EntertaimentModel entertaiment)

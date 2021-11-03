@@ -13,23 +13,58 @@ namespace CityTraveler.Domain.DTO
         public AddressGetDTO Address { get; set; }
         public Guid StreetId { get; set; }
         public int Type { get; set; }
-        public string PriceTitle { get; set; }
-        public double PriceValue { get; set; }
+        public PriceDTO AveragePrice { get; set; }
         IEnumerable<ImageGetDTO> Images { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
     }
+
     public class EntertainmentShowDTO
     {
         public AddressShowDTO Address { get; set; }
         public string Type { get; set; }
         public PriceDTO AveragePrice { get; set; }
+        public double AverageRating { get; set; }
+        //IEnumerable<TripPreviewDTO>
+        //IEnumerable<ReviewPreviewDTO>
         IEnumerable<ImageShowDTO> Images { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public Guid Id { set; get; }
+        public DateTime Begin { get; set; }
+        public DateTime End { get; set; }
+    }
+
+    public class EntertainmentPreviewDTO
+    {
+        public AddressShowDTO Address { get; set; }
+        public string Type { get; set; }
+        public PriceDTO AveragePrice { get; set; }
+        public double AverageRating { get; set; }
+        public int ReviewsCount { get; set; }
+        public int TripsCount { get; set; }
+        ImageShowDTO MainImage { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public Guid Id { set; get; }
+        public DateTime Begin { get; set; }
+        public DateTime End { get; set; }
+    }
+
+    public class EntertainmentUpdateDTO
+    {
+        public string Id { get; set; }
+        public AddressGetDTO Address { get; set; }
+        public int Type { get; set; }
+        public IEnumerable<string> TripsId { get; set; }
+        public PriceDTO AveragePrice { get; set; }
+        public  IEnumerable<ImageGetDTO> Images { get; set; }
+        public  IEnumerable<string> ReviewsId { get; set; }
+        public  double AverageRating { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
     }
