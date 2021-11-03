@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.Errors;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Controllers
 {
@@ -24,118 +25,79 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpPut]
-        [Route("add-review-entertainment")]
-        public async Task<IActionResult> AddReview(EntertainmentReviewModel review, Guid entertainmentId)
+        [HttpPut("add-review-entertainment")]
+        public async Task<IActionResult> AddReview(EntertainmentReviewDTO review, Guid entertainmentId)
         {
             return Json(await _service.AddReviewEntertainment(entertainmentId, review)) ;
         }
-        [HttpPut]
-        [Route("add-review-trip")]
-        public async Task<IActionResult> AddReview(TripReviewModel review, Guid tripId)
+
+        [HttpPut("add-review-trip")]
+        public async Task<IActionResult> AddReview(TripReviewDTO review, Guid tripId)
         {
             return Json(await _service.AddReviewTrip(tripId, review));
         }
-        [HttpPut]
-        [Route("add-comment")]
-        public async Task<IActionResult> AddComment(CommentModel comment, Guid reviewId)
+
+        [HttpPut("comment")]
+        public async Task<IActionResult> AddComment(CommentDTO comment)
         {
-            return Json(await _service.AddComment(comment, reviewId));
+            return Json(await _service.AddComment(comment));
         }
-        [HttpPut]
-        [Route("add-image")]
-        public async Task<IActionResult> AddComment(ReviewImageModel image, Guid reviewId)
+
+        [HttpPut("image")]
+        public async Task<IActionResult> AddImage(ReviewImageModel image)
         {
-            return Json(await _service.AddImage(image, reviewId));
+            return Json(await _service.AddImage(image));
         }
-        [HttpDelete]
-        [Route("delete-review")]
+
+        [HttpDelete("delete-review")]
         public async Task<IActionResult> DeleteReview(Guid reviewId)
         {
             return Json(await _service.RemoveReview(reviewId));
         }
-        [HttpDelete]
-        [Route("delete-comment")]
-        public async Task<IActionResult> DeleteComment(Guid commentId, Guid reviewId)
+
+        [HttpDelete("delete-comment")]
+        public async Task<IActionResult> DeleteComment(Guid commentId)
         {
-            return Json(await _service.RemoveComment(commentId, reviewId));
-        }
-        [HttpDelete]
-        [Route("delete-image")]
-        public async Task<IActionResult> DeleteImage(Guid reviewImageId, Guid reviewId)
-        {
-            return Json(await _service.RemoveImage(reviewImageId, reviewId));
+            return Json(await _service.RemoveComment(commentId));
         }
 
-        [HttpGet]
-        [Route("get-by-id")]
+        [HttpDelete("delete-image")]
+        public async Task<IActionResult> DeleteImage(Guid reviewImageId)
+        {
+            return Json(await _service.RemoveImage(reviewImageId));
+        }
+
+        [HttpGet("get-by-id")]
         public async Task<IActionResult> GetReview(Guid reviewId)
         {
-            ReviewModel review;
-            try
-            {
-                review = await _service.GetReviewById(reviewId);
-            }
-            catch (SocialMediaServiceException e) when (reviewId == null)
-            {
-
-                throw new SocialMediaServiceException($"Review with Id={reviewId} not found", e);
-            }
-            catch (SocialMediaServiceException e)
-            {
-                throw new SocialMediaServiceException("Exception on finding review by Id", e);
-            }
+            ReviewModel review = await _service.GetReviewById(reviewId);
             return (Json(review));
-
         }
-        [HttpGet]
-        [Route("get-by-title")]
+
+        [HttpGet("get-by-title")]
         public async Task<IActionResult> GetReviewByTitle(string title)
         {
-            IEnumerable<ReviewModel> review;
-            try
-            {
-                review = _service.GetReviewsByTitle(title);
-            }
-            catch (SocialMediaServiceException e) when (title == null)
-            {
-
-                throw new SocialMediaServiceException($"Review with title={title} not found", e);
-            }
-            catch (SocialMediaServiceException e)
-            {
-                throw new SocialMediaServiceException("Exception on finding review by title", e);
-            }
+            IEnumerable<ReviewModel> review =_service.GetReviewsByTitle(title);
             return (Json(review));
 
         }
 
-        [HttpGet]
-        [Route("get-reviews-by-average-raiting")]
+        [HttpGet("get-reviews-by-average-raiting")]
         public async Task<IActionResult> GetReviewsByAverageRaiting(double raiting)
         {
-            IEnumerable<ReviewModel> review;
-            try
-            {
-                review = _service.GetReviewsByAverageRaiting(raiting);
-            }
-            catch (SocialMediaServiceException e) when (raiting == -1)
-            {
-
-                throw new SocialMediaServiceException($"Review with raiting={raiting} not found", e);
-            }
-            catch (SocialMediaServiceException e)
-            {
-                throw new SocialMediaServiceException("Exception on finding review by raiting", e);
-            }
+            IEnumerable<ReviewModel> review = _service.GetReviewsByAverageRating(raiting);
             return (Json(review));
-
         }
-        [HttpGet]
-        [Route("get-reviews-by-description")]
+        [HttpGet("get-reviews-by-description")]
         public async Task<IActionResult> GetReviewsByDescription([FromQuery] string description)
         {
             IEnumerable<ReviewModel> reviews = _service.GetReviewsByDescription(description);
+            return (Json(reviews));
+        }
+        [HttpGet("get-reviews")]
+        public async Task<IActionResult> GetReviewsByDescription([FromQuery] int skip, [FromQuery] int take)
+        {
+            IEnumerable<ReviewModel> reviews = _service.GetReviews(skip,take);
             return (Json(reviews));
         }
 
