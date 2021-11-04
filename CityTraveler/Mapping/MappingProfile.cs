@@ -15,6 +15,7 @@ namespace CityTraveler.Mapping
             CreateMap<PriceModel, PriceDTO>();
             CreateMap<StreetGetDTO, StreetModel>();
             CreateMap<StreetModel, StreetShowDTO>();
+            CreateMap<StreetModel, StreetDTO>();
             CreateMap<AddressModel, AddressShowDTO>();
             CreateMap<PriceDTO, EntertaimentPriceModel>();
             CreateMap<CoordinatesDTO, CoordinatesModel>();
@@ -29,6 +30,7 @@ namespace CityTraveler.Mapping
                 .ForMember(x => x.MainImage, o => o.MapFrom(z => z.Images.Where(p => p.IsMain == true)))
                 .ForMember(x => x.RatingValue, o => o.MapFrom(z => z.Rating.Value));
             CreateMap<EntertaimentModel, EntertainmentPreviewDTO>()
+                .ForMember(x => x.Type, o => o.MapFrom(z => z.Type.Name))
                 .ForMember(x => x.ReviewsCount, o => o.MapFrom(z => z.Reviews.Count()))
                 .ForMember(x => x.TripsCount, o => o.MapFrom(z => z.Trips.Count()));
             CreateMap<EntertainmentGetDTO, EntertaimentModel>()
