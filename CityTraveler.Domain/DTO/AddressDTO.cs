@@ -17,5 +17,6 @@ namespace CityTraveler.Domain.DTO
         public string HouseNumber { set; get; }
         public string ApartmentNumber { set; get; }
         public CoordinatesDTO Coordinates { get; set; }
+        public string StreetId { get; set; }
     }
 }

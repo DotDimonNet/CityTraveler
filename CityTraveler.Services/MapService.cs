@@ -34,6 +34,19 @@ namespace CityTraveler.Services
                .Any(x => x.Coordinates.Latitude == coordinatesDto.Latitude
                && x.Coordinates.Longitude == coordinatesDto.Longitude));
         }
+        public async Task<IEnumerable<StreetDTO>> FindStreetsDTOByTitle(string streetTitle)
+        {
+            var streets = _context.Streets.Where(x => x.Title.Contains(streetTitle));
+
+            if (! await streets.AnyAsync())
+            {
+                return new List<StreetDTO>();
+            }
+            else
+            {
+                return streets.Select(x => _mapper.Map<StreetModel, StreetDTO>(x));
+            }
+        }
 
         public async Task<StreetShowDTO> FindStreetDTOByCoordinates(CoordinatesDTO coordinatesDto)
         {
@@ -52,7 +65,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<StreetShowDTO> GetStreetsDTO(int skip = 0, int take = 10)
+        public IEnumerable<StreetShowDTO> FindStreetsDTO(int skip = 0, int take = 10)
         {
             try
             {
