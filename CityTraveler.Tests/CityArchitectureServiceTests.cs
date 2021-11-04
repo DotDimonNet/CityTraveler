@@ -24,8 +24,8 @@ namespace CityTraveler.Tests
         {
             var entertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
             var isRemoved = await service.RemoveEntertainment(entertainment.Id);
 
             Assert.IsTrue(isRemoved);
@@ -72,8 +72,8 @@ namespace CityTraveler.Tests
                 },
             };
             var contextSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
             var isSeted = await service.AddEntertainments(entertainmentsDTO);
             var newContexSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
@@ -136,8 +136,8 @@ namespace CityTraveler.Tests
                 Description = "Ipsum"
             };
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
-            var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
+            var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
             var isAdded = await service.AddEntertainment(dto);
 
             var newContextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();

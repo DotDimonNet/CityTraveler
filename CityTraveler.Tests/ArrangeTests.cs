@@ -28,6 +28,12 @@ namespace CityTraveler.Tests
         public static ILogger<CityArchitectureService> LoggerCityArchitecture { set; get; }
         public static ILogger<EntertainmentService> LoggerEntertainment { set; get; }
 
+
+        public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
+        {
+            return new Mock<ILogger<T>>();
+        }
+
         public static async Task SetupDbContext()
         {
             var options = new DbContextOptionsBuilder<ApplicationContext>()
