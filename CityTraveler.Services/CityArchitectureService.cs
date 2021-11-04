@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CityTraveler.Domain.DTO;
-using CityTraveler.Services.Extensions;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 
@@ -38,8 +37,9 @@ namespace CityTraveler.Services
 
                 foreach (var entertainment in entertaiments)
                 {
+                    var streetId = Guid.Parse(entertainment.StreetId);
                     var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainment);
-                    model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainment.StreetId);
+                    model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
                     model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainment.Type);
                     models.Add(model);
                 }
@@ -59,8 +59,9 @@ namespace CityTraveler.Services
         {
             try
             {
+                var streetId = Guid.Parse(entertainmentDTO.StreetId);
                 var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainmentDTO);
-                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == entertainmentDTO.StreetId);
+                model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
                 model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainmentDTO.Type);
 
                 _context.Entertaiments.Add(model);
@@ -74,19 +75,23 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> UpdateEntertainment(EntertaimentModel entertaiment)
+        public async Task<bool> UpdateEntertainment(EntertainmentUpdateDTO entertaimentDto)
         {
             try
             {
-                var model = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertaiment.Id);
+                var id = Guid.Parse(entertaimentDto.Id);
+                var model = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id);
+                
                 if (model == null)
                 {
-                    _context.Entertaiments.Add(entertaiment);
+                    var newModel = _mapper.Map<EntertainmentUpdateDTO, EntertaimentModel>(entertaimentDto);
+                    _context.Entertaiments.Add(newModel);
                     _logger.LogInformation("Info: Entertainment was not found, but created");
                 }
                 else
                 {
-                    _context.Entertaiments.Update(model.UpdateEntertainmentWith(entertaiment));
+                    var updatedModel = _mapper.Map<EntertainmentUpdateDTO, EntertaimentModel>(entertaimentDto, model);
+                    _context.Entertaiments.Update(updatedModel);
                 }
 
                 await _context.SaveChangesAsync();
@@ -166,11 +171,13 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> UpdateStreet(StreetModel street)
+        public async Task<bool> UpdateStreet(StreetDTO streetDto)
         {
             try
             {
-                _context.Streets.Update(street);
+                var model = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetDto.Id);
+                var updatedModel = _mapper.Map<StreetDTO, StreetModel>(streetDto, model);
+                _context.Streets.Update(updatedModel);
                 await _context.SaveChangesAsync();
                 return true;
             }

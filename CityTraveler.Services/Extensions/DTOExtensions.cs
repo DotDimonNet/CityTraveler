@@ -53,47 +53,7 @@ namespace CityTraveler.Services.Extensions
             };
             return user;
         }
-        public static EntertaimentModel ToEntertaiment(this EntertainmentGetDTO entertainmentDTO, StreetModel street)
-        {
-            try
-            {
-                if (street == null)
-                {
-                    street = new StreetModel()
-                    {
-                        Id = Guid.Parse(entertainmentDTO.StreetId)
-                    };
-                }
-                var result = new EntertaimentModel()
-                {
-                    Reviews = new List<EntertainmentReviewModel>(),
-                    Title = entertainmentDTO.Title,
-                    Description = entertainmentDTO.Description,
-                    Trips = new List<TripModel>(),
-                    AveragePrice = new EntertaimentPriceModel() 
-                    {
-                        Title = entertainmentDTO.PriceTitle, 
-                        Value = entertainmentDTO.PriceValue 
-                    },
-                    Address = new AddressModel()
-                    {
-                        Street = street,
-                        HouseNumber = entertainmentDTO.Address.HouseNumber,
-                        ApartmentNumber = entertainmentDTO.Address.ApartmentNumber,
-                        Coordinates = new CoordinatesModel()
-                        {
-                            Latitude = entertainmentDTO.Address.Coordinates.Latitude,
-                            Longitude = entertainmentDTO.Address.Coordinates.Longitude
-                        }
-                    },
-                };
-                return result;
-            }
-            catch (Exception ex)
-            { 
-                throw new Exception($"EntertainmentDTO isn't correct: {ex.Message}");
-            }     
-        }
+       
         public static TripModel ToTrip(this TripDTO tripDTO)
         {
             return new TripModel

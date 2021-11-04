@@ -20,4 +20,13 @@ namespace CityTraveler.Domain.DTO
         public double StreetBeginning { get; set; }
         public double StreetEnding { get; set; }
     }
+
+    public class StreetDTO
+    {
+        public Guid Id { set; get; }
+        public string Description { get; set; }
+        public string Title { get; set; }
+        public double StreetBeginning { get; set; }
+        public double StreetEnding { get; set; }
+    }
 }

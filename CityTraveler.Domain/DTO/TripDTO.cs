@@ -16,10 +16,21 @@ namespace CityTraveler.Domain.DTO
         public string TagSting { get; set; }
         public TimeSpan OptimalSpent { get; set; }
         public TimeSpan RealSpent { get; set; }
-        public virtual TripPriceModel Price { get; set; }
+        public TripPriceModel Price { get; set; }
         public IEnumerable<TripImageModel> Images { get; set; } = new List<TripImageModel>();
         public IEnumerable<TripReviewModel> Reviews { get; set; } = new List<TripReviewModel>();
         public IEnumerable<EntertaimentModel> Entertaiments { get; set; } = new List<EntertaimentModel>();
+    }
+
+    public class TripPrewievDTO 
+    {
+        public Guid Id { get; set; }
+        public double AverageRating { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string TagSting { get; set; }
+        public TimeSpan OptimalSpent { get; set; }
+        public TripImageModel MainImage { get; set; }
     }
 
     public class AddNewTripDTO

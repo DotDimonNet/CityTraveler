@@ -3,9 +3,11 @@ using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Mapping;
+using CityTraveler.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,14 @@ namespace CityTraveler.Tests
         public static Mock<SignInManager<ApplicationUserModel>> SignInManagerMock { get; set; }
         public static Mock<RoleManager<ApplicationUserRole>> RoleManagerMock { get; set; }
         public static IMapper TestMapper { get; set; }
+        public static ILogger<CityArchitectureService> LoggerCityArchitecture { set; get; }
+        public static ILogger<EntertainmentService> LoggerEntertainment { set; get; }
+
+
+        public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
+        {
+            return new Mock<ILogger<T>>();
+        }
 
         public static async Task SetupDbContext()
         {

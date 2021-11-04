@@ -1,4 +1,5 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using AutoMapper;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -19,16 +20,16 @@ namespace CityTraveler.Tests
 
         [Test]
 
-        public void GetUserByIdTest()
+        public  async Task GetUserByIdTest()
         {
-            var userModel = ArrangeTests.ApplicationContext.Users
-                .FirstOrDefault();
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
+            var userModel =await ArrangeTests.ApplicationContext.Users
+                .FirstOrDefaultAsync();
+            var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var user = service.GetUserById(userModel.Id);
 
             Assert.IsNotNull(user);
             Assert.AreEqual(user.Id, userModel.Id);
-            Assert.AreEqual(user.Profile.Name, userModel.Profile.Name);
+            Assert.AreEqual(user.Name, userModel.Profile.Name);
             Assert.AreEqual(user.Email, userModel.Email);
           }
        
@@ -37,7 +38,7 @@ namespace CityTraveler.Tests
         {
             var usersGuids = ArrangeTests.ApplicationContext.Users
                 .Select(x => x.Id);
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
+            var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var users = service.GetUsers(usersGuids);
             
             Assert.IsNotEmpty(users);
@@ -48,12 +49,12 @@ namespace CityTraveler.Tests
         {
             var usersRange = ArrangeTests.ApplicationContext.Users
                 .Skip(0).Take(10);
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
+            var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var users = service.GetUsersRange(0,10);
 
             Assert.IsNotEmpty(users);
             Assert.AreEqual(usersRange.Count(), users.Count());
-            Assert.AreEqual(users.Select(x => x.Profile.Name), usersRange.Select(x => x.Profile.Name));
+            Assert.AreEqual(users.Select(x => x.Name), usersRange.Select(x => x.Profile.Name));
         }
 
         [Test]
@@ -61,16 +62,16 @@ namespace CityTraveler.Tests
         {
             var userModel = ArrangeTests.ApplicationContext
                 .Users.LastOrDefault();
-            var service = new UserManagementService(ArrangeTests.ApplicationContext);
+            var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var users = service.GetUsersByPropeties(userModel.Profile.Name, "", "", default);
 
             Assert.IsNotEmpty(users);
 
             foreach (var user in users)
             {
-                Assert.AreEqual(userModel.Profile.Name, user.Profile.Name);
-                Assert.AreEqual(userModel.Profile.Gender, user.Profile.Gender);
-                Assert.AreEqual(userModel.Profile.Birthday, user.Profile.Birthday);
+                Assert.AreEqual(userModel.Profile.Name, user.Name);
+                Assert.AreEqual(userModel.Profile.Gender, user.Gender);
+                Assert.AreEqual(userModel.Profile.Birthday, user.Birthday);
                 Assert.AreEqual(userModel.Email, user.Email);
                 Assert.AreEqual(userModel.Id, user.Id);
             }
