@@ -21,7 +21,7 @@ namespace CityTraveler.Tests
             await ArrangeTests.SetupDbContext();
         }
 
-        [Test]
+       /* [Test]
         public async Task FilterUsersNullFieldsTest()
         {
             var service = new SearchService(ArrangeTests.ApplicationContext,
@@ -298,7 +298,7 @@ namespace CityTraveler.Tests
                 Assert.AreEqual(trip.AverageRating, 5);
                 Assert.True(trip.Title.Contains("title"));
             }
-        }
+        }*/
 
     }
 }

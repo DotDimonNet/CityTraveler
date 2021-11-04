@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CityTraveler.Domain\CityTraveler.Domain.csproj" />
     <ProjectReference Include="..\CityTraveler.Infrastructure\CityTraveler.Infrastructure.csproj" />
     <ProjectReference Include="..\CityTraveler.Services\CityTraveler.Services.csproj" />
     <ProjectReference Include="..\CityTraveler\CityTraveler.csproj" />

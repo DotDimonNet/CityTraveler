@@ -10,15 +10,15 @@ namespace CityTraveler.Domain.DTO
     {
         public Guid Id { set; get; }
         public string Title { get; set; }
-        public double StreetBeginning { get; set; }
-        public double StreetEnding { get; set; }
     }
     public class StreetGetDTO
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public double StreetBeginning { get; set; }
-        public double StreetEnding { get; set; }
+        public double StreetBeginningY { get; set; }
+        public double StreetBeginningX { get; set; }
+        public double StreetEndingY { get; set; }
+        public double StreetEndingX { get; set; }
     }
 
     public class StreetDTO
@@ -26,7 +26,9 @@ namespace CityTraveler.Domain.DTO
         public Guid Id { set; get; }
         public string Description { get; set; }
         public string Title { get; set; }
-        public double StreetBeginning { get; set; }
-        public double StreetEnding { get; set; }
+        public double StreetBeginningY { get; set; }
+        public double StreetBeginningX { get; set; }
+        public double StreetEndingY { get; set; }
+        public double StreetEndingX { get; set; }
     }
 }

@@ -27,6 +27,12 @@ namespace CityTraveler.Services
             _mapper = mapper;
             _logger = logger;
         }
+        public InfoService(ApplicationContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
         public bool IsActive { get ; set ; }
         public string Version { get ; set ; }
 

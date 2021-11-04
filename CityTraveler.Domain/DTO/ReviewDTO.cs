@@ -24,4 +24,15 @@ namespace CityTraveler.Domain.DTO
     {
         public Guid TripId { get; set; }
     }
+
+    public class ReviewPreviewDTO
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string UserName { get; set; }
+        public ImageShowDTO MainImage { get; set; }
+        public DateTime Modified { get; set; }
+        public double RatingValue { get; set; }
+    }
 }
