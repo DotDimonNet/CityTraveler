@@ -28,7 +28,7 @@ namespace CityTraveler.Tests
             _service = new SocialMediaService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object);
         }
 
-        [Test]
+       /* [Test]
         public async Task GetReviewByIdTest()
         {
             var reviewId = ArrangeTests.ApplicationContext.Reviews
@@ -334,6 +334,6 @@ namespace CityTraveler.Tests
             var service = new SocialMediaService(ArrangeTests.ApplicationContext);
             var result = service.RemoveImage(Guid.NewGuid());
             Assert.That(result, null); ;
-        }
+        }*/
     }
 }

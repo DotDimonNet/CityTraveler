@@ -27,6 +27,7 @@ namespace CityTraveler.Tests
         public static IMapper TestMapper { get; set; }
         public static ILogger<CityArchitectureService> LoggerCityArchitecture { set; get; }
         public static ILogger<EntertainmentService> LoggerEntertainment { set; get; }
+        public static ILogger<TripService> LoggerTrip { get; set; }
 
 
         public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
@@ -313,7 +314,7 @@ namespace CityTraveler.Tests
                     TripStatus = TripStatus.New,
                     TagSting = $"tripTagString{i}",
                     TemplateId = Guid.NewGuid()
-                 };
+                };
                 if (i % 2 == 0)
                 {
                     trip.DafaultTrip = true;

@@ -11,10 +11,11 @@ namespace CityTraveler.Mapping
     {
         public TripMapping()
         {
-            CreateMap<AddNewTripDTO, TripModel>();
-            
-            CreateMap<TripModel, DefaultTripDTO>().ReverseMap();
-           
+            CreateMap<AddNewTripDTO, TripModel>().ReverseMap();
+
+            CreateMap<TripModel, DefaultTripDTO>();
+            CreateMap<DefaultTripDTO, TripDTO>();
+
             CreateMap<TripModel, TripDTO>().ReverseMap();
         }
     }
