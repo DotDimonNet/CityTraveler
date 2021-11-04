@@ -1,0 +1,33 @@
+﻿using AutoMapper;
+using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CityTraveler.Mapping
+{
+    public class ReviewMapping : Profile
+    {
+        public ReviewMapping()
+        {
+            CreateMap<RatingDTO, RatingModel>().
+                ForMember(x=>x.ReviewId, o=>o.Ignore());
+            CreateMap<CommentDTO, CommentModel>().
+                ForMember(x=>x.Status, o=>o.Ignore());
+            CreateMap<ReviewDTO, ReviewModel>().
+                ForMember(x=>x.RatingId, o=>o.Ignore()).
+                ForMember(x=>x.UserId, o=>o.Ignore());
+            CreateMap<ReviewImageDTO, ReviewImageModel>();
+            CreateMap<ReviewDTO, ReviewModel>().
+                ForMember(x => x.Images, o => o.Ignore()).
+                ForMember(x => x.Comments, o => o.Ignore());
+            CreateMap<EntertainmentReviewDTO, EntertainmentReviewModel>();
+            CreateMap<TripReviewDTO, TripReviewModel>();
+            CreateMap<TripReviewModel, TripReviewDTO>().ReverseMap();
+            CreateMap<EntertainmentReviewModel, EntertainmentReviewDTO>().ReverseMap();
+            CreateMap<ReviewModel, ReviewDTO>().ReverseMap();
+        }
+    }
+}

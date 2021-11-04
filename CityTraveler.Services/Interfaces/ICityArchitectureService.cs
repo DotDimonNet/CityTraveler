@@ -1,5 +1,4 @@
-﻿
-using CityTraveler.Domain.Entities;
+﻿using CityTraveler.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +10,16 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface ICityArchitectureService : IServiceMetadata
     {
-        public Task<bool> SetEntertaiment(IEnumerable<EntertaimentModel> entertaiments);
-        public Task<bool> AddEntertainment(EntertainmentDTO entertaimentDTO);
-        public Task<bool> UpdateEntertainment(EntertaimentModel entertaiment);
+        public Task<bool> AddEntertainments(IEnumerable<EntertainmentGetDTO> entertaiments);
+        public Task<bool> AddEntertainment(EntertainmentGetDTO entertaimentDTO);
+        public Task<bool> UpdateEntertainment(EntertainmentUpdateDTO entertaimentDto);
+        public Task<bool> ValidateEntertainments();
         public Task<bool> RemoveEntertainment(Guid id);
-        public Task<bool> AddStreet(StreetModel street);
-        public Task<bool> UpdateStreet(StreetModel street);
+        public Task<bool> AddStreet(StreetGetDTO street);
+        public Task<bool> UpdateStreet(StreetDTO streetDto);
+        public Task<bool> ValidateStreets();
         public Task<bool> RemoveStreet(Guid streetId);
-        public IEnumerable<AddressModel> getAddress(int skip=0,int take=10);
-        public IEnumerable<StreetModel> getStreet(int skip = 0, int take = 10);
-        //Move to Map Servise
-        public Task<StreetModel> FindStreetByCoordinates(Guid coordID);
-        public Task<StreetModel> FindStreetByCoordinates(double longtitude, double latitude);
-        public Task<AddressModel> FindAddressByCoordinates(Guid coordID);
-        public Task<AddressModel> FindAddressByCoordinates(double longtitude, double latitude);
-        public Task<AddressModel> FindAddressByStreetHouse(Guid streetId, string houseNum);
-        public IEnumerable<AddressModel> FindAddressByHouse(string houseNum);
-        public Task<bool> ValidateCityMap();
+        public Task<bool> ValidateAddresses();
     }   
 }
 

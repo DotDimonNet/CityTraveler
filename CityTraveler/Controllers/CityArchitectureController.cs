@@ -1,11 +1,13 @@
-﻿
-using CityTraveler.Domain.DTO;
+﻿using CityTraveler.Domain.DTO;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
+using CityTraveler.Domain.Entities;
+using System.Collections.Generic;
+using System;
 
 namespace CityTraveler.Controllers
 {
@@ -24,19 +26,46 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        [Route("entertainment")]
-        public async Task<IActionResult> AddEntertainment([FromBody] EntertainmentDTO dtoModel)
+        [HttpPost("add-entertainment")]
+        public async Task<IActionResult> AddEntertainment([FromBody] EntertainmentGetDTO entertainmentDto)
         {
-            return Json(await _service.AddEntertainment(dtoModel));
+            return Json(await _service.AddEntertainment(entertainmentDto));
         }
 
-        [HttpDelete]
-        [Route("remove-entertainment")]
-        public async Task<IActionResult> RemoveEntertainment(string title) 
+        [HttpPost("add-entertainments")]
+        public async Task<IActionResult> AddEntertainments([FromBody] IEnumerable<EntertainmentGetDTO> entertainmentsDto)
         {
-            var entertainmentId = _entertainmentService.GetEntertainmentByTitle(title).Select(x=>x.Id).FirstOrDefault();
-            return Json(await _service.RemoveEntertainment(entertainmentId));
+            return Json(await _service.AddEntertainments(entertainmentsDto));
+        }
+
+        [HttpPost("add-street")]
+        public async Task<IActionResult> AddStreet([FromBody] StreetGetDTO streetDto)
+        {
+            return Json(await _service.AddStreet(streetDto));
+        }
+
+        [HttpDelete("remove-entertainment")]
+        public async Task<IActionResult> RemoveEntertainment([FromQuery] Guid id) 
+        {
+            return Json(await _service.RemoveEntertainment(id));
+        }
+
+        [HttpDelete("remove-street")]
+        public async Task<IActionResult> RemoveStreet([FromQuery] Guid id)
+        {
+            return Json(await _service.RemoveStreet(id));
+        }
+
+        [HttpPut("update-entertainment")]
+        public async Task<IActionResult> UpdateEntertainment([FromBody] EntertainmentUpdateDTO entertainmentDto)
+        {
+            return Json(await _service.UpdateEntertainment(entertainmentDto));
+        }
+
+        [HttpPut("update-street")]
+        public async Task<IActionResult> UpdateStreet([FromBody] StreetDTO streetDto)
+        {
+            return Json(await _service.UpdateStreet(streetDto));
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using AutoMapper;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Infrastucture.Data;
+using CityTraveler.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,9 +20,16 @@ namespace CityTraveler.Tests
     {
         public static ApplicationContext ApplicationContext { get; set; }
 
-        public static Mock<UserManager<ApplicationUserModel>> UserManagerMock;
-        public static Mock<SignInManager<ApplicationUserModel>> SignInManagerMock;
-        public static Mock<RoleManager<ApplicationUserRole>> RoleManagerMock;
+        public static Mock<UserManager<ApplicationUserModel>> UserManagerMock { get; set; }
+        public static Mock<SignInManager<ApplicationUserModel>> SignInManagerMock { get; set; }
+        public static Mock<RoleManager<ApplicationUserRole>> RoleManagerMock { get; set; }
+        public static IMapper TestMapper { get; set; }
+
+
+        public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
+        {
+            return new Mock<ILogger<T>>();
+        }
 
         public static async Task SetupDbContext()
         {
@@ -38,6 +48,13 @@ namespace CityTraveler.Tests
             await GenerateComment();
             await GenerateTrips();
             await GenerateUserData();
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.AddProfile<MappingProfile>();
+            });
+
+            TestMapper = new Mapper(config);
+            
         }
 
         private static void SetupManagementMocks()
@@ -292,6 +309,7 @@ namespace CityTraveler.Tests
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
                     TagSting = $"tripTagString{i}",
+                    TemplateId = Guid.NewGuid()
                  };
                 if (i % 2 == 0)
                 {
