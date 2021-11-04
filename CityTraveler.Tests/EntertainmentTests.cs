@@ -100,7 +100,7 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(entertainments);
             Assert.IsNotNull(testEntertainments);
-            Assert.AreEqual(testEntertainments, entertainments);*/
+            Assert.AreEqual(testEntertainments, entertainments);
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace CityTraveler.Tests
 
             Assert.IsNotNull(addressDto);
             Assert.IsNotNull(entertainment);
-            Assert.AreEqual(entertainment, address.Entertaiment);*/
+            Assert.AreEqual(entertainment, address.Entertaiment);
         }
 
         [Test]
