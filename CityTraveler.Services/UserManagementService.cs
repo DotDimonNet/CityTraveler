@@ -77,24 +77,32 @@ namespace CityTraveler.Services
         public IEnumerable<UserDTO> GetUsers(IEnumerable<Guid> guids)
         {
             var users = _context.Users.Where(x => guids.Contains(x.Id));
-            return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
+            if (users != null)
+            {
+                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
+            }
+            else
+            {
+                throw new UserManagemenServicetException("Users not found");
+            }
+            
         }
         public IEnumerable<UserDTO> GetUsersByPropeties(string name = "", string email = "", string gender = "", DateTime birthday = default)
         {
             try
             {
-                if (_context.Users
-                .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender.Contains(gender) && x.Email
-                .Contains(email) && x.Profile.Birthday.Date == birthday.Date) == null)
-                {
-                throw new UserManagemenServicetException("Users not found");
-                }
-
                 var users = _context.Users
                 .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender
                 .Contains(gender) && x.Email.Contains(email) && x.Profile.Birthday.Date == birthday.Date);
 
-                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
+                if (users != null)
+                {
+                    return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
+                }
+                else
+                { 
+                    throw new UserManagemenServicetException("Users not found");
+                }
             }
             catch (Exception e)
             {
