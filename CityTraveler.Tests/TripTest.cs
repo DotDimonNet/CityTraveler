@@ -3,6 +3,7 @@ using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -18,8 +19,8 @@ namespace CityTraveler.Tests
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
+            
         }
-
         [Test]
         public async Task DeleteTripTest()
         {
@@ -35,7 +36,8 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddTripAsyncTest()
         {
-            var tripDTO = new AddNewTripDTO() { Title="Trip Title 111", Description="Trip Description 111" };
+            var tripDTO = new AddNewTripDTO() { Title = "Trip Title 111", Description = "Trip Description 111" };
+
             var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var isAdded = await service.AddNewTripAsync(tripDTO);
 
@@ -50,7 +52,7 @@ namespace CityTraveler.Tests
             var isAdded = await service.AddDefaultTrip(defaultTripDTO);
 
             Assert.IsTrue(isAdded);
-        } 
+        }
 
         [Test]
         public async Task GetDefaultTripsTets()
