@@ -2,6 +2,7 @@
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Errors;
 using CityTraveler.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (!entertainments.Any())
@@ -78,11 +79,11 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByTitle(string title, int typeId = 0)
+        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByTitle(string title, int typeId = 0)
         {
             IEnumerable<EntertaimentModel> entertainments;
 
@@ -98,20 +99,19 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (!entertainments.Any())
             {
-                return new List<EntertainmentShowDTO>();
+                return new List<EntertainmentPreviewDTO>();
             }
             else
             {
-                var result = new List<EntertainmentShowDTO>();
+                var result = new List<EntertainmentPreviewDTO>();
                 foreach (var model in entertainments)
                 {
-                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
-                    resultModel.Type = model.Type.Name;
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(model);
                     result.Add(resultModel);
                 }
                 return result;
@@ -132,7 +132,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
         }
 
@@ -152,7 +152,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (!entertainments.Any())
@@ -188,11 +188,11 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0)
+        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0)
         {
             IEnumerable<EntertaimentModel> entertainments;
 
@@ -211,20 +211,19 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (!entertainments.Any())
             {
-                return new List<EntertainmentShowDTO>();
+                return new List<EntertainmentPreviewDTO>();
             }
             else
             {
-                var result = new List<EntertainmentShowDTO>();
+                var result = new List<EntertainmentPreviewDTO>();
                 foreach (var model in entertainments)
                 {
-                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(model);
-                    resultModel.Type = model.Type.Name;
+                    var resultModel = _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(model);
                     result.Add(resultModel);
                 }
                 return result;
@@ -249,7 +248,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
             
         }
@@ -275,7 +274,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (!entertainments.Any())
@@ -311,7 +310,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
         }
 
@@ -334,7 +333,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (entertainment == null)
@@ -373,7 +372,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
         }
 
@@ -402,7 +401,7 @@ namespace CityTraveler.Services
             else
             {
                 _logger.LogError("Error: Type ID isn't correct");
-                throw new Exception("Type ID isn't correct");
+                throw new EntertainmentServicesException("Type ID isn't correct");
             }
 
             if (entertainment == null)

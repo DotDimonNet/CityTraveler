@@ -62,7 +62,6 @@ namespace CityTraveler.Domain.DTO
         public PriceDTO AveragePrice { get; set; }
         public  IEnumerable<ImageGetDTO> Images { get; set; }
         public  IEnumerable<string> ReviewsId { get; set; }
-        public  double AverageRating { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Begin { get; set; }
