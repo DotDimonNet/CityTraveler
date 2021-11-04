@@ -9,41 +9,38 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Controllers
 {
-    public class SearchServiceController
+    [ApiController]
+    [Route("api/search")]
+    public class SearchServiceController : Controller
     {
-        [ApiController]
-        [Route("api/search")]
-        public class SocialMediaController : Controller
+        private readonly ILogger<SearchServiceController> _logger;
+        private readonly ISearchService _service;
+
+        public SearchServiceController(ILogger<SearchServiceController> logger, ISearchService searchService)
         {
-            private readonly ILogger<SearchServiceController> _logger;
-            private readonly ISearchService _service;
+            _service = searchService;
+            _logger = logger;
+        }
 
-            public SocialMediaController(ILogger<SearchServiceController> logger, ISearchService searchService)
-            {
-                _service = searchService;
-                _logger = logger;
-            }
+        [HttpGet("users")]
+        public async Task<IActionResult> FilterUsers([FromQuery] FilterUsers user)
+        {
+            IEnumerable<ApplicationUserModel> users = await _service.FilterUsers(user);
+            return (Json(users));
+        }
 
-            [HttpGet("users")]
-            public async Task<IActionResult> FilterUsers(FilterUsers user)
-            {
-                IEnumerable<ApplicationUserModel> users =await _service.FilterUsers(user);
-                return (Json(users));
-            }
+        [HttpGet("trips")]
+        public IActionResult FilterTrips([FromQuery] FilterTrips trip)
+        {
+            IEnumerable<TripModel> trips = _service.FilterTrips(trip);
+            return (Json(trips));
+        }
 
-            [HttpGet("trips")]
-            public async Task<IActionResult> FilterTrips(FilterTrips trip)
-            {
-                IEnumerable<TripModel> trips = _service.FilterTrips(trip);
-                return (Json(trips));
-            }
-
-            [HttpGet("entertainments")]
-            public async Task<IActionResult> FilterEntertainments(FilterEntertainment entertainment)
-            {
-                IEnumerable<EntertaimentModel> entertainments = _service.FilterEntertainments(entertainment);
-                return (Json(entertainments));
-            }
+        [HttpGet("entertainments")]
+        public ActionResult FilterEntertainments([FromQuery] FilterEntertainment entertainment)
+        {
+            IEnumerable<EntertaimentModel> entertainments = _service.FilterEntertainments(entertainment);
+            return (Json(entertainments));
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace CityTraveler.Services
 {
@@ -38,7 +39,7 @@ namespace CityTraveler.Services
                 return null;
             }
             
-            IEnumerable<TripModel> trips = GetTripByName(filter.TripName ?? "");
+            var trips = GetTripByName(filter.TripName ?? "");
             
             try
             {
@@ -132,13 +133,28 @@ namespace CityTraveler.Services
         {
             try
             {
-                IEnumerable<EntertaimentModel> entertaiments =  _entertainmentService.GetEntertainmentsByTitle(filter.EntertainmentName);
-                IEnumerable<TripModel> tripsWithGivenEntrtainments = _dbContext.Trips.Where(
-                x => x.Entertaiment.Where(y => entertaiments.Contains(y)).Any());
-                return _dbContext.Users.Where(x =>
-                    x.UserName.Contains(filter.UserName ?? "")
-                    && x.Profile.Gender.Contains(filter.Gender ?? "")
-                    && x.Trips.Where(x=> tripsWithGivenEntrtainments.Contains(x)).Any());
+                var entertaiments =  _entertainmentService.GetEntertainmentsByTitle(filter.EntertainmentName?? "");
+                /*IEnumerable<TripModel> tripsWithGivenEntrtainments = _dbContext.Trips.Where(
+                x => x.Entertaiment.Where(y => entertaiments.Contains(y)).Any());*/
+                var trips = new List<TripModel>();
+                foreach (var entertainment in entertaiments)
+                {
+                    var entertaiment = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertainment.Id);
+                    trips.AddRange(entertaiment.Trips);
+                }
+                if (trips.Any())
+                {
+                    return _dbContext.Users.Where(x =>
+                        x.UserName.Contains(filter.UserName ?? "")
+                        && x.Profile.Gender.Contains(filter.Gender ?? "")
+                        && x.Trips.Where(x => trips.Contains(x)).Any());
+                } 
+                else 
+                {
+                   return  _dbContext.Users.Where(x =>
+                        x.UserName.Contains(filter.UserName ?? "")
+                        && x.Profile.Gender.Contains(filter.Gender ?? ""));
+                }
             }
             catch (Exception e)
             {

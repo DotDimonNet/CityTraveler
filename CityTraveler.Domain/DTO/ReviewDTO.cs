@@ -11,8 +11,8 @@ namespace CityTraveler.Domain.DTO
     {
         public Guid RatingId { get; set; }
         public Guid UserId { get; set; }
-        public ICollection<Guid> Images { get; set; } = new List<Guid>();
-        public ICollection<Guid> Comments { get; set; } = new List<Guid>();
+        public ICollection<ImageGetDTO> Images { get; set; } = new List<ImageGetDTO>();
+        public ICollection<CommentDTO> Comments { get; set; } = new List<CommentDTO>();
         public string Title { get; set; }
         public string Description { get; set; }
     }

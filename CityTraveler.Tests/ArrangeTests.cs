@@ -27,6 +27,8 @@ namespace CityTraveler.Tests
         public static IMapper TestMapper { get; set; }
         public static ILogger<CityArchitectureService> LoggerCityArchitecture { set; get; }
         public static ILogger<EntertainmentService> LoggerEntertainment { set; get; }
+        public static ILogger<SocialMediaService> LoggerSocialMedia { set; get; }
+        public static ILogger<SearchService> LoggerSearchService { set; get; }
 
 
         public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
@@ -54,6 +56,7 @@ namespace CityTraveler.Tests
 
             var config = new MapperConfiguration(cfg => {
                 cfg.AddProfile<MappingProfile>();
+                cfg.AddProfile<ReviewMapping>();
             });
 
             TestMapper = new Mapper(config);

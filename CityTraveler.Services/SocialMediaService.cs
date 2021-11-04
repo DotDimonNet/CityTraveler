@@ -42,7 +42,6 @@ namespace CityTraveler.Services
             {
                 review.EntertainmentId = enterId;
                 var model = _mapper.Map<EntertainmentReviewDTO, EntertainmentReviewModel>(review);
-                //_dbContext.Ratings.Add(model.Rating);
                 _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
@@ -76,51 +75,56 @@ namespace CityTraveler.Services
             return review;
         }
 
-        public IEnumerable<ReviewDTO> GetObjectReviews(Guid objectId)
+        public async Task<IEnumerable<ReviewDTO>> GetObjectReviews(Guid objectId)
         {
             if (!_dbContext.Entertaiments.Any(x => x.Id == objectId) && !_dbContext.Trips.Any(x => x.Id == objectId)) 
             {
                 _logger.LogWarning("Object not found");
                 return null;
             }
-
-            EntertaimentModel e = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
-            TripModel t = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
-            if (_dbContext.Entertaiments.Any(x => x.Id == objectId))
+            var entertainment = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
+            var trip = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
+            if (await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId))
             {
-                return e.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x));
+                return entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x));
             }
             else
             {
-                return t.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
+                return trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
             }
         }
 
-        public IEnumerable<ReviewDTO> GetReviews(int skip = 0, int take = 10)
+        public async Task<IEnumerable<ReviewDTO>> GetReviews(int skip = 0, int take = 10)
         {
             if (skip < 0 || take < 0)
             {
                 _logger.LogWarning("Invalid arguments");
                 return null;
             }
-            IEnumerable<ReviewModel> reviewModels= _dbContext.Reviews.Skip(skip).Take(take);
-            IEnumerable<ReviewDTO> reviews = new List<ReviewDTO>();
+            await _dbContext.Reviews.LoadAsync();
+            var reviewModels= _dbContext.Reviews.Skip(skip).Take(take);
+            var reviews = new List<ReviewDTO>();
             return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
 
-        public IEnumerable<ReviewDTO> GetUserReviews(Guid userId)
+        public async Task<IEnumerable<ReviewDTO>> GetUserReviews(Guid userId)
         {
-            if (!_dbContext.Users.Any(x => x.Id == userId))
+            if (!await _dbContext.Users.AnyAsync(x => x.Id == userId))
             {
                 _logger.LogWarning("User not found");
                 return null;
             }
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.UserId == userId);
+            var reviewModels = _dbContext.Reviews.Where(x => x.UserId == userId);
             return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
         }
-
+        //await
         public async Task<bool> PostRating(RatingDTO rating)
         {
+            if (!await _dbContext.Reviews.AnyAsync(x => x.Id == rating.ReviewId))
+            {
+                _logger.LogWarning($"Review not found");
+                return false;
+            }
             try
             {
                 var model = _mapper.Map<RatingDTO, RatingModel>(rating);
@@ -144,7 +148,7 @@ namespace CityTraveler.Services
             }
             try
             {
-                ReviewModel review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                var review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
                 var raiting = _dbContext.Ratings.FirstOrDefault(x => x.ReviewId == review.Id);
                 var removeRaiting = _dbContext.Ratings.Remove(raiting);
                 _dbContext.SaveChanges();
@@ -163,11 +167,16 @@ namespace CityTraveler.Services
         }
         public async Task<bool> AddComment(CommentDTO comment) 
         {
+            if (!_dbContext.Reviews.Any(x => x.Id == comment.ReviewId)) 
+            {
+                _logger.LogWarning($"Review not found");
+                return false;
+            }
+
             try
             {
                 var model = _mapper.Map<CommentDTO, CommentModel>(comment);
                 model.Status = _dbContext.CommentStatuses.FirstOrDefault(x => x.Id == comment.Status);
-
                 _dbContext.Comments.Add(model);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -182,13 +191,13 @@ namespace CityTraveler.Services
         {
             if (!_dbContext.Comments.Any(x => x.Id == commentId))
             {
+                _logger.LogWarning("Review not found");
                 return false;
-                _logger.LogWarning("Comment not found");
             }
 
             try
             {
-                CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=> x.Id == commentId);
+                var comment = await _dbContext.Comments.FirstOrDefaultAsync(x=> x.Id == commentId);
                 _dbContext.Comments.Remove(comment);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -201,6 +210,11 @@ namespace CityTraveler.Services
         }
         public async Task<bool> AddImage(ReviewImageDTO image) 
         {
+            if (!_dbContext.Reviews.Any(x => x.Id == image.ReviewId))
+            {
+                _logger.LogWarning("Review not found");
+                return false;
+            }
             try
             {
                 var model = _mapper.Map<ReviewImageDTO, ReviewImageModel>(image);
@@ -223,7 +237,7 @@ namespace CityTraveler.Services
             }
             try
             {
-                ImageModel image = await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
+                var image = await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
                 _dbContext.Images.Remove(image);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -235,29 +249,31 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<ReviewDTO> GetReviewsByTitle(string title = "")
+        public async Task<IEnumerable<ReviewDTO>> GetReviewsByTitle(string title = "")
         {
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Title.Contains(title));
-
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            await _dbContext.Reviews.LoadAsync();
+            var reviewModels = _dbContext.Reviews.Where(x => x.Title.Contains(title));
+            return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
         }
 
-        public IEnumerable<ReviewDTO> GetReviewsByAverageRating(double rating)
+        public async Task<IEnumerable<ReviewDTO>> GetReviewsByAverageRating(double rating)
         {
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Rating.Value == rating);
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            await _dbContext.Reviews.LoadAsync();
+            var reviewModels = _dbContext.Reviews.Where(x => x.Rating.Value == rating);
+            return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
         }
 
         public async Task<ReviewDTO> GetReviewByComment(Guid comment)
         {
-            CommentModel commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == comment);
+            var commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == comment);
             return _mapper.Map<ReviewModel, ReviewDTO>(commentModel.Review);
         }
-
-        public IEnumerable<ReviewDTO> GetReviewsByDescription(string description)
+        //make async
+        public Task<IEnumerable<ReviewDTO>> GetReviewsByDescription(string description)
         {
+            _dbContext.Reviews.LoadAsync();
             IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            return Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
         }
 
         public async Task<ReviewDTO> GetReviewById(Guid Id)
@@ -281,28 +297,29 @@ namespace CityTraveler.Services
             return true;
         }
 
-        public async Task<bool> UpdateReview(ReviewModel model)
+        public async Task<bool> UpdateReview(Guid Id, ReviewDTO model)
         {
-            if (! await _dbContext.Reviews.AnyAsync(x => x.Id == model.Id))
+            if (! await _dbContext.Reviews.AnyAsync(x => x.Id == Id))
             {
                 _logger.LogWarning("Review not found");
                 return false;
             }
-            _dbContext.Reviews.Update(model);
+            _dbContext.Reviews.Update(_mapper.Map<ReviewDTO, ReviewModel>(model));
             await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> UpdateComment(CommentModel model)
+        public async Task<bool> UpdateComment(Guid Id, CommentDTO model)
         {
-            if (! await _dbContext.Comments.AnyAsync(x => x.Id == model.Id))
+            if (! await _dbContext.Comments.AnyAsync(x => x.Id == Id))
             {
                 _logger.LogWarning("Comment not found");
                 return false;
             }
-            _dbContext.Comments.Update(model);
+            _dbContext.Comments.Update(_mapper.Map<CommentDTO, CommentModel>(model));
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
     }
 }

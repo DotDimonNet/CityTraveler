@@ -9,7 +9,7 @@ namespace CityTraveler.Domain.DTO
 {
     public class RatingDTO
     {
-        public ReviewModel Review { get; set; }
+        public Guid? ReviewId { get; set; }
         public ApplicationUserModel User { get; set; }
         public double Value { get; set; }
     }
