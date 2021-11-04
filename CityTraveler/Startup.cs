@@ -114,6 +114,7 @@ namespace CityTraveler
             services.AddTransient<IInfoService, InfoService>();
             services.AddScoped<DbInitializer>();
             services.AddTransient<ITripService, TripService>();
+            services.AddTransient<IMapService, MapService>();
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
             services.AddTransient<ISocialMediaService, SocialMediaService>();

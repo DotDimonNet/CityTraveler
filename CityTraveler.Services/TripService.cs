@@ -28,12 +28,6 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public TripService(ApplicationContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
-
         public bool IsActive { get; set; }
         public string Version { get; set; }
         public Guid Id { get; set; }
@@ -87,14 +81,16 @@ namespace CityTraveler.Services
             {
                 _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on adding new default trip! {e.Message}");
+
             }
+
         }
 
         public IEnumerable<DefaultTripDTO> GetDefaultTrips(int skip = 0, int take = 10)
         {
             var trips = _context.Trips.Where(x => x.DafaultTrip == true).Skip(skip).Take(take);
             return trips.Select(x => _mapper.Map<TripModel, DefaultTripDTO>(x));
-        }
+        }   
 
         public DefaultTripDTO GetDefaultTripById(Guid defaltTripId)
         {
@@ -144,7 +140,7 @@ namespace CityTraveler.Services
 
         public IEnumerable<TripDTO> GetTrips(string title, double rating, TimeSpan optimalSpent, double price, string tag, int skip = 0, int take = 10)
         {         
-            var trips= _context.Trips.Skip(skip)
+            var trips = _context.Trips.Skip(skip)
                 .Take(take)
                 .Where(x => x.Title.Contains("") && x.AverageRating == rating 
                 && x.OptimalSpent == optimalSpent && x.Price.Value == price 

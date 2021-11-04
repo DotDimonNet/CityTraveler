@@ -24,6 +24,8 @@ namespace CityTraveler.Domain.DTO
 
     public class TripPrewievDTO 
     {
+        public Guid Id { get; set; }
+        public double AverageRating { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string TagSting { get; set; }
