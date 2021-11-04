@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IAdminPanelService
+    public interface IAdminPanelService : IServiceMetadata
     {
         public Task<IEnumerable<ApplicationUserModel>> AdminFilterUsers(FilterAdminUser filter);
         public Task<IEnumerable<EntertaimentModel>> AdminFilterEntertaiments(FilterAdminEntertaiment filter);
         public Task<IEnumerable<TripModel>> AdminFilterTrips(FilterAdminTrip filter);
-        public Task<IEnumerable<AddressModel>> AdminFilterStreets(FilterAdminStreet filter);
+        public Task<IEnumerable<AddressModel>> AdminFindAdressStreets(FilterAdminStreet filter);
         public Task<IEnumerable<ReviewModel>> AdminFilterReview(FilterAdminReview filter);
 
     }

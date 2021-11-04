@@ -7,17 +7,19 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IStatisticService
+    public interface IStatisticService : IServiceMetadata
     {
-        public Task<int> QuantityPassEntertaiment(Guid UserID);
-        public Task<IEnumerable<TripModel>> GetTripVisitEntertaiment(Guid UserID, EntertaimentModel rev);
-        public Task<double> GetAverageEntertaimentUserTrip(Guid UserID);
+        public Task<int> QuantityPassEntertaiment(Guid userId);
+        public Task<IEnumerable<TripModel>> GetTripVisitEntertaiment(Guid userId, EntertaimentModel entertaiment);
+        public Task<double> GetAverageEntertaimentUserTrip(Guid userId);
         public Task<double> GetAverageRatingUserTrip(Guid userId);
-        public Task<TimeSpan> GetAverageTimeUserTrip(Guid UserID);
-        public Task<double> GetAveragePriceUserTrip(Guid UserID);
-        public Task<int> GetCountPassedUserTrip(Guid UserID);
-        public Task<IEnumerable<TripModel>> GetActivityUserTrip(Guid UserID, DateTime time);
+        public Task<TimeSpan> GetMaxTimeUserTrip(Guid userId);
+        public Task<TimeSpan> GetMinTimeUserTrip(Guid userId);
+        public Task<double> GetAveragePriceUserTrip(Guid userId);
+        public Task<int> GetCountPassedUserTrip(Guid userId);
+        public Task<IEnumerable<TripModel>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd);
         public Task<double> GetAverageAgeUser();
         public Task<double> GetAvarageEnternaimentInTrip();
+        public Task<double> GetAverageUserReviewRating(Guid userId);
     }
 }

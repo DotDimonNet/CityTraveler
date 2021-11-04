@@ -8,22 +8,29 @@ using Moq;
 using NUnit.Framework;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Filters;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CityTraveler.Tests
 {
     public class AdminPanelServiceTest
     {
+        private Mock<ILogger<AdminPanelService>> _loggerMock;
+
         [SetUp]
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
+            _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<AdminPanelService>());
         }
 
         [Test]
         public async Task AdminFilterUsersTest()
         {
             var filter = new FilterAdminUser();
-            var service = new AdminPanelService(ArrangeTests.ApplicationContext);
+            var service = new AdminPanelService(ArrangeTests.ApplicationContext,
+                                                ArrangeTests.TestMapper,
+                                                _loggerMock.Object);
 
             var Users = await service.AdminFilterUsers(filter);
             Assert.IsNotNull(Users);

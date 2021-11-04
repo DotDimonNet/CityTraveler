@@ -19,10 +19,10 @@ namespace CityTraveler.Controllers
     [Route("api/admin")]
     public class AdminController : Controller
     {
-        private readonly ILogger<CityArchitectureController> _logger;
+        private readonly ILogger<AdminController> _logger;
         private readonly IAdminPanelService _service;
 
-        public AdminController(ILogger<CityArchitectureController> logger, IAdminPanelService adminPanelService)
+        public AdminController(ILogger<AdminController> logger, IAdminPanelService adminPanelService)
         {
             _service = adminPanelService;
             _logger = logger;
@@ -37,7 +37,7 @@ namespace CityTraveler.Controllers
         [HttpGet("get-entertaiments-admin")]
         public async Task<IActionResult> AdminFilterEntertaiments(FilterAdminEntertaiment filter)
         {
-            return filter != null ? Json(_service.AdminFilterEntertaiments(filter)) : new NotFoundResult(); 
+            return filter != null ?  Json(_service.AdminFilterEntertaiments(filter)) : new NotFoundResult(); 
         }
 
         [HttpGet("get-trips-admin")]
@@ -50,6 +50,11 @@ namespace CityTraveler.Controllers
         public async Task<IActionResult> AdminFilterReview(FilterAdminReview filter)
         {
             return filter != null ? Json(_service.AdminFilterReview(filter)) : new NotFoundResult();
+        }
+        [HttpGet("get-streets-admin")]
+        public async Task<IActionResult> AdminFindAdressStreets(FilterAdminStreet filter)
+        {
+            return  filter != null ? Json(_service.AdminFindAdressStreets(filter)) : new NotFoundResult();
         }
     }
 }

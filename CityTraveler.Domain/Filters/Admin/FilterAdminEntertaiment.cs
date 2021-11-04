@@ -9,7 +9,7 @@ namespace CityTraveler.Domain.Filters.Admin
     public class FilterAdminEntertaiment
     {
         public string Street { get; set; }
-        public int Type { get; set; }
+        public int Type { get; set; } = -1;
         public double AveragePriceMore { get; set; }
         public double AveragePriceLess { get; set; }
         public double AverageRatingMore { get; set; }
