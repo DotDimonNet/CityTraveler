@@ -22,9 +22,11 @@ namespace CityTraveler.Tests
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
-            _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<TripService>());
-        }
 
+           
+            _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<TripService>());
+
+        }
         [Test]
         public async Task DeleteTripTest()
         {
@@ -54,8 +56,13 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddTripAsyncTest()
         {
-            var tripDTO = new AddNewTripDTO() { Title="Trip Title 111", Description="Trip Description 111",};
+
+            var tripDTO = new AddNewTripDTO() { Title = "Trip Title 111", Description = "Trip Description 111" };
+
             var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
+
+
+
             var isAdded = await service.AddNewTripAsync(tripDTO);
 
             Assert.IsTrue(isAdded);
@@ -69,7 +76,7 @@ namespace CityTraveler.Tests
             var isAdded = await service.AddDefaultTrip(defaultTripDTO);
 
             Assert.IsTrue(isAdded);
-        } 
+        }
 
         [Test]
         public async Task GetDefaultTripsTets()

@@ -81,7 +81,6 @@ namespace CityTraveler.Services
             {
                 _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on adding new default trip! {e.Message}");
-
             }
 
         }
