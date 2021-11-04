@@ -4,10 +4,7 @@ using CityTraveler.Domain.Errors;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-<<<<<<< HEAD
-=======
 using Microsoft.Extensions.Logging.Abstractions;
->>>>>>> 6694f9dfc711096bf70aee411350a3f1b232939e
 using Moq;
 using NUnit.Framework;
 using System;
@@ -25,11 +22,10 @@ namespace CityTraveler.Tests
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
-<<<<<<< HEAD
-            
-=======
+
+           
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<TripService>());
->>>>>>> 6694f9dfc711096bf70aee411350a3f1b232939e
+
         }
         [Test]
         public async Task DeleteTripTest()
@@ -63,10 +59,9 @@ namespace CityTraveler.Tests
 
             var tripDTO = new AddNewTripDTO() { Title = "Trip Title 111", Description = "Trip Description 111" };
 
-            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-
-            var tripDTO = new AddNewTripDTO() { Title="Trip Title 111", Description="Trip Description 111",};
             var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
+
+
 
             var isAdded = await service.AddNewTripAsync(tripDTO);
 
