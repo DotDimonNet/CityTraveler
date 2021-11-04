@@ -60,14 +60,14 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddTripAsyncTest()
         {
-<<<<<<< HEAD
+
             var tripDTO = new AddNewTripDTO() { Title = "Trip Title 111", Description = "Trip Description 111" };
 
             var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-=======
+
             var tripDTO = new AddNewTripDTO() { Title="Trip Title 111", Description="Trip Description 111",};
             var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
->>>>>>> 6694f9dfc711096bf70aee411350a3f1b232939e
+
             var isAdded = await service.AddNewTripAsync(tripDTO);
 
             Assert.IsTrue(isAdded);
