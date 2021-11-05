@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Infrastucture.Data;
@@ -9,6 +8,7 @@ using CityTraveler.Domain.Entities;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services 
 {
@@ -25,7 +25,7 @@ namespace CityTraveler.Services
         }
         public bool IsActive { get; set; }
         public string Version { get; set; }
-        public async Task<CommentModel> GetUserLastComment(Guid userId)
+        public async Task<CommentDTO> GetUserLastComment(Guid userId)
         {
             if (!_context.Users.Any(x => x.Id == userId))
             {
@@ -34,7 +34,7 @@ namespace CityTraveler.Services
             }
             try
             {
-                return _context.Comments.LastOrDefault(x => x.Owner.UserId == userId);
+                return _mapper.Map < CommentModel, CommentDTO >(_context.Comments.LastOrDefault(x => x.Owner.UserId == userId));
             }
             catch (Exception e)
             {
@@ -42,11 +42,11 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get last user comment {e.Message}");
             }
         }
-        public async Task<CommentModel> GetLastComment()
+        public async Task<CommentDTO> GetLastComment()
         {
             try
             {
-                return _context.Comments.LastOrDefault();
+                return _mapper.Map<CommentModel, CommentDTO>(_context.Comments.LastOrDefault());
             }
             catch (Exception e)
             {
@@ -54,11 +54,11 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get last comment {e.Message}");
             }
         }
-        public async Task<ReviewModel> GetLastReview()
+        public async Task<ReviewDTO> GetLastReview()
         {
             try
             {
-                return _context.Reviews.LastOrDefault();
+                return _mapper.Map<ReviewModel, ReviewDTO>(_context.Reviews.LastOrDefault());
             }
             catch (Exception e)
             {
@@ -66,7 +66,36 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get last review {e.Message}");
             }
         }
-        public async Task<ReviewModel> GetUserLastReview(Guid userId)
+        public async Task<ReviewDTO> GetUserLastReview(Guid userId)
+        {
+            if (!_context.Users.Any(x => x.Id == userId))
+            {
+                _logger.LogWarning("User not found");
+                return null;
+            }
+            try
+            {
+                return _mapper.Map<ReviewModel, ReviewDTO>(_context.Reviews.LastOrDefault(x => x.UserId == userId));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get last user review {e.Message}");
+            }
+        }
+        public async Task<TripDTO> GetLastTrip()
+        {
+            try
+            {
+                return _mapper.Map<TripModel, TripDTO>(_context.Trips.LastOrDefault(x => x.TripStatus.Id == 3));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get last trip {e.Message}");
+            }
+        }
+        public async Task<TripDTO> GetUserLastTrip(Guid userId, bool passed = false)
         {
             if (!_context.Users.Any(x => x.Id == userId))
             {
@@ -76,50 +105,15 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Reviews.LastOrDefault();
+      
+                return passed 
+                    ? _mapper.Map<TripModel, TripDTO>(user.Trips.LastOrDefault(x => x.TripStatus.Id == 3))
+                    : _mapper.Map<TripModel, TripDTO>(user.Trips.LastOrDefault());
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                throw new Exception($"Failed to get last user review {e.Message}");
-            }
-        }
-        public async Task<TripModel> GetLastTrip()
-        {
-            try
-            {
-                return _context.Trips.LastOrDefault(x => x.TripStatus.Id == 3);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error: {e.Message}");
-                throw new Exception($"Failed to get last trip {e.Message}");
-            }
-        }
-        public async Task<TripModel> GetUserLastTrip(Guid userId, bool passed = false)
-        {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return null;
-            }
-            try
-            {
-                if(passed)
-                {
-                    var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                    return user.Trips.LastOrDefault(x => x.TripStatus.Id == 3);
-                }
-                else
-                {
-                    var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                    return user.Trips.LastOrDefault();
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error: {e.Message}");
-                throw new Exception($"Failed to get last user trip {e.Message}");
+                throw new Exception($"Failed to get user last trip {e.Message}");
             }
         }
         public async Task<IEnumerable<EntertaimentModel>> GetVisitEntertaiment(Guid userId, bool withoutReview = false)
@@ -140,7 +134,7 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get pass entertaiment {e.Message}");
             }
         }
-        public async Task<IEnumerable<CommentModel>> GetUserComments(Guid userId)
+        public async Task<IEnumerable<CommentDTO>> GetUserComments(Guid userId)
         {
             if (!_context.Users.Any(x => x.Id == userId))
             {
@@ -149,12 +143,13 @@ namespace CityTraveler.Services
             }
             try
             {
-                return _context.Comments.Where(x => x.Owner.UserId == userId).OrderBy(x => x.Created);
+                var comments = _context.Comments.Where(x => x.Owner.UserId == userId).OrderBy(x => x.Created);
+                return comments.Select(x => _mapper.Map<CommentModel, CommentDTO>(x)); ;
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                throw new Exception($"Failed to get last user comment {e.Message}");
+                return Enumerable.Empty<CommentDTO>();
             }
         }
     }

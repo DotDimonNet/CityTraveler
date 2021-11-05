@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using CityTraveler.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services
 {
@@ -45,7 +46,7 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get quantity of pass entertaiment {e.Message}");
             }
         }
-        public async Task<IEnumerable<TripModel>> GetTripVisitEntertaiment(Guid userId,EntertaimentModel entertaiment)
+        public async Task<IEnumerable<TripDTO>> GetTripVisitEntertaiment(Guid userId,EntertaimentModel entertaiment)
         {
             if (!_context.Users.Any(x => x.Id == userId))
             {
@@ -55,12 +56,13 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Trips.Where(x => x.Entertaiment.Contains(entertaiment));
+                var trips = user.Trips.Where(x => x.Entertaiment.Contains(entertaiment));
+                return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                throw new Exception($"Failed to get trip with this entertaiment {e.Message}");
+                return Enumerable.Empty<TripDTO>();
             }
 
         }
@@ -173,7 +175,7 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get count of passed user trip {e.Message}");
             }
         }
-        public async Task<IEnumerable<TripModel>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd)
+        public async Task<IEnumerable<TripDTO>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd)
         {
             if (!_context.Users.Any(x => x.Id == userId))
             {
@@ -188,14 +190,15 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                 return user.Trips.Where(x => 
+                var trips = user.Trips.Where(x =>
                          x.Created < timeEnd
                          && x.Created > timeStart);
+                return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                throw new Exception($"Failed to get activity between {timeStart} and {timeEnd} {e.Message}");
+                return Enumerable.Empty<TripDTO>();
             }
           
         }
