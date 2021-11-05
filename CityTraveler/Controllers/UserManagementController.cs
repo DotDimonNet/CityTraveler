@@ -27,7 +27,7 @@ namespace CityTraveler.Controllers
         [HttpGet("id")]
         public IActionResult GetUserById([FromQuery] Guid userId)
         {
-            var user =  _service.GetUserById(userId);
+            var user =  _service.GetUserByIdAsync(userId);
             return Json(user);
         }
 
@@ -35,7 +35,7 @@ namespace CityTraveler.Controllers
         [HttpGet("users")]
         public IActionResult GetUsers([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            var users = _service.GetUsersRange(skip, take);
+            var users = _service.GetUsersRangeAsync(skip, take);
             return Json(users);
         }
              
@@ -43,7 +43,7 @@ namespace CityTraveler.Controllers
         [HttpGet("users-by-id")]
         public IActionResult GetUsers ([FromQuery] IEnumerable<Guid> guids)
         {
-            var users = _service.GetUsers(guids);
+            var users = _service.GetUsersAsync(guids);
             return Json(users);
         }
 
@@ -55,7 +55,7 @@ namespace CityTraveler.Controllers
             [FromQuery] string gender = "", 
             [FromQuery] DateTime birthday = default)
         {
-            var users = _service.GetUsersByPropeties(name, email, gender, birthday);
+            var users = _service.GetUsersByPropetiesAsync(name, email, gender, birthday);
             return Json(users);
         }
 
