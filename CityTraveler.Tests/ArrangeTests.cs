@@ -27,8 +27,9 @@ namespace CityTraveler.Tests
         public static IMapper TestMapper { get; set; }
         public static ILogger<CityArchitectureService> LoggerCityArchitecture { set; get; }
         public static ILogger<EntertainmentService> LoggerEntertainment { set; get; }
-
-
+        public static ILogger<SocialMediaService> LoggerSocialMedia { set; get; }
+        public static ILogger<SearchService> LoggerSearchService { set; get; }
+        public static ILogger<TripService> LoggerTrip { get; set; }
         public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
         {
             return new Mock<ILogger<T>>();
@@ -54,6 +55,7 @@ namespace CityTraveler.Tests
 
             var config = new MapperConfiguration(cfg => {
                 cfg.AddProfile<MappingProfile>();
+                cfg.AddProfile<ReviewMapping>();
             });
 
             TestMapper = new Mapper(config);
@@ -313,7 +315,7 @@ namespace CityTraveler.Tests
                     TripStatus = TripStatus.New,
                     TagSting = $"tripTagString{i}",
                     TemplateId = Guid.NewGuid()
-                 };
+                };
                 if (i % 2 == 0)
                 {
                     trip.DafaultTrip = true;

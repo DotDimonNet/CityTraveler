@@ -25,32 +25,32 @@ namespace CityTraveler.Tests
             var userModel =await ArrangeTests.ApplicationContext.Users
                 .FirstOrDefaultAsync();
             var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var user = service.GetUserById(userModel.Id);
+            var user = await service.GetUserByIdAsync(userModel.Id);
 
             Assert.IsNotNull(user);
             Assert.AreEqual(user.Id, userModel.Id);
-            Assert.AreEqual(user.Name, userModel.Profile.Name);
+            Assert.AreEqual(user.Profile.Name, userModel.Profile.Name);
             Assert.AreEqual(user.Email, userModel.Email);
           }
        
         [Test]
-        public void GetUsersTests()
+        public async Task GetUsersTests()
         {
             var usersGuids = ArrangeTests.ApplicationContext.Users
                 .Select(x => x.Id);
             var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var users = service.GetUsers(usersGuids);
+            var users = await service.GetUsersAsync(usersGuids);
             
             Assert.IsNotEmpty(users);
             Assert.AreEqual(users.Select(x => x.Id), usersGuids);
         }
         [Test]
-        public void GetUsersRangeTests()
+        public async Task GetUsersRangeTests()
         {
             var usersRange = ArrangeTests.ApplicationContext.Users
                 .Skip(0).Take(10);
             var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var users = service.GetUsersRange(0,10);
+            var users = await service.GetUsersRangeAsync(0,10);
 
             Assert.IsNotEmpty(users);
             Assert.AreEqual(usersRange.Count(), users.Count());
@@ -58,12 +58,12 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-        public void GetUsersByPropeties()
+        public async Task GetUsersByPropeties()
         {
             var userModel = ArrangeTests.ApplicationContext
                 .Users.LastOrDefault();
             var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var users = service.GetUsersByPropeties(userModel.Profile.Name, "", "", default);
+            var users = await service.GetUsersByPropetiesAsync(userModel.Profile.Name, "", "", default);
 
             Assert.IsNotEmpty(users);
 

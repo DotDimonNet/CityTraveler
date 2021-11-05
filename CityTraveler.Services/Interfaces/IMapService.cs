@@ -12,7 +12,8 @@ namespace CityTraveler.Services.Interfaces
     {
         public Task<StreetShowDTO> FindStreetDTOByCoordinates(CoordinatesDTO coordinatesDto);
         public Task<StreetModel> FindStreetByCoordinates(CoordinatesDTO coordinatesDto);
-        public IEnumerable<StreetShowDTO> GetStreetsDTO(int skip = 0, int take = 10);
+        public Task<IEnumerable<StreetDTO>> FindStreetsDTOByTitle(string streetTitle);
+        public IEnumerable<StreetShowDTO> FindStreetsDTO(int skip = 0, int take = 10);
         public IEnumerable<AddressModel> FindAddressesByCoordinates(CoordinatesDTO coordinatesDto);
         public IEnumerable<AddressShowDTO> FindAddressesDTOByCoordinates(CoordinatesDTO coordinatesDto);
     }

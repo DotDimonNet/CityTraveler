@@ -10,7 +10,9 @@ namespace CityTraveler.Domain.Entities
         public virtual ICollection<AddressModel> Addresses { get; set; } = new List<AddressModel>();
         public string Title { get; set; }
         public string Description { get; set; }
-        public double StreetBeginning { get; set; }
-        public double StreetEnding { get; set; }
+        public double StreetBeginningY { get; set; }
+        public double StreetBeginningX { get; set; }
+        public double StreetEndingY { get; set; }
+        public double StreetEndingX { get; set; }
     }
 }

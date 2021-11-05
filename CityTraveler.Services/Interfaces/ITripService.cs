@@ -18,7 +18,7 @@ namespace CityTraveler.Services.Interfaces
         //public IEnumerable<TripDTO> GetTripsByName(string tripName);
         public IEnumerable<TripModel> GetTripsByName(string tripName);
         public TripDTO GetTripById(Guid tripId);
-        public IEnumerable<TripModel> GetTripsByStatus(TripStatus status);
+        public IEnumerable<TripModel> GetTripsByStatus(string status);
         public Task<bool> UpdateTripSatusAsync(Guid tripId, TripStatus newStatus);
         public Task<bool> UpdateTripTitleAsync(Guid tripId, string newTitle);
         public Task<bool> UpdateTripDescriptionAsync(Guid tripId, string newDecription);

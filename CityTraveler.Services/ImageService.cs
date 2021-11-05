@@ -34,14 +34,20 @@ namespace CityTraveler.Services
         {
             try
             {
+                if(image == null)
+                {
+                    _logger.LogWarning($"Proplem woth adding new image with type={image.GetType()}");
+                    return false;
+                }
+
                 _context.Add(image);
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error: {e.Message}");
-                throw new ImageServiceException($"Exception on adding new image! {e.Message}");
+                _logger.LogError($"Exception on adding new image! {e.Message}");
+                return false;
             }
         }
 
@@ -49,6 +55,12 @@ namespace CityTraveler.Services
         {
             try
             {
+                if(imageId == Guid.Empty)
+                {
+                    _logger.LogWarning($"Problem with deleting image! Image with Id={imageId} doesn't exists");
+                    return false;
+                }
+
                 var image = await _context.Images.FirstOrDefaultAsync(x=>x.Id==imageId);
                 _context.Images.Remove(image);
                 await _context.SaveChangesAsync();
@@ -56,8 +68,8 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error: {e.Message}");
-                throw new ImageServiceException($"Exception on deleting image! {e.Message}");
+                _logger.LogError($"Exception on deleting image! {e.Message}");
+                return false;
             }
         }
 

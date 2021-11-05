@@ -193,7 +193,8 @@ namespace CityTraveler.Services
             try
             {
                 var address = await _context.Streets
-                    .FirstOrDefaultAsync(x => x.StreetBeginning == x.StreetEnding
+                    .FirstOrDefaultAsync(x => x.StreetBeginningX == x.StreetEndingX
+                    && x.StreetBeginningY == x.StreetEndingY
                     || string.IsNullOrEmpty(x.Title));
 
                 if (address == null)
