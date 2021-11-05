@@ -41,6 +41,7 @@ namespace CityTraveler.Tests
                 Assert.NotNull(user.Profile.Gender);
             }
         }
+
         [Test]
         public async Task FilterUsersAllFieldsTest()
         {
@@ -57,10 +58,11 @@ namespace CityTraveler.Tests
                 Assert.True(user.Profile.Gender.Contains("f"));
             }
         }
+
         [Test]
-        public void FilterTripsNullFieldsTest()
+        public async Task FilterTripsNullFieldsTest()
         {
-            var trips = _service.FilterTrips(new FilterTrips { });
+            var trips = await _service.FilterTrips(new FilterTrips { });
             Assert.IsNotNull(trips);
             foreach (TripModel trip in trips)
             {
@@ -68,10 +70,11 @@ namespace CityTraveler.Tests
                 Assert.AreNotEqual(trip.Description, null);
             }
         }
+
         [Test]
-        public void FilterTripsAllFieldsTest()
+        public async Task FilterTripsAllFieldsTest()
         {
-            var trips = _service.FilterTrips(new FilterTrips
+            var trips = await _service.FilterTrips(new FilterTrips
             {
                 TripStatus = TripStatus.Passed.Id,
                 TripEnd = DateTime.Now.AddYears(-2),
@@ -103,6 +106,7 @@ namespace CityTraveler.Tests
                 Assert.True(trip.AverageRating < 200);
             }
         }
+
         [Test]
         public void FilterTripsThrowsPriceTest()
         {
@@ -114,6 +118,7 @@ namespace CityTraveler.Tests
                 });
             Assert.AreEqual(result, null);
         }
+
         [Test]
         public void FilterTripsThrowsRaitingTest()
         {
@@ -125,10 +130,11 @@ namespace CityTraveler.Tests
                 });
             Assert.AreEqual(result,null);
         }
+
         [Test]
-        public void FilterEntertainmentsNullFieldsTest()
+        public async Task FilterEntertainmentsNullFieldsTest()
         {
-            var entertainments = _service.FilterEntertainments(new FilterEntertainment { });
+            var entertainments = await _service.FilterEntertainments(new FilterEntertainment { });
             Assert.IsNotNull(entertainments);
             foreach (EntertaimentModel entertainment in entertainments)
             {
@@ -136,10 +142,11 @@ namespace CityTraveler.Tests
             }
 
         }
+
         [Test]
-        public void FilterEntertainmentsAllFieldsTest()
+        public async Task FilterEntertainmentsAllFieldsTest()
         {
-            var entertainments = _service.FilterEntertainments(new FilterEntertainment
+            var entertainments = await _service.FilterEntertainments(new FilterEntertainment
             {
                 Title = "title",
                 PriceLess = 200,
@@ -165,10 +172,11 @@ namespace CityTraveler.Tests
                 Assert.True(entertainment.AveragePrice.Value < 200);
             }
         }
+
         [Test]
-        public void FilterEnetertainmentThrowsPriceTest()
+        public async Task FilterEnetertainmentThrowsPriceTest()
         {
-            var result = _service.FilterEntertainments(new FilterEntertainment
+            var result = await _service.FilterEntertainments(new FilterEntertainment
             {
                 PriceLess = 100,
                 PriceMore = 200

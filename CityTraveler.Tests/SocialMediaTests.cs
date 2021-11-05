@@ -32,18 +32,18 @@ namespace CityTraveler.Tests
         [Test]
         public async Task GetReviewByIdTest()
         {
-            var reviewId = ArrangeTests.ApplicationContext.Reviews
-                .First().Id;
-
+            var reviewId = ArrangeTests.ApplicationContext.Reviews.First().Id;
             var review = await _service.GetReviewById(reviewId);
             Assert.IsNotNull(review);
         }
+
         [Test]
         public async Task GetReviewsByIdThrowsTest()
         {
             var result = await _service.GetReviewById(Guid.NewGuid());
             Assert.IsNull(result);
         }
+
         [Test]
         public async Task GetReviewsTest()
         {
@@ -51,13 +51,14 @@ namespace CityTraveler.Tests
             Assert.IsNotNull(review);
             Assert.True(review.Count() == 5);
         }
+
         [Test]
         public async Task AddReviewEntertainmentTest()
         {
             var entertainmentId = ArrangeTests.ApplicationContext.Entertaiments
-               .FirstOrDefault().Id;
+               .First().Id;
             var user = ArrangeTests.ApplicationContext.Users
-               .FirstOrDefault();
+               .First();
             var entertainmentReview = new EntertainmentReviewDTO
             {
                 UserId = user.Id,
@@ -67,41 +68,47 @@ namespace CityTraveler.Tests
             var review = await _service.AddReviewEntertainment(entertainmentId, entertainmentReview);
             Assert.IsNotNull(review);         
         }
+
         [Test]
         public async Task GetReviewsThrowsTest()
         {
             var result = await _service.GetReviews(-1, 5);
             Assert.IsNull(result);
         }
+
         [Test]
         public async Task GetReviewsThrowsTest2()
         {
             var result = await _service.GetReviews(1, -5);
             Assert.IsNull(result);
         }
+
         [Test]
         public async Task AddReviewTripTest()
         {
             var triptId = ArrangeTests.ApplicationContext.Trips
-               .FirstOrDefault().Id;
+               .First().Id;
             var user = ArrangeTests.ApplicationContext.Users
-               .FirstOrDefault();
+               .First();
             var tripReview = new TripReviewDTO { UserId = user.Id };
             var review = await _service.AddReviewTrip(triptId, tripReview);
             Assert.IsNotNull(review);
         }
+
         [Test]
         public async Task AddReviewEntertainmentThrowsTest()
         {
             var result = await _service.AddReviewEntertainment(Guid.NewGuid(), new EntertainmentReviewDTO { });
             Assert.IsNull( result);
         }
+
         [Test]
         public async Task AddReviewTripThrowsTest()
         {
             var result = await _service.AddReviewTrip(Guid.NewGuid(), new TripReviewDTO { });
             Assert.IsNull(result);
         }
+
         [Test]
         public async Task RemoveReviewTest()
         {
@@ -117,12 +124,14 @@ namespace CityTraveler.Tests
             var ex = await _service.RemoveReview(Guid.NewGuid());
             Assert.IsFalse(ex);
         }
+
         [Test]
         public async Task GetUserReviewsThrowsTest()
         {
             var ex = await _service.GetUserReviews(Guid.NewGuid());
             Assert.IsNull(ex);
         }
+
         [Test]
         public async Task GetUserReviewsTest()
         {
@@ -135,6 +144,7 @@ namespace CityTraveler.Tests
             }
 
         }
+
         [Test]
         public async Task GetObjectReviewsTest()
         {
@@ -143,36 +153,41 @@ namespace CityTraveler.Tests
             var reviews = _service.GetObjectReviews(trip.Id);
             Assert.NotNull(reviews);
         }
+
         [Test]
         public async Task GetObjectReviewsThrowsTest()
         {
             var result = await _service.GetObjectReviews(Guid.NewGuid());
             Assert.IsNull(result);
         }
+
         [Test]
         public async Task PostRatingThrowsTest()
         {
             var result =  await _service.PostRating( new RatingDTO { Value = 3, ReviewId = Guid.NewGuid() });
             Assert.IsFalse(result);
         }
+
         [Test]
         public async Task PostRatingTest()
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
-              .FirstOrDefaultAsync();
+              .FirstAsync();
             var rating = new RatingDTO { Value = 3, ReviewId = firstReview.Id };
             var review = await _service.PostRating(rating);
             Assert.IsTrue(review);
         }
+
         [Test]
         public async Task AddCommentTest()
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
-              .FirstOrDefaultAsync(x => x.Comments.Count() > 0);
+              .FirstAsync(x => x.Comments.Any());
             var comment = new CommentDTO{ Status = 1, ReviewId = firstReview.Id ,Description = "desc"};
             var review = await _service.AddComment(comment);
             Assert.True(review);
         }
+
         [Test]
         public async Task AddCommentThrowsTest()
         {
@@ -184,19 +199,19 @@ namespace CityTraveler.Tests
         public async Task RemoveCommentTest()
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
-              .FirstOrDefaultAsync(x => x.Comments.Count() > 0);
-            var comment = await ArrangeTests.ApplicationContext.Comments.FirstOrDefaultAsync();
+              .FirstAsync(x => x.Comments.Any());
+            var comment = await ArrangeTests.ApplicationContext.Comments.FirstAsync();
             var review = await _service.RemoveComment(comment.Id);
             Assert.True(review);
         }
+
         [Test]
         public async Task RemoveCommentThrowsCommentTest()
         {
-            var firstReview = await ArrangeTests.ApplicationContext.Reviews
-             .FirstOrDefaultAsync();
             var result = await _service .RemoveComment(Guid.NewGuid());
             Assert.IsFalse(result);
         }
+
         [Test]
         public async Task GetReviewsByTitleTest()
         {
@@ -207,6 +222,7 @@ namespace CityTraveler.Tests
                 Assert.True(review.Title.Contains("title"));
             }
         }
+
         [Test]
         public async Task GetReviewsByDescriptionTest()
         {
@@ -217,13 +233,12 @@ namespace CityTraveler.Tests
                 Assert.True(review.Description.Contains("description"));
             }
         }
+
         [Test]
         public async Task GetReviewsByCommentTest()
         {
-            var review = await _service.GetReviewByComment(ArrangeTests.ApplicationContext.Comments.FirstOrDefault().Id);
+            var review = await _service.GetReviewByComment(ArrangeTests.ApplicationContext.Comments.First().Id);
             Assert.NotNull(review);
-            //var comment = ArrangeTests.TestMapper.Map<CommentModel, CommentDTO>(ArrangeTests.ApplicationContext.Comments.FirstOrDefault());
-           // Assert.True(review.Comments.Contains(comment));
         }
 
         [Test]
@@ -232,15 +247,17 @@ namespace CityTraveler.Tests
             var reviews = _service.GetReviewsByAverageRating(5);
             Assert.NotNull(reviews);
         }
+
         [Test]
         public async Task AddImageTest()
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
-              .FirstOrDefaultAsync();
+              .FirstAsync();
             var image = new ReviewImageDTO { Title = "title", ReviewId = firstReview.Id };
             var review = await _service.AddImage(image);
             Assert.True(review);
         }
+
         [Test]
         public async Task AddImageThrowsTest()
         {
@@ -252,18 +269,16 @@ namespace CityTraveler.Tests
         public async Task RemoveImageTest()
         {
             var firstReview = await ArrangeTests.ApplicationContext.Reviews
-              .FirstOrDefaultAsync(x => x.Images.Count() > 0);
-            var image = await ArrangeTests.ApplicationContext.Images.FirstOrDefaultAsync(
-                x => x.Id == firstReview.Images.ElementAt(0).Id);
+              .FirstAsync(x => x.Images.Any());
+            var image = await ArrangeTests.ApplicationContext.Images.FirstAsync(x => x.Id == firstReview.Images.ElementAt(0).Id);
             var review = await _service.RemoveImage(image.Id);
             Assert.True(review);
             Assert.True(!ArrangeTests.ApplicationContext.Images.Contains(image));
         }
+
         [Test]
         public async Task RemoveImageThrowsImageTest()
         {
-            var firstReview = await ArrangeTests.ApplicationContext.Reviews
-             .FirstOrDefaultAsync();
             var result = await _service.RemoveImage(Guid.NewGuid());
             Assert.IsFalse(result); ;
         }
