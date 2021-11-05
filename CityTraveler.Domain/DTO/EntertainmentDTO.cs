@@ -11,7 +11,6 @@ namespace CityTraveler.Domain.DTO
     public class EntertainmentGetDTO
     {
         public AddressGetDTO Address { get; set; }
-        public string StreetId { get; set; }
         public int Type { get; set; }
         public PriceDTO AveragePrice { get; set; }
         IEnumerable<ImageGetDTO> Images { get; set; }
@@ -58,10 +57,8 @@ namespace CityTraveler.Domain.DTO
         public string Id { get; set; }
         public AddressGetDTO Address { get; set; }
         public int Type { get; set; }
-        public IEnumerable<string> TripsId { get; set; }
         public PriceDTO AveragePrice { get; set; }
         public  IEnumerable<ImageGetDTO> Images { get; set; }
-        public  IEnumerable<string> ReviewsId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Begin { get; set; }

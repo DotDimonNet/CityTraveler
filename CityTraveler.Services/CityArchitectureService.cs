@@ -29,7 +29,7 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> AddEntertainments(IEnumerable<EntertainmentGetDTO> entertaiments)
+        public async Task<bool> AddEntertainmentsAsync(IEnumerable<EntertainmentGetDTO> entertaiments)
         {
             try
             {
@@ -37,10 +37,9 @@ namespace CityTraveler.Services
 
                 foreach (var entertainment in entertaiments)
                 {
-                    var streetId = Guid.Parse(entertainment.StreetId);
+                    var streetId = Guid.Parse(entertainment.Address.StreetId);
                     var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainment);
                     model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
-                    model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainment.Type);
                     models.Add(model);
                 }
 
@@ -55,14 +54,13 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> AddEntertainment(EntertainmentGetDTO entertainmentDTO)
+        public async Task<bool> AddEntertainmentAsync(EntertainmentGetDTO entertainmentDTO)
         {
             try
             {
-                var streetId = Guid.Parse(entertainmentDTO.StreetId);
+                var streetId = Guid.Parse(entertainmentDTO.Address.StreetId);
                 var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainmentDTO);
                 model.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
-                model.Type = _context.EntertainmentType.FirstOrDefault(x => x.Id == entertainmentDTO.Type);
 
                 _context.Entertaiments.Add(model);
                 await _context.SaveChangesAsync();
@@ -75,7 +73,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> UpdateEntertainment(EntertainmentUpdateDTO entertaimentDto)
+        public async Task<bool> UpdateEntertainmentAsync(EntertainmentUpdateDTO entertaimentDto)
         {
             try
             {
@@ -85,12 +83,16 @@ namespace CityTraveler.Services
                 if (model == null)
                 {
                     var newModel = _mapper.Map<EntertainmentUpdateDTO, EntertaimentModel>(entertaimentDto);
+                    newModel.Address.Street = _context.Streets
+                        .FirstOrDefault(x => x.Id == Guid.Parse(entertaimentDto.Address.StreetId));
                     _context.Entertaiments.Add(newModel);
                     _logger.LogInformation("Info: Entertainment was not found, but created");
                 }
                 else
                 {
                     var updatedModel = _mapper.Map<EntertainmentUpdateDTO, EntertaimentModel>(entertaimentDto, model);
+                    updatedModel.Address.Street = _context.Streets
+                        .FirstOrDefault(x => x.Id == Guid.Parse(entertaimentDto.Address.StreetId));
                     _context.Entertaiments.Update(updatedModel);
                 }
 
@@ -104,33 +106,35 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> ValidateEntertainments()
+        public bool ValidateEntertainments()
         {
             try
             {
-                var entertainment = await _context.Entertaiments
-                    .FirstOrDefaultAsync(x => x.Address == null
-                    || string.IsNullOrEmpty(x.Title)
-                    || x.Type == null);
+                var entertainments = _context.Entertaiments
+                    .Where(x => x.Address == null
+                    || string.IsNullOrEmpty(x.Title));
 
-                if (entertainment == null)
+                if (entertainments.Any())
                 {
-                    return true;
-                }
-                else
-                {
-                    _logger.LogWarning("Warning: One of entertainments isn't correct");
+                    var result = entertainments.Join(entertainments,
+                        x => x.Id.ToString(),
+                        y => y.Title,
+                        (x, y) => new { Title = y, ID = x });
+                    _logger.LogWarning($"Warning: One or more entertainments aren't correct:\n{result}");
                     return false;
                 }
+
+                _logger.LogInformation("Info: Validation was finished. All entertainments are correct.");
+                return true;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to validate entertainments: {ex.Message}");
+                return false;
             }
         }
 
-        public async Task<bool> RemoveEntertainment(Guid id)
+        public async Task<bool> RemoveEntertainmentAsync(Guid id)
         {
             try
             {
@@ -140,125 +144,152 @@ namespace CityTraveler.Services
                 {
                     _context.Entertaiments.Remove(entertainment);
                     await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Info: The entertainment with ID - {id} was removed");
                     return true;
                 }
-                else
-                {
-                    _logger.LogWarning($"Entertainment was not found by id: {id}");
-                    return false;
-                }
+
+                _logger.LogWarning($"Entertainment was not founded by id - {id}");
+                return false;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to remove entertainment: {ex.Message}");
+                return false;
             }
         }
 
-        public async Task<bool> AddStreet(StreetGetDTO streetDto)
+        public async Task<bool> AddStreetAsync(StreetGetDTO streetDto)
         {
             try
             {
                 var street = _mapper.Map<StreetGetDTO, StreetModel>(streetDto);
-                _context.Streets.Add(street);
-                await _context.SaveChangesAsync();
-                return true;
+
+                try
+                {
+                    _context.Streets.Add(street);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Info: {street.Title} street was created");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error: {ex.Message}");
+                    throw new CityArchitectureServiceException($"Failed to add street: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to add street: {ex.Message}");
+                _logger.LogWarning("Warning: Passed not correct SrteetGetDTO into adding method");
+                return false;
             }
         }
 
-        public async Task<bool> UpdateStreet(StreetDTO streetDto)
+        public async Task<bool> UpdateStreetAsync(StreetDTO streetDto)
         {
             try
             {
                 var model = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetDto.Id);
                 var updatedModel = _mapper.Map<StreetDTO, StreetModel>(streetDto, model);
-                _context.Streets.Update(updatedModel);
-                await _context.SaveChangesAsync();
+
+                try
+                {
+                    _context.Streets.Update(updatedModel);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error: {ex.Message}");
+                    throw new CityArchitectureServiceException($"Failed to update street: {ex.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Warning: Passed not correct SrteetDTO into updating method");
+                throw new CityArchitectureServiceException($"Failed to update street: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool ValidateStreets()
+        {
+            try
+            {
+                var streets = _context.Streets
+                    .Where(x => x.StreetBeginningX == x.StreetEndingX
+                    && x.StreetBeginningY == x.StreetEndingY
+                    || string.IsNullOrEmpty(x.Title));
+
+                if (streets.Any())
+                {
+                    var result = streets.Join(streets,
+                        x => x.Id.ToString(),
+                        y => y.Title,
+                        (x, y) => new { Title = y, ID = x });
+                    _logger.LogWarning($"Warning: One or more streets aren't correct:\n{result}");
+                    return false;
+                }
+
+                _logger.LogInformation("Info: Validation was finished. All streets are correct.");
                 return true;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to update street: {ex.Message}");
+                return false;
             }
         }
 
-        public async Task<bool> ValidateStreets()
-        {
-            try
-            {
-                var address = await _context.Streets
-                    .FirstOrDefaultAsync(x => x.StreetBeginningX == x.StreetEndingX
-                    && x.StreetBeginningY == x.StreetEndingY
-                    || string.IsNullOrEmpty(x.Title));
-
-                if (address == null)
-                {
-                    return true;
-                }
-                else
-                {
-                    _logger.LogWarning("Warning: One of streets isn't correct");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to validate streets: {ex.Message}");
-            }
-        }
-
-        public async Task<bool> RemoveStreet(Guid streetId)
+        public async Task<bool> RemoveStreetAsync(Guid streetId)
         {
             try
             {
                 var street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId); 
 
-                if (street == null)
+                if (street != null)
                 {
-                    throw new CityArchitectureServiceException("Street not found");
+                    _context.Streets.Remove(street);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Info: The street with ID - {streetId} was removed");
+                    return true;
                 }
 
-                _context.Streets.Remove(street);
-                await _context.SaveChangesAsync();
+                _logger.LogWarning($"Street was not founded by id - {streetId}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool ValidateAddresses()
+        {
+            try
+            {
+                var addresses = _context.Addresses
+                    .Where(x => x.Coordinates == null
+                    || string.IsNullOrEmpty(x.HouseNumber)
+                    || x.StreetId == Guid.Empty);
+
+                if (addresses.Any())
+                {
+                    var result = addresses.Join(addresses,
+                        x => $"{x.Street.Title} - {x.HouseNumber} - {x.ApartmentNumber}",
+                        y => y.Id.ToString(),
+                        (x, y) => new { Title = x, ID = y });
+                    _logger.LogWarning($"Warning: One or more streets aren't correct:\n{result}");
+                    return false;
+                }
+
+                _logger.LogInformation("Info: Validation was finished. All addresses are correct.");
                 return true;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to remove street: {ex.Message}");
-            }
-        }
-
-        public async Task<bool> ValidateAddresses()
-        {
-            try
-            {
-                var address = await _context.Addresses
-                    .FirstOrDefaultAsync(x => x.Coordinates == null
-                    || string.IsNullOrEmpty(x.HouseNumber)
-                    || x.StreetId == Guid.Empty);
-
-                if (address == null)
-                {
-                    return true;
-                }
-                else
-                {
-                    _logger.LogWarning("Warning: One of addresses isn't correct");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error: {ex.Message}");
-                throw new CityArchitectureServiceException($"Failed to validate addresses: {ex.Message}");
+                return false;
             }
         }
     }

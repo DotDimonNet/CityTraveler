@@ -29,43 +29,43 @@ namespace CityTraveler.Controllers
         [HttpPost("add-entertainment")]
         public async Task<IActionResult> AddEntertainment([FromBody] EntertainmentGetDTO entertainmentDto)
         {
-            return Json(await _service.AddEntertainment(entertainmentDto));
+            return Json(await _service.AddEntertainmentAsync(entertainmentDto));
         }
 
         [HttpPost("add-entertainments")]
         public async Task<IActionResult> AddEntertainments([FromBody] IEnumerable<EntertainmentGetDTO> entertainmentsDto)
         {
-            return Json(await _service.AddEntertainments(entertainmentsDto));
+            return Json(await _service.AddEntertainmentsAsync(entertainmentsDto));
         }
 
         [HttpPost("add-street")]
         public async Task<IActionResult> AddStreet([FromBody] StreetGetDTO streetDto)
         {
-            return Json(await _service.AddStreet(streetDto));
+            return Json(await _service.AddStreetAsync(streetDto));
         }
 
         [HttpDelete("remove-entertainment")]
         public async Task<IActionResult> RemoveEntertainment([FromQuery] Guid id) 
         {
-            return Json(await _service.RemoveEntertainment(id));
+            return Json(await _service.RemoveEntertainmentAsync(id));
         }
 
         [HttpDelete("remove-street")]
         public async Task<IActionResult> RemoveStreet([FromQuery] Guid id)
         {
-            return Json(await _service.RemoveStreet(id));
+            return Json(await _service.RemoveStreetAsync(id));
         }
 
         [HttpPut("update-entertainment")]
         public async Task<IActionResult> UpdateEntertainment([FromBody] EntertainmentUpdateDTO entertainmentDto)
         {
-            return Json(await _service.UpdateEntertainment(entertainmentDto));
+            return Json(await _service.UpdateEntertainmentAsync(entertainmentDto));
         }
 
         [HttpPut("update-street")]
         public async Task<IActionResult> UpdateStreet([FromBody] StreetDTO streetDto)
         {
-            return Json(await _service.UpdateStreet(streetDto));
+            return Json(await _service.UpdateStreetAsync(streetDto));
         }
     }
 }
