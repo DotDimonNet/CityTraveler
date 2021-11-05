@@ -35,8 +35,6 @@ namespace CityTraveler.Tests
         [Test]
         public async Task RemoveEntertainmentExeptionTest()
         {
-            var entertainment = ArrangeTests.ApplicationContext.Entertaiments
-                .FirstOrDefault();
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
             try

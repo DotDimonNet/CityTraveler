@@ -12,5 +12,6 @@ namespace CityTraveler.Services.Interfaces
         public Task<IEnumerable<ApplicationUserModel>> FilterUsers(FilterUsers user);
         public Task<IEnumerable<TripModel>> FilterTrips(FilterTrips trip);
         public Task<IEnumerable<EntertaimentModel>> FilterEntertainments(FilterEntertainment entertainment);
+
     }
 }

@@ -25,7 +25,7 @@ namespace CityTraveler.Tests
         {
             await ArrangeTests.SetupDbContext();
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<SearchService>());
-            _service = new SearchService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object,
+            _service = new SearchService(ArrangeTests.ApplicationContext, _loggerMock.Object,
                 new EntertainmentService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.SetupTestLogger(new NullLogger<EntertainmentService>()).Object));
         }
 
@@ -33,7 +33,7 @@ namespace CityTraveler.Tests
         public async Task FilterUsersNullFieldsTest()
         {
             var users = await _service.FilterUsers(new FilterUsers { });
-            Assert.IsNotEmpty(users);
+            Assert.IsNotNull (users);
 
             foreach (ApplicationUserModel user in users.ToList())
             {
@@ -108,27 +108,27 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-        public void FilterTripsThrowsPriceTest()
+        public async Task FilterTripsThrowsPriceTest()
         {
-            var result = _service.FilterTrips(
+            var result = await _service.FilterTrips(
                 new FilterTrips
                 {
                     PriceLess = 100,
                     PriceMore = 200
                 });
-            Assert.AreEqual(result, null);
+            Assert.IsEmpty(result);
         }
 
         [Test]
-        public void FilterTripsThrowsRaitingTest()
+        public async Task FilterTripsThrowsRaitingTest()
         {
-            var result = _service.FilterTrips(
+            var result = await _service.FilterTrips(
                 new FilterTrips
                 {
                     AverageRatingLess = 100,
                     AverageRatingMore = 200
                 });
-            Assert.AreEqual(result,null);
+            Assert.IsEmpty(result);
         }
 
         [Test]
@@ -181,18 +181,18 @@ namespace CityTraveler.Tests
                 PriceLess = 100,
                 PriceMore = 200
             });
-            Assert.IsNull(result);
+            Assert.IsEmpty(result);
         }
 
         [Test]
-        public void FilterEntertainmentThrowsRaitingTest()
+        public async Task FilterEntertainmentThrowsRaitingTest()
         {
-            var ex =_service.FilterEntertainments(new FilterEntertainment
+            var result = await _service.FilterEntertainments(new FilterEntertainment
             {
                 RatingLess = 100,
                 RatingMore = 200
             });
-            Assert.IsNull(ex);
+            Assert.IsEmpty(result);
         }
 
     }

@@ -73,14 +73,14 @@ namespace CityTraveler.Tests
         public async Task GetReviewsThrowsTest()
         {
             var result = await _service.GetReviews(-1, 5);
-            Assert.IsNull(result);
+            Assert.IsEmpty(result);
         }
 
         [Test]
         public async Task GetReviewsThrowsTest2()
         {
             var result = await _service.GetReviews(1, -5);
-            Assert.IsNull(result);
+            Assert.IsEmpty(result);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace CityTraveler.Tests
         public async Task AddReviewEntertainmentThrowsTest()
         {
             var result = await _service.AddReviewEntertainment(Guid.NewGuid(), new EntertainmentReviewDTO { });
-            Assert.IsNull( result);
+            Assert.IsNull(result);
         }
 
         [Test]
@@ -113,23 +113,23 @@ namespace CityTraveler.Tests
         public async Task RemoveReviewTest()
         {
             var review = await ArrangeTests.ApplicationContext.Reviews.FirstAsync();
-            var res = await _service.RemoveReview(review.Id);
-            Assert.True(res);
+            var result = await _service.RemoveReview(review.Id);
+            Assert.True(result);
             Assert.False(ArrangeTests.ApplicationContext.Reviews.Contains(review));
         }
 
         [Test]
         public async Task RemoveReviewThrowsTest()
         {
-            var ex = await _service.RemoveReview(Guid.NewGuid());
-            Assert.IsFalse(ex);
+            var result = await _service.RemoveReview(Guid.NewGuid());
+            Assert.IsFalse(result);
         }
 
         [Test]
         public async Task GetUserReviewsThrowsTest()
         {
-            var ex = await _service.GetUserReviews(Guid.NewGuid());
-            Assert.IsNull(ex);
+            var result = await _service.GetUserReviews(Guid.NewGuid());
+            Assert.IsEmpty(result);
         }
 
         [Test]
@@ -142,7 +142,6 @@ namespace CityTraveler.Tests
             {
                 Assert.True(review.UserId == user.Id);
             }
-
         }
 
         [Test]
@@ -158,7 +157,7 @@ namespace CityTraveler.Tests
         public async Task GetObjectReviewsThrowsTest()
         {
             var result = await _service.GetObjectReviews(Guid.NewGuid());
-            Assert.IsNull(result);
+            Assert.IsEmpty(result);
         }
 
         [Test]
