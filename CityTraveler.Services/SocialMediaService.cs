@@ -35,20 +35,19 @@ namespace CityTraveler.Services
         {
             if (!_dbContext.Entertaiments.Any(x => x.Id == enterId))
             {
-                _logger.LogWarning("Entertainment not found");
+                _logger.LogError("Entertainment not found");
                 return null;
             }
             try
             {
                 review.EntertainmentId = enterId;
                 var model = _mapper.Map<EntertainmentReviewDTO, EntertainmentReviewModel>(review);
-                //_dbContext.Ratings.Add(model.Rating);
                 _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception e) 
             {
-                _logger.LogWarning($"Failed to add review to entertainment {e.Message}");
+                _logger.LogError($"Failed to add review to entertainment {e.Message}");
                 return null;
             }
             return review;
@@ -58,7 +57,7 @@ namespace CityTraveler.Services
         {
             if (!_dbContext.Trips.Any(x => x.Id == tripId))
             {
-                _logger.LogWarning("Trip not found");
+                _logger.LogError("Trip not found");
                 return null;
             }
             try
@@ -70,57 +69,79 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Failed to add review to trip {e.Message}");
+                _logger.LogError($"Failed to add review to trip {e.Message}");
                 return null;
             }
             return review;
         }
 
-        public IEnumerable<ReviewDTO> GetObjectReviews(Guid objectId)
+        public async Task<IEnumerable<ReviewDTO>> GetObjectReviews(Guid objectId)
         {
-            if (!_dbContext.Entertaiments.Any(x => x.Id == objectId) && !_dbContext.Trips.Any(x => x.Id == objectId)) 
+            if (! await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) && ! await _dbContext.Trips.AnyAsync(x => x.Id == objectId)) 
             {
-                _logger.LogWarning("Object not found");
-                return null;
+                _logger.LogError("Object not found");
+                return Enumerable.Empty<ReviewDTO>();
             }
-
-            EntertaimentModel e = _dbContext.Entertaiments.FirstOrDefault(x=> x.Id == objectId);
-            TripModel t = _dbContext.Trips.FirstOrDefault(x => x.Id == objectId);
-            if (_dbContext.Entertaiments.Any(x => x.Id == objectId))
+            try
             {
-                return e.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x));
+                var entertainment = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == objectId);
+                var trip = await  _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
+                return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) ?
+                     entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x)) :
+                     trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
             }
-            else
+            catch (Exception e) 
             {
-                return t.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
+                _logger.LogError($"Failed to get reviews {e.Message}");
+                return Enumerable.Empty<ReviewDTO>();
             }
         }
 
-        public IEnumerable<ReviewDTO> GetReviews(int skip = 0, int take = 10)
+        public async Task<IEnumerable<ReviewDTO>> GetReviews(int skip = 0, int take = 10)
         {
             if (skip < 0 || take < 0)
             {
-                _logger.LogWarning("Invalid arguments");
-                return null;
+                _logger.LogError("Invalid arguments");
+                return Enumerable.Empty<ReviewDTO>();
             }
-            IEnumerable<ReviewModel> reviewModels= _dbContext.Reviews.Skip(skip).Take(take);
-            IEnumerable<ReviewDTO> reviews = new List<ReviewDTO>();
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
-        }
-
-        public IEnumerable<ReviewDTO> GetUserReviews(Guid userId)
-        {
-            if (!_dbContext.Users.Any(x => x.Id == userId))
+            try { 
+                var reviewModels= _dbContext.Reviews.Skip(skip).Take(take);
+                var reviews = new List<ReviewDTO>();
+                return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
+            }
+            catch (Exception e) 
             {
-                _logger.LogWarning("User not found");
-                return null;
+                _logger.LogError($"Failed to get reviews {e.Message}");
+                return Enumerable.Empty<ReviewDTO>();
             }
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.UserId == userId);
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+}
+
+        public async Task<IEnumerable<ReviewDTO>> GetUserReviews(Guid userId)
+        {
+            if (!await _dbContext.Users.AnyAsync(x => x.Id == userId))
+            {
+                _logger.LogError("User not found");
+                return Enumerable.Empty<ReviewDTO>();
+            }
+            try
+            {
+                var reviewModels = _dbContext.Reviews.Where(x => x.UserId == userId);
+                return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to get reviews {e.Message}");
+                return Enumerable.Empty<ReviewDTO>();
+            }
         }
 
         public async Task<bool> PostRating(RatingDTO rating)
         {
+            if (!await _dbContext.Reviews.AnyAsync(x => x.Id == rating.ReviewId))
+            {
+                _logger.LogError($"Review not found");
+                return false;
+            }
             try
             {
                 var model = _mapper.Map<RatingDTO, RatingModel>(rating);
@@ -129,7 +150,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e) 
             {
-                _logger.LogWarning($"Failed to post rating {e.Message}");
+                _logger.LogError($"Failed to post rating {e.Message}");
                 return false;
             }
 
@@ -137,44 +158,59 @@ namespace CityTraveler.Services
 
         public async Task<bool> RemoveReview(Guid reviewId)
         {
-            if (_dbContext.Reviews.Where(x => x.Id == reviewId).Count() == 0)
+            if (!_dbContext.Reviews.Where(x => x.Id == reviewId).Any())
             {
-                _logger.LogWarning("Review not found");
+                _logger.LogError("Review not found");
                 return false;
             }
             try
             {
-                ReviewModel review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
-                var raiting = _dbContext.Ratings.FirstOrDefault(x => x.ReviewId == review.Id);
+                var review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
+                var raiting = await _dbContext.Ratings.FirstOrDefaultAsync(x => x.ReviewId == review.Id);
                 var removeRaiting = _dbContext.Ratings.Remove(raiting);
-                _dbContext.SaveChanges();
                 for (int i = 0; i < review.Images.Count; i++)
+                {
                     _dbContext.Images.Remove(review.Images.ElementAt(i));
-                _dbContext.SaveChanges();
+                }
+                await _dbContext.SaveChangesAsync();
                 _dbContext.Reviews.Remove(review);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Failed to remove review {e.Message}");
+                _logger.LogError($"Failed to remove review {e.Message}");
                 return false;
             }
         }
         public async Task<bool> AddComment(CommentDTO comment) 
         {
+            if (!_dbContext.Reviews.Any(x => x.Id == comment.ReviewId)) 
+            {
+                _logger.LogError("Review not found");
+                return false;
+            }
+            if (comment.Status > 3 || comment.Status < 1)
+            {
+                _logger.LogError("Comment status incorrect");
+                return false;
+            }
             try
             {
                 var model = _mapper.Map<CommentDTO, CommentModel>(comment);
-                model.Status = _dbContext.CommentStatuses.FirstOrDefault(x => x.Id == comment.Status);
-
+                if (comment.Status > 3 || comment.Status < 1)
+                {
+                    _logger.LogError("Comment status incorrect");
+                    return false;
+                }
+                model.Status = (CommentStatus)comment.Status;
                 _dbContext.Comments.Add(model);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e) 
             {
-                _logger.LogWarning($"Failed to add comment {e.Message}");
+                _logger.LogError($"Failed to add comment {e.Message}");
                 return false;
             }
         }
@@ -182,25 +218,30 @@ namespace CityTraveler.Services
         {
             if (!_dbContext.Comments.Any(x => x.Id == commentId))
             {
+                _logger.LogError("Review not found");
                 return false;
-                _logger.LogWarning("Comment not found");
             }
 
             try
             {
-                CommentModel comment = await _dbContext.Comments.FirstOrDefaultAsync(x=> x.Id == commentId);
+                var comment = await _dbContext.Comments.FirstOrDefaultAsync(x=> x.Id == commentId);
                 _dbContext.Comments.Remove(comment);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Failed to remove comment {e}");
+                _logger.LogError($"Failed to remove comment {e.Message}");
                 return false;
             }
         }
         public async Task<bool> AddImage(ReviewImageDTO image) 
         {
+            if (!_dbContext.Reviews.Any(x => x.Id == image.ReviewId))
+            {
+                _logger.LogError("Review not found");
+                return false;
+            }
             try
             {
                 var model = _mapper.Map<ReviewImageDTO, ReviewImageModel>(image);
@@ -210,7 +251,7 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Failed to add image {e}");
+                _logger.LogError($"Failed to add image {e.Message}");
                 return false;
             }
         }
@@ -218,91 +259,154 @@ namespace CityTraveler.Services
         {
             if (!_dbContext.Images.Any(x => x.Id == reviewImageId))
             {
-                _logger.LogWarning("Image not found"); 
+                _logger.LogError("Image not found"); 
                 return false;
             }
             try
             {
-                ImageModel image = await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
+                var image = await _dbContext.Images.FirstOrDefaultAsync(x => x.Id == reviewImageId);
                 _dbContext.Images.Remove(image);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
             {
-                _logger.LogWarning($"Failed to remove image {e}");
+                _logger.LogError($"Failed to remove image {e.Message}");
                 return false;
             }
         }
 
-        public IEnumerable<ReviewDTO> GetReviewsByTitle(string title = "")
+        public async Task<IEnumerable<ReviewDTO>> GetReviewsByTitle(string title = "")
         {
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Title.Contains(title));
-
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            try
+            {
+                var reviewModels = _dbContext.Reviews.Where(x => x.Title.Contains(title));
+                return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to get review by title {e.Message}");
+                return Enumerable.Empty<ReviewDTO>();
+            }
         }
 
-        public IEnumerable<ReviewDTO> GetReviewsByAverageRating(double rating)
+        public async Task<IEnumerable<ReviewDTO>> GetReviewsByAverageRating(double rating)
         {
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Rating.Value == rating);
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            try
+            {
+                var reviewModels = _dbContext.Reviews.Where(x => x.Rating.Value == rating);
+                return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to get review by average raiting {e.Message}");
+                return Enumerable.Empty<ReviewDTO>();
+            }
         }
 
         public async Task<ReviewDTO> GetReviewByComment(Guid comment)
         {
-            CommentModel commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == comment);
-            return _mapper.Map<ReviewModel, ReviewDTO>(commentModel.Review);
+            try
+            {
+                var commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == comment);
+                return _mapper.Map<ReviewModel, ReviewDTO>(commentModel.Review);
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to get review by comment {e.Message}");
+                return null;
+            }
         }
-
-        public IEnumerable<ReviewDTO> GetReviewsByDescription(string description)
+        public async Task<IEnumerable<ReviewDTO>> GetReviewsByDescription(string description = "")
         {
-            IEnumerable<ReviewModel> reviewModels = _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
-            return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+            try
+            {
+                var reviewModels = _dbContext.Reviews.Where(x => x.Description.Contains(description ?? ""));
+                return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to get review by description {e.Message}");
+                return Enumerable.Empty<ReviewDTO>();
+            }
         }
 
         public async Task<ReviewDTO> GetReviewById(Guid Id)
         {
             if (!_dbContext.Reviews.Any(x => x.Id == Id))
             {
-                _logger.LogWarning("Review not found");
+                _logger.LogError("Review not found");
                 return null;
             }
-            return _mapper.Map<ReviewModel,ReviewDTO>(await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == Id));
+            try
+            {
+                return _mapper.Map<ReviewModel, ReviewDTO>(await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == Id));
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to get review by id {e.Message}");
+                return null;
+            }
         }
 
         public async Task<bool> RemoveRating(Guid ratingId)
         {
             if (!await _dbContext.Ratings.AnyAsync(x => x.Id == ratingId))
             {
-                _logger.LogWarning("Rating not found");
+                _logger.LogError("Rating not found");
                 return false;
             }
-             _dbContext.Ratings.Remove(await _dbContext.Ratings.FirstOrDefaultAsync(x => x.Id == ratingId));
-            return true;
+            try
+            {
+                _dbContext.Ratings.Remove(await _dbContext.Ratings.FirstOrDefaultAsync(x => x.Id == ratingId));
+                return true;
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to remove raiting {e.Message}");
+                return false;
+            }
         }
 
-        public async Task<bool> UpdateReview(ReviewModel model)
+        public async Task<bool> UpdateReview(Guid Id, ReviewDTO model)
         {
-            if (! await _dbContext.Reviews.AnyAsync(x => x.Id == model.Id))
+            if (!await _dbContext.Reviews.AnyAsync(x => x.Id == Id))
             {
-                _logger.LogWarning("Review not found");
+                _logger.LogError("Review not found");
                 return false;
             }
-            _dbContext.Reviews.Update(model);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            try
+            {
+                _dbContext.Reviews.Update(_mapper.Map<ReviewDTO, ReviewModel>(model));
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to update review {e.Message}");
+                return false;
+            }
         }
 
-        public async Task<bool> UpdateComment(CommentModel model)
+        public async Task<bool> UpdateComment(Guid Id, CommentDTO model)
         {
-            if (! await _dbContext.Comments.AnyAsync(x => x.Id == model.Id))
+            var isCommentExists = await _dbContext.Comments.AnyAsync(x => x.Id == Id);
+            if (!isCommentExists)
             {
-                _logger.LogWarning("Comment not found");
+                _logger.LogError("Comment not found");
                 return false;
             }
-            _dbContext.Comments.Update(model);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            try
+            {
+                _dbContext.Comments.Update(_mapper.Map<CommentDTO, CommentModel>(model));
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError($"Failed to update comment {e.Message}");
+                return false;
+            }
         }
     }
 }
