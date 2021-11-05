@@ -11,7 +11,7 @@ namespace CityTraveler.Infrastucture.Data
     {
         public static void SetupEnums(ApplicationContext _context)
         {
-            if (!_context.CommentStatuses.Any())
+            /*if (!_context.CommentStatuses.Any())
             {
                 _context.AddRange(
                     CommentStatus.Liked,
@@ -19,7 +19,7 @@ namespace CityTraveler.Infrastucture.Data
                     CommentStatus.Suprised);
 
                 _context.SaveChanges();
-            }
+            }*/
 
             if (!_context.EntertainmentType.Any())
             {

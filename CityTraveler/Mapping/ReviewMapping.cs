@@ -16,18 +16,29 @@ namespace CityTraveler.Mapping
                 ForMember(x=>x.ReviewId, o=>o.Ignore());
             CreateMap<CommentDTO, CommentModel>().
                 ForMember(x=>x.Status, o=>o.Ignore());
+            CreateMap<CommentModel, CommentDTO>().
+               ForMember(x => x.Status, o => o.Ignore());
             CreateMap<ReviewDTO, ReviewModel>().
                 ForMember(x=>x.RatingId, o=>o.Ignore()).
-                ForMember(x=>x.UserId, o=>o.Ignore());
+                ForMember(x=>x.UserId, o=>o.Ignore()).
+                ReverseMap();
             CreateMap<ReviewImageDTO, ReviewImageModel>();
             CreateMap<ReviewDTO, ReviewModel>().
                 ForMember(x => x.Images, o => o.Ignore()).
                 ForMember(x => x.Comments, o => o.Ignore());
-            CreateMap<EntertainmentReviewDTO, EntertainmentReviewModel>();
-            CreateMap<TripReviewDTO, TripReviewModel>();
-            CreateMap<TripReviewModel, TripReviewDTO>().ReverseMap();
-            CreateMap<EntertainmentReviewModel, EntertainmentReviewDTO>().ReverseMap();
-            CreateMap<ReviewModel, ReviewDTO>().ReverseMap();
+            CreateMap<ReviewModel, ReviewDTO>().
+                ForMember(x => x.Images, o => o.Ignore()).
+                ForMember(x => x.Comments, o => o.Ignore());
+            CreateMap<EntertainmentReviewDTO, EntertainmentReviewModel>().
+                ReverseMap();
+            CreateMap<TripReviewDTO, TripReviewModel>().
+                ReverseMap();
+
+            /*CreateMap<TripReviewModel, TripReviewDTO>().ReverseMap();
+            CreateMap<EntertainmentReviewModel, EntertainmentReviewDTO>().ReverseMap();*/
+            /*CreateMap<ReviewModel, ReviewDTO>().ReverseMap().
+                ForMember(x=>x.Id, o=>o.Ignore());*/
+           //CreateMap<CommentModel, CommentDTO>().ReverseMap();
         }
     }
 }
