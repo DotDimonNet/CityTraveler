@@ -14,8 +14,8 @@ namespace CityTraveler.Domain.Filters.Admin
         public double PriceLess { get; set; } = double.MaxValue;
         public double AverageRatingMore { get; set; } = 0;
         public double AverageRatingLess { get; set; } = 5;
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
         public TimeSpan OptimalSpent { get; set; } = TimeSpan.MinValue;
         public TimeSpan RealSpent { get; set; } = TimeSpan.MinValue;
         public int TripStatus { get; set; } = -1;

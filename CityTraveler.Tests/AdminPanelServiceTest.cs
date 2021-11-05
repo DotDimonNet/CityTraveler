@@ -32,7 +32,7 @@ namespace CityTraveler.Tests
                                                 ArrangeTests.TestMapper,
                                                 _loggerMock.Object);
 
-            var Users = await service.AdminFilterUsers(filter);
+            var Users = await service.FilterUsers(filter);
             Assert.IsNotNull(Users);
 
             ArrangeTests.UserManagerMock

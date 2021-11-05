@@ -1,4 +1,5 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Filters;
 using CityTraveler.Domain.Filters.Admin;
 using System;
@@ -11,11 +12,11 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IAdminPanelService : IServiceMetadata
     {
-        public Task<IEnumerable<ApplicationUserModel>> AdminFilterUsers(FilterAdminUser filter);
-        public Task<IEnumerable<EntertaimentModel>> AdminFilterEntertaiments(FilterAdminEntertaiment filter);
-        public Task<IEnumerable<TripModel>> AdminFilterTrips(FilterAdminTrip filter);
-        public Task<IEnumerable<AddressModel>> AdminFindAdressStreets(FilterAdminStreet filter);
-        public Task<IEnumerable<ReviewModel>> AdminFilterReview(FilterAdminReview filter);
+        public Task<IEnumerable<UserChangeAdminDTO>> FilterUsers(FilterAdminUser filter);
+        public Task<IEnumerable<EntertaimentModel>> FilterEntertaiments(FilterAdminEntertaiment filter);
+        public Task<IEnumerable<TripDTO>> FilterTrips(FilterAdminTrip filter);
+        public Task<IEnumerable<AddressShowDTO>> FindAdressStreets(FilterAdminStreet filter);
+        public Task<IEnumerable<ReviewDTO>> FilterReview(FilterAdminReview filter);
 
     }
 }

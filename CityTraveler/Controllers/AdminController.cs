@@ -28,33 +28,33 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get-users-admin")]
+        [HttpGet("get-users")]
         public async Task<IActionResult> AdminFilterUsers(FilterAdminUser filter)
         {
-            return filter != null ? Json(_service.AdminFilterUsers(filter)) : new NotFoundResult();
+            return Json(_service.FilterUsers(filter));
         }
 
-        [HttpGet("get-entertaiments-admin")]
+        [HttpGet("get-entertaiments")]
         public async Task<IActionResult> AdminFilterEntertaiments(FilterAdminEntertaiment filter)
         {
-            return filter != null ?  Json(_service.AdminFilterEntertaiments(filter)) : new NotFoundResult(); 
+            return Json(_service.FilterEntertaiments(filter)); 
         }
 
-        [HttpGet("get-trips-admin")]
-        public async Task<IActionResult> AdminFilterTrips(FilterAdminTrip filter)
+        [HttpGet("get-trips")]
+        public async Task<IActionResult> FilterTrips(FilterAdminTrip filter)
         {
-            return filter != null ? Json(_service.AdminFilterTrips(filter)) : new NotFoundResult();
+            return Json(_service.FilterTrips(filter));
         }
 
-        [HttpGet("get-reviews-admin")]
-        public async Task<IActionResult> AdminFilterReview(FilterAdminReview filter)
+        [HttpGet("get-reviews")]
+        public async Task<IActionResult> FilterReview(FilterAdminReview filter)
         {
-            return filter != null ? Json(_service.AdminFilterReview(filter)) : new NotFoundResult();
+            return  Json(_service.FilterReview(filter));
         }
-        [HttpGet("get-streets-admin")]
-        public async Task<IActionResult> AdminFindAdressStreets(FilterAdminStreet filter)
+        [HttpGet("get-streets")]
+        public async Task<IActionResult> FindAdressStreets(FilterAdminStreet filter)
         {
-            return  filter != null ? Json(_service.AdminFindAdressStreets(filter)) : new NotFoundResult();
+            return Json(_service.FindAdressStreets(filter));
         }
     }
 }

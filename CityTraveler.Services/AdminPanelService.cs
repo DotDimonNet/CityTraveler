@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using CityTraveler.Domain.Filters.Admin;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services
 {
@@ -28,137 +29,124 @@ namespace CityTraveler.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<IEnumerable<ApplicationUserModel>> AdminFilterUsers(FilterAdminUser filter)
+        public async Task<IEnumerable<UserChangeAdminDTO>> FilterUsers(FilterAdminUser filter)
         {
             try
             {
-                return _context.Users.Where(x =>
-                    x.UserName.Contains(filter.UserName ?? "")
-                    && x.Profile.Gender.Contains(filter.Gender ?? "")
-                    && x.Profile.Name.Contains(filter.Name ?? "")
-                    && x.Email.Contains(filter.Email ?? "")
-                    && x.PhoneNumber.Contains(filter.PhoneNumber ?? ""));
-
+                var users = _context.Users.Where(x =>
+                            x.UserName.Contains(filter.UserName)
+                            && x.Profile.Gender.Contains(filter.Gender)
+                            && x.Profile.Name.Contains(filter.Name)
+                            && x.Email.Contains(filter.Email)
+                            && x.PhoneNumber.Contains(filter.PhoneNumber));
+                return users.Select(x => _mapper.Map<ApplicationUserModel, UserChangeAdminDTO>(x));
             }
             catch (Exception e)
             {
                 _logger.LogWarning($"Failed to filter users {e.Message}");
-                return null;
+                return Enumerable.Empty<UserChangeAdminDTO>();
             }
         }
-        public async Task<IEnumerable<EntertaimentModel>> AdminFilterEntertaiments(FilterAdminEntertaiment filter)
+        public async Task<IEnumerable<EntertaimentModel>> FilterEntertaiments(FilterAdminEntertaiment filter)
         {
-            if (filter.AveragePriceLess < filter.AveragePriceMore || filter.AverageRatingLess < filter.AverageRatingMore)
+            if (filter.AveragePriceLess > filter.AveragePriceMore)
             {
-                _logger.LogWarning("PriceMore can`t be more than priceLess. The same is for rating.");
+                _logger.LogWarning("PriceLess can`t be more than priceMore");
+                return null;
+            }
+            if(filter.AverageRatingLess > filter.AverageRatingMore)
+            {
+                _logger.LogWarning("RatingLess can`t be more than RatingMore");
                 return null;
             }
             try
             {
-                if (filter.Type != -1)
-                {
-                    return _context.Entertaiments.Where(x => x.AverageRating > filter.AverageRatingLess
+                var entertaiment = _context.Entertaiments.Where(x => x.AverageRating > filter.AverageRatingLess
                             && x.AverageRating < filter.AverageRatingMore
                             && x.AveragePrice.Value < filter.AveragePriceMore
                             && x.AveragePrice.Value > filter.AveragePriceLess
-                            && x.Description.Contains(filter.Description ?? " ")
-                            && x.Type.Id == filter.Type
-                            && x.Title.Contains(filter.Title ?? " "));
-                }
-                else
-                {
-                    return _context.Entertaiments.Where(x => x.AverageRating > filter.AverageRatingLess
-                            && x.AverageRating < filter.AverageRatingMore
-                            && x.AveragePrice.Value < filter.AveragePriceMore
-                            && x.AveragePrice.Value > filter.AveragePriceLess
-                            && x.Description.Contains(filter.Description ?? " ")
-                            && x.Title.Contains(filter.Title ?? " "));
-                }
+                            && x.Description.Contains(filter.Description)
+                            && x.Title.Contains(filter.Title));
+                 return  (filter.Type != -1) ?  entertaiment.Where(x => x.Type.Id == filter.Type) : entertaiment;
+
             }
             catch (Exception e)
             {
                 _logger.LogWarning($"Failed to filter entertainments {e.Message}");
-                return null; throw new Exception($"Couldn`t filter trip, {e.Message}");
+                return null;
             }
         }
-        public async Task<IEnumerable<TripModel>> AdminFilterTrips(FilterAdminTrip filter)
+        public async Task<IEnumerable<TripDTO>> FilterTrips(FilterAdminTrip filter)
         {
-            if (filter.PriceLess < filter.PriceMore || filter.AverageRatingLess < filter.AverageRatingMore)
+            if (filter.PriceLess < filter.PriceMore)
             {
-                _logger.LogWarning("PriceMore can`t be more than priceLess. The same is for rating.");
+                _logger.LogWarning("PriceLess can`t be more than priceMore");
+                return null;
+            }
+            if(filter.AverageRatingLess < filter.AverageRatingMore)
+            {
+                _logger.LogWarning("RatingLess can`t be more than RatingMore");
                 return null;
             }
             try
             {
-                if (filter.TripStatus != -1)
-                {
-                    return _context.Trips.Where(x => x.TripStart > filter.TripStart
+                var trips = _context.Trips.Where(x => x.TripStart > filter.TripStart
                         && x.TripEnd < filter.TripEnd
                         && x.OptimalSpent > filter.OptimalSpent
                         && x.RealSpent > filter.RealSpent
-                        && x.Description.Contains(filter.Description ?? " ")
-                        && x.Title.Contains(filter.Title ?? " ")
+                        && x.Description.Contains(filter.Description)
+                        && x.Title.Contains(filter.Title)
                         && x.Price.Value > filter.PriceMore
                         && x.Price.Value < filter.PriceLess
                         && x.AverageRating > filter.AverageRatingMore
                         && x.AverageRating < filter.AverageRatingLess);
-                }
-                else
-                {
-                    return _context.Trips.Where(x => x.TripStart > filter.TripStart
-                        && x.TripEnd < filter.TripEnd
-                        && x.OptimalSpent > filter.OptimalSpent
-                        && x.RealSpent > filter.RealSpent
-                        && x.Description.Contains(filter.Description ?? " ")
-                        && x.Title.Contains(filter.Title ?? " ")
-                        && x.Price.Value > filter.PriceMore
-                        && x.Price.Value < filter.PriceLess
-                        && x.AverageRating > filter.AverageRatingMore
-                        && x.AverageRating < filter.AverageRatingLess);
-                }
+                trips = filter.TripStatus != -1 ? trips.Where(x => x.TripStatus.Id == filter.TripStatus) : trips;
+
+                return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
             }
             catch (Exception e)
             {
                 _logger.LogWarning($"Failed to filter trips {e.Message}");
-                return null;
+                return Enumerable.Empty<TripDTO>(); ;
             }
         }
-        public async Task<IEnumerable<AddressModel>> AdminFindAdressStreets(FilterAdminStreet filter)
+        public async Task<IEnumerable<AddressShowDTO>> FindAdressStreets(FilterAdminStreet filter)
         {
-
             try
             {
-                return _context.Streets.Where(x => 
-                    x.Description.Contains(filter.Description ?? " ")
-                    && x.Title.Contains(filter.Title ?? " ")).SelectMany(x => x.Addresses);
+                var address =  _context.Streets.Where(x =>
+                               x.Description.Contains(filter.Description)
+                               && x.Title.Contains(filter.Title)).SelectMany(x => x.Addresses);
+                return address.Select(x => _mapper.Map<AddressModel, AddressShowDTO>(x));
 
             }
             catch (Exception e)
             {
                 _logger.LogWarning($"Failed to filter steets {e.Message}");
-                return null;
+                return Enumerable.Empty<AddressShowDTO>();
             }
         }
-        public async Task<IEnumerable<ReviewModel>> AdminFilterReview(FilterAdminReview filter)
+        public async Task<IEnumerable<ReviewDTO>> FilterReview(FilterAdminReview filter)
         {
             if (filter.RatingLess < filter.RatingMore)
             {
-                _logger.LogWarning("RatitingMore can`t be more than RatingLess.");
+                _logger.LogWarning("RatingMore can`t be more than RatingLess.");
                 return null;
             }
             try
             {
-                return _context.Reviews.Where(x =>
+                var rates = _context.Reviews.Where(x =>
                         x.Rating.Value > filter.RatingLess
                         && x.Rating.Value < filter.RatingMore
-                        && x.Description.Contains(filter.Description ?? " ")
-                        && x.User.UserName.Contains(filter.User ?? " ")
-                        && x.Title.Contains(filter.Title ?? " "));
+                        && x.Description.Contains(filter.Description)
+                        && x.User.UserName.Contains(filter.User)
+                        && x.Title.Contains(filter.Title));
+                return rates.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
             }
             catch (Exception e)
             {
                 _logger.LogWarning($"Failed to filter reviews {e.Message}");
-                return null;
+                return Enumerable.Empty<ReviewDTO>();
             }
         }
     }
