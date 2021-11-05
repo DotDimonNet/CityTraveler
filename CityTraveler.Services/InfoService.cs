@@ -42,9 +42,9 @@ namespace CityTraveler.Services
             {
                 var entertaiment = userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
-                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
+                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
+                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
 
                 return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertaiment);
              }
@@ -70,8 +70,8 @@ namespace CityTraveler.Services
             try
             {
                 var review = userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.AsEnumerable().OrderByDescending(x => x.Comments.Count).FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Reviews).OrderByDescending(x => x.Comments.Count).AsEnumerable().FirstOrDefault();
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.OrderByDescending(x => x.Comments.Count).FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Reviews).OrderByDescending(x => x.Comments.Count).FirstOrDefault();
                 
                 return _mapper.Map<ReviewModel, ReviewDTO>(review);
             }
@@ -88,8 +88,8 @@ namespace CityTraveler.Services
             try
             {
                 var trip = userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderByDescending(x => x.Reviews.Count).AsEnumerable().FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Trips).OrderByDescending(x => x.Reviews.Count).AsEnumerable().FirstOrDefault();
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderByDescending(x => x.Reviews.Count).FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Trips).OrderByDescending(x => x.Reviews.Count).FirstOrDefault();
                
                 return _mapper.Map<TripModel, TripDTO>(trip);
 
