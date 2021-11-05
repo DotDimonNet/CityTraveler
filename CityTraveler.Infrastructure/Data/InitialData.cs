@@ -46,25 +46,33 @@ namespace CityTraveler.Infrastucture.Data
         public static void SetupData(ApplicationContext context)
         {
             var trips = new List<TripModel>();
-            var random = new Random();
-            for (int index = 0; index < 100; index++)
+            for (int i = 0; i < 10; i++)
             {
                 var trip = new TripModel()
                 {
-                    AverageRating = random.Next(1, index + 2),
-                    DafaultTrip = false,
-                    Description = $"test_desc_{index}",
-                    TripStart = DateTime.Now.AddDays(index),
-                    TripEnd = DateTime.Now.AddDays(index + 2),
+                    TripStart = DateTime.Now,
+                    TripEnd = DateTime.Now.AddHours(4),
                     Entertaiment = new List<EntertaimentModel>(),
-                    Images = new List<TripImageModel>()
-                    {
-                        new TripImageModel() { Title = "test_image" }
-                    }
+                    Price = new TripPriceModel(),
+                    Title = $"TripTitle{i}",
+                    Description = $"TripDescription{i}",
+                    OptimalSpent = TimeSpan.Zero,
+                    RealSpent = TimeSpan.Zero,
+                    TripStatus = TripStatus.New,
+                    TagSting = $"tripTagString{i}",
+                    TemplateId = Guid.NewGuid()
                 };
+                if (i % 2 == 0)
+                {
+                    trip.DafaultTrip = true;
+                }
+                if (i > 5)
+                {
+                    trip.AverageRating = 4;
+                }
                 trips.Add(trip);
             }
-            context.Trips.AddRange(trips);
+            context.Trips.AddRangeAsync(trips);
             context.SaveChanges();
 
             //StreetGen
