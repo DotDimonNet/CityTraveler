@@ -1,4 +1,5 @@
 using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Services;
 using CityTraveler.Infrastucture.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,21 +16,76 @@ namespace CityTraveler.Tests
     public class EntertainmentTests
     {
         private Mock<ILogger<EntertainmentService>> _loggerMock;
+        EntertainmentService service;
 
         [SetUp]
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<EntertainmentService>());
+            service = new EntertainmentService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerEntertainment);
+        }
+
+        [Test]
+        public void GetAllDTOTest()
+        {
+            var allEntertainments = service.GetAllDTO();
+            var landscapeEntertainments = service.GetAllDTO(1);
+            var institutionEntertainments = service.GetAllDTO(2);
+            var eventEntertainments = service.GetAllDTO(3);
+            //var emptyEntertainments = service.GetAllDTO(4);
+
+            Assert.IsTrue(ArrangeTests.ApplicationContext.Entertaiments.Count() > 0);
+            Assert.AreEqual(allEntertainments.Count(), ArrangeTests.ApplicationContext.Entertaiments.Count());
+            //Assert.IsFalse(emptyEntertainments.Any());
+
+            foreach (var entertainment in landscapeEntertainments)
+            {
+                Assert.IsTrue(entertainment.Type == "Landscape");
+                Assert.AreEqual(entertainment, allEntertainments.First(x => x.Id == entertainment.Id));
+            }
+
+            foreach (var entertainment in institutionEntertainments)
+            {
+                Assert.IsTrue(entertainment.Type == "Institution");
+                Assert.AreEqual(entertainment, allEntertainments.First(x => x.Id == entertainment.Id));
+            }
+
+            foreach (var entertainment in eventEntertainments)
+            {
+                Assert.IsTrue(entertainment.Type == "Event");
+                Assert.AreEqual(entertainment, allEntertainments.First(x => x.Id == entertainment.Id));
+            }
+        }
+
+        [Test]
+        public void GetEntertainmentByTitleTest()
+        {
+            var entertainments = ArrangeTests.ApplicationContext.Entertaiments
+                .Where(x => x.Title.Contains("2")).ToList();
+
+            var allTestEntertainments = service.GetEntertainmentsByTitle("2").ToList();
+            var landscapeTestEntertainments = service.GetEntertainmentsByTitle("2", 1);
+            var institutionTestEntertainments = service.GetEntertainmentsByTitle("2", 2);
+            var eventlTestEntertainments = service.GetEntertainmentsByTitle("2", 3);
+            var emptyEntertainments = service.GetEntertainmentsByTitle("2", 4);
+
+            Assert.AreEqual(allTestEntertainments, entertainments);
+            Assert.IsFalse(emptyEntertainments.Any());
+            foreach (var entertainment in allTestEntertainments)
+            {
+                Assert.IsTrue(landscapeTestEntertainments.Contains(entertainment) && entertainment.Type == EntertainmentType.Landscape
+                    || institutionTestEntertainments.Contains(entertainment) && entertainment.Type == EntertainmentType.Institution
+                    || eventlTestEntertainments.Contains(entertainment) && entertainment.Type == EntertainmentType.Event);
+            }
         }
 
         [Test]
         public async Task GetEntertainmentByIdTest()
         {
             var entertainment = ArrangeTests.ApplicationContext.Entertaiments.FirstOrDefault();
-            var service = new EntertainmentService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerEntertainment);
 
-            var testEntertainment = await service.GetEntertainmentById(entertainment.Id);
+            var testEntertainment = await service.GetEntertainmentByIdAsync(entertainment.Id);
 
             Assert.IsNotNull(entertainment);
             Assert.IsNotNull(testEntertainment);
@@ -89,19 +145,7 @@ namespace CityTraveler.Tests
             }
         }
         
-        [Test]
-        public void GetEntertainmentByTitleTest()
-        {
-            var entertainments = ArrangeTests.ApplicationContext.Entertaiments
-                .Where(x=>x.Title.Contains("2")).ToList();
-            var service = new EntertainmentService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerEntertainment);
-
-            var testEntertainments = service.GetEntertainmentsByTitle("2").ToList();
-
-            Assert.IsNotNull(entertainments);
-            Assert.IsNotNull(testEntertainments);
-            Assert.AreEqual(testEntertainments, entertainments);
-        }
+        
 
         [Test]
         public void GetEntertainmentsTest()
@@ -129,7 +173,7 @@ namespace CityTraveler.Tests
             }; 
             var service = new EntertainmentService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerEntertainment);
 
-            var entertainment = await service.GetEntertainmentByAddress(addressDto);
+            var entertainment = await service.GetEntertainmentByAddressAsync(addressDto);
 
             Assert.IsNotNull(addressDto);
             Assert.IsNotNull(entertainment);

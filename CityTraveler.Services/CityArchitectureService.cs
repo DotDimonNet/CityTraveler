@@ -203,10 +203,9 @@ namespace CityTraveler.Services
                     throw new CityArchitectureServiceException($"Failed to update street: {ex.Message}");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _logger.LogWarning("Warning: Passed not correct SrteetDTO into updating method");
-                throw new CityArchitectureServiceException($"Failed to update street: {ex.Message}");
                 return false;
             }
         }

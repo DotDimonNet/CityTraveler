@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Domain.Filters.Admin;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
@@ -67,7 +68,7 @@ namespace CityTraveler.Services
                             && x.AveragePrice.Value > filter.AveragePriceLess
                             && x.Description.Contains(filter.Description)
                             && x.Title.Contains(filter.Title));
-                 return  (filter.Type != -1) ?  entertaiment.Where(x => x.Type.Id == filter.Type) : entertaiment;
+                 return  (filter.Type != -1) ?  entertaiment.Where(x => x.Type == (EntertainmentType)filter.Type) : entertaiment;
 
             }
             catch (Exception e)

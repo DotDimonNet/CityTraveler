@@ -28,7 +28,7 @@ namespace CityTraveler.Mapping
                 .ForMember(x => x.MainImage, o => o.MapFrom(z => z.Images.FirstOrDefault(p => p.IsMain == true)))
                 .ForMember(x => x.RatingValue, o => o.MapFrom(z => z.Rating.Value));
             CreateMap<TripModel, TripPrewievDTO>()
-                .ForMember(x => x.MainImage, o => o.MapFrom(z => z.Images.Where(p => p.IsMain == true)));
+                .ForMember(x => x.MainImage, o => o.MapFrom(z => z.Images.FirstOrDefault(p => p.IsMain == true)));
             CreateMap<EntertaimentModel, EntertainmentShowDTO>()
                 .ForMember(x => x.Type, o => o.MapFrom(z => z.Type.ToString()));
             CreateMap<EntertaimentModel, EntertainmentPreviewDTO>()

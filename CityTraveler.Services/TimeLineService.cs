@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Services.Interfaces;
@@ -43,10 +44,10 @@ namespace CityTraveler.Services
 
                 foreach (var entertainment in entertainments)
                 {
-                    var streetId = Guid.Parse(entertainment.StreetId);
+                    var streetId = Guid.Parse(entertainment.Address.StreetId);
                     var elemet = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(entertainment);
                     elemet.Address.Street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == streetId);
-                    elemet.Type = await _context.EntertainmentType.FirstOrDefaultAsync(x => x.Id == entertainment.Type);
+                    elemet.Type = (EntertainmentType)entertainment.Type;
                     timeLine.Add(elemet);
                 }
 
