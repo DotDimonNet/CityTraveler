@@ -14,19 +14,19 @@ namespace CityTraveler.Services.Interfaces
         Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO rev);
         Task<bool> RemoveReview(Guid reviewId);
         Task<bool> RemoveRating (Guid ratingId);
-        Task<bool> UpdateReview(ReviewModel model);
-        Task<bool> UpdateComment(CommentModel model);
-        IEnumerable<ReviewDTO> GetReviews(int skip = 0, int take = 10);
-        IEnumerable<ReviewDTO> GetUserReviews(Guid userId);
-        IEnumerable<ReviewDTO> GetObjectReviews(Guid objectId);
+        Task<bool> UpdateReview(Guid Id, ReviewDTO model);
+        Task<bool> UpdateComment(Guid Id, CommentDTO model);
+        Task<IEnumerable<ReviewDTO>> GetReviews(int skip = 0, int take = 10);
+        Task<IEnumerable<ReviewDTO>> GetUserReviews(Guid userId);
+        Task<IEnumerable<ReviewDTO>> GetObjectReviews(Guid objectId);
         Task<bool> PostRating(RatingDTO rating);
         Task<bool> AddComment(CommentDTO comment);
         Task<bool> RemoveComment(Guid commentId);
         Task<bool> AddImage(ReviewImageDTO comment);
         Task<bool> RemoveImage(Guid reviewImageId);
-        IEnumerable<ReviewDTO> GetReviewsByTitle(string title);
-        IEnumerable<ReviewDTO> GetReviewsByDescription(string description);
-        IEnumerable<ReviewDTO> GetReviewsByAverageRating(double raiting);
+        Task<IEnumerable<ReviewDTO>> GetReviewsByTitle(string title);
+        Task<IEnumerable<ReviewDTO>> GetReviewsByDescription(string description);
+        Task<IEnumerable<ReviewDTO>> GetReviewsByAverageRating(double raiting);
         Task<ReviewDTO> GetReviewByComment(Guid comment);
         Task<ReviewDTO> GetReviewById(Guid Id);
 
