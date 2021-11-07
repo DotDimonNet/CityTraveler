@@ -2,7 +2,7 @@ using AutoMapper;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Infrastucture.Data;
-using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Enums;
 using CityTraveler.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -51,7 +51,7 @@ namespace CityTraveler.Services
                                x.Title.Contains(filter.Title)
                             && x.Address.Street.Title.Contains(filter.StreetName)
                             && x.Address.HouseNumber.Contains(filter.HouseNumber)
-                            && x.Type.Id == filter.Type
+                            && x.Type == (EntertainmentType)filter.Type
                             && x.Trips.Where(x=>trips.Contains(x)).Any()
                             && x.AveragePrice.Value >= filter.PriceMore
                             && x.AveragePrice.Value <= filter.PriceLess

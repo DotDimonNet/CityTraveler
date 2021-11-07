@@ -56,13 +56,13 @@ namespace CityTraveler.Controllers
         [HttpGet("get-by-id")]
         public async Task<IActionResult> GetEntertainmentById([FromQuery] Guid id, int typeId = 0)
         {
-            return Json(await _service.GetEntertainmentDTOById(id, typeId));
+            return Json(await _service.GetEntertainmentDTOByIdAsync(id, typeId));
         }
 
         [HttpGet("get-by-address")]
         public async Task<IActionResult> GetEntertainmentByAddress([FromQuery] AddressGetDTO addressDto, int typeId = 0)
         {
-            return Json(await _service.GetEntertainmentDTOByAddress(addressDto, typeId));
+            return Json(await _service.GetEntertainmentDTOByAddressAsync(addressDto, typeId));
         }
     }
 }

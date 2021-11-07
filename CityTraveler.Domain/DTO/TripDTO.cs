@@ -46,7 +46,7 @@ namespace CityTraveler.Domain.DTO
         public string Description { get; set; }
         public string TagSting { get; set; }
         public TimeSpan OptimalSpent { get; set; }
-        public TripImageModel MainImage { get; set; }
+        public ImageShowDTO MainImage { get; set; }
     }
 
     public class AddNewTripDTO

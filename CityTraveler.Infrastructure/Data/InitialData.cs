@@ -20,15 +20,15 @@ namespace CityTraveler.Infrastucture.Data
                 _context.SaveChanges();
             }*/
 
-            if (!_context.EntertainmentType.Any())
+            /*if (!_context.EntertainmentType.Any())
             {
                 _context.AddRange(
                     EntertainmentType.Event,
                     EntertainmentType.Institution,
-                    EntertainmentType.Landskape);
+                    EntertainmentType.Landscape);
 
                 _context.SaveChanges();
-            }
+            }*/
 
 
             if (!_context.TripStatuses.Any())
@@ -93,7 +93,7 @@ namespace CityTraveler.Infrastucture.Data
                 var rnd = new Random();
                 var streetIndex = rnd.Next(0, 9);
 
-                var entertainmentType = EntertainmentType.Landskape;
+                var entertainmentType = EntertainmentType.Landscape;
                 switch (i % 3)
                 {
                     case 0:
