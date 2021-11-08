@@ -215,9 +215,7 @@ namespace CityTraveler.Services
             try
             {
                 var streets = _context.Streets
-                    .Where(x => x.StreetBeginningX == x.StreetEndingX
-                    && x.StreetBeginningY == x.StreetEndingY
-                    || string.IsNullOrEmpty(x.Title));
+                    .Where(x => string.IsNullOrEmpty(x.Title));
 
                 if (streets.Any())
                 {

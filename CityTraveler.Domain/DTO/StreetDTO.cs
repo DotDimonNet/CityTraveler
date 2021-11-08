@@ -15,10 +15,7 @@ namespace CityTraveler.Domain.DTO
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public double StreetBeginningY { get; set; }
-        public double StreetBeginningX { get; set; }
-        public double StreetEndingY { get; set; }
-        public double StreetEndingX { get; set; }
+        public IEnumerable<CoordinatesDTO> Coordinates { get; set; }
     }
 
     public class StreetDTO
@@ -26,9 +23,6 @@ namespace CityTraveler.Domain.DTO
         public Guid Id { set; get; }
         public string Description { get; set; }
         public string Title { get; set; }
-        public double StreetBeginningY { get; set; }
-        public double StreetBeginningX { get; set; }
-        public double StreetEndingY { get; set; }
-        public double StreetEndingX { get; set; }
+        public IEnumerable<CoordinatesDTO> Coordinates { get; set; }
     }
 }

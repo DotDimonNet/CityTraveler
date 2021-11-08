@@ -108,7 +108,7 @@ namespace CityTraveler.Infrastucture.Data
                     Title = $"Entertainment - {i}",
                     Address = new AddressModel()
                     {
-                        Coordinates = new CoordinatesModel()
+                        Coordinates = new CoordinatesAddressModel()
                         {
                             Latitude = i * 3 / 2 + 1.34,
                             Longitude = i * 5 / 2 + 1.34
