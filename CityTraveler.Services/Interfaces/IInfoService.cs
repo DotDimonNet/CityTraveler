@@ -11,16 +11,16 @@ namespace CityTraveler.Services.Interfaces
     public interface IInfoService : IServiceMetadata
     {
         public Task<EntertainmentShowDTO> GetMostPopularEntertaimentInTripsAsync(Guid userId = default);
-        public Task<TripDTO> GetMostPopularTripAsync();
+        public Task<InfoTripDTO> GetMostPopularTripAsync();
         public Task<ReviewDTO> GetReviewByMaxCommentsAsync(Guid userId = default);
-        public Task<IEnumerable<TripDTO>> GetMostlyUsedTemplatesAsync(int count);
-        public Task<TripDTO> GetTripByMaxReviewAsync(Guid userId = default);
-        public Task <IEnumerable<TripDTO>> GetLastTripsByPeriodAsync(DateTime srart, DateTime end);
-        public Task <IEnumerable<TripDTO>> GetTripsByLowPriceAsync(int count);
+        public Task<IEnumerable<InfoTripDTO>> GetMostlyUsedTemplatesAsync(int count);
+        public Task<InfoTripDTO> GetTripByMaxReviewAsync(Guid userId = default);
+        public Task <IEnumerable<InfoTripDTO>> GetLastTripsByPeriodAsync(DateTime srart, DateTime end);
+        public Task <IEnumerable<InfoTripDTO>> GetTripsByLowPriceAsync(int count);
         public Task<int> GetRegisteredUsersByPeriodAsync(DateTime start, DateTime end);
         public Task<int> GetUsersCountTripsDateRangeAsync(DateTime start, DateTime end);
-        public Task<TripDTO> GetLongestTripAsync();
-        public Task<TripDTO> GetShortestTripAsync();
+        public Task<InfoTripDTO> GetLongestTripAsync();
+        public Task<InfoTripDTO> GetShortestTripAsync();
         public Task<int> GetTripsCreatedByPeriodAsync(DateTime start, DateTime end);
 
 
