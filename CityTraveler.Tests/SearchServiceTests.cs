@@ -156,7 +156,7 @@ namespace CityTraveler.Tests
                 RatingLess = 3,
                 RatingMore = 1,
                 TripName = "wonder",
-                Type = EntertainmentType.Event.Id
+                Type = (int)EntertainmentType.Event
 
             });
             Assert.IsNotNull(entertainments);

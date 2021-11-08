@@ -34,8 +34,7 @@ namespace CityTraveler.Infrastucture.Data
         public DbSet<TripStatus> Statuses { get; set; }
         // enums tables
 
-        //public DbSet<CommentStatus> CommentStatuses { get; set; }
-        public DbSet<EntertainmentType> EntertainmentType { get; set; }
+        //public DbSet<CommentStatus> CommentStatuses { get; set; }S
 
         public DbSet<TripStatus> TripStatuses { get; set; }
 
@@ -58,8 +57,8 @@ namespace CityTraveler.Infrastucture.Data
             builder.Entity<TripModel>().HasMany(x => x.Images).WithOne(x => x.Trip).HasForeignKey(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasOne(x => x.Price).WithOne(x => x.Trip).HasForeignKey<TripPriceModel>(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasMany(x => x.Entertaiment).WithMany(x => x.Trips);
-           // builder.Entity<CommentStatus>().HasKey(x => x.ValueId).HasName("PK_CommentStatus");
-            builder.Entity<EntertainmentType>().HasKey(x => x.ValueId).HasName("PK_EntertainmentType");
+            // builder.Entity<CommentStatus>().HasKey(x => x.ValueId).HasName("PK_CommentStatus");
+            //builder.Entity<EntertainmentType>().HasKey(x => x.ValueId).HasName("PK_EntertainmentType");
             builder.Entity<TripStatus>().HasKey(x => x.ValueId).HasName("PK_TripStatus");
             base.OnModelCreating(builder);
         }

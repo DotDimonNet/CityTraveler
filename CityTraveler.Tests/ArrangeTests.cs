@@ -109,7 +109,7 @@ namespace CityTraveler.Tests
                 var rnd = new Random();
                 var streetIndex = rnd.Next(0, 9);
 
-                var entertainmentType = EntertainmentType.Landskape;
+                var entertainmentType = EntertainmentType.Landscape;
                 switch (i % 3)
                 {
                     case 0:

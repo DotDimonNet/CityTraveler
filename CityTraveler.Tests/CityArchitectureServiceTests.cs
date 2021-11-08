@@ -26,7 +26,7 @@ namespace CityTraveler.Tests
                 .FirstOrDefault();
 
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
-            var isRemoved = await service.RemoveEntertainment(entertainment.Id);
+            var isRemoved = await service.RemoveEntertainmentAsync(entertainment.Id);
 
             Assert.IsTrue(isRemoved);
             Assert.IsTrue(!ArrangeTests.ApplicationContext.Entertaiments.Contains(entertainment));
@@ -39,7 +39,7 @@ namespace CityTraveler.Tests
 
             try
             {
-                var isRemoved = await service.RemoveEntertainment(Guid.NewGuid());
+                var isRemoved = await service.RemoveEntertainmentAsync(Guid.NewGuid());
             }
             catch (Exception e)
             {
@@ -58,7 +58,7 @@ namespace CityTraveler.Tests
                     {
                         Coordinates = new CoordinatesDTO(){},
                     },
-                    Type = EntertainmentType.Event.Id,
+                    Type = (int)EntertainmentType.Event,
                 },
                 new EntertainmentGetDTO()
                 {
@@ -66,13 +66,13 @@ namespace CityTraveler.Tests
                     {
                         Coordinates = new CoordinatesDTO(){},
                     },
-                    Type = EntertainmentType.Event.Id,
+                    Type = (int)EntertainmentType.Event,
                 },
             };
             var contextSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
-            var isSeted = await service.AddEntertainments(entertainmentsDTO);
+            var isSeted = await service.AddEntertainmentsAsync(entertainmentsDTO);
             var newContexSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
             Assert.IsTrue(isSeted);
@@ -90,7 +90,7 @@ namespace CityTraveler.Tests
             oldEntertainment.Title = "Updated";
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
-            var isUpdated = await service.UpdateEntertainment(new EntertainmentUpdateDTO());
+            var isUpdated = await service.UpdateEntertainmentAsync(new EntertainmentUpdateDTO());
             
             var newEntertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x=>x.Id==oldEntertainment.Id);
@@ -106,7 +106,7 @@ namespace CityTraveler.Tests
             var newEntertainment = new EntertaimentModel();
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
-            var isUpdated = await service.UpdateEntertainment(new EntertainmentUpdateDTO());
+            var isUpdated = await service.UpdateEntertainmentAsync(new EntertainmentUpdateDTO());
 
             var newEntertainmentAfter = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x => x.Id == newEntertainment.Id);
@@ -129,14 +129,14 @@ namespace CityTraveler.Tests
                     HouseNumber = "23",
                     ApartmentNumber = "34"
                 },
-                Type = EntertainmentType.Event.Id,
+                Type = (int)EntertainmentType.Event,
                 Title = "Lorem",
                 Description = "Ipsum"
             };
             var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
             var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
-            var isAdded = await service.AddEntertainment(dto);
+            var isAdded = await service.AddEntertainmentAsync(dto);
 
             var newContextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
             Assert.IsTrue(isAdded);
