@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CityTraveler.Domain.DTO;
-using CityTraveler.Domain.Entities;
-using CityTraveler.Domain.Enums;
-using CityTraveler.Domain.Errors;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -49,16 +44,14 @@ namespace CityTraveler.Tests
         {
             var review = await _service.GetReviews(0, 5);
             Assert.IsNotNull(review);
-            Assert.True(review.Count() == 5);
+            Assert.AreEqual(review.Count(), 5);
         }
 
         [Test]
         public async Task AddReviewEntertainmentTest()
         {
-            var entertainmentId = ArrangeTests.ApplicationContext.Entertaiments
-               .First().Id;
-            var user = ArrangeTests.ApplicationContext.Users
-               .First();
+            var entertainmentId = ArrangeTests.ApplicationContext.Entertaiments.First().Id;
+            var user = ArrangeTests.ApplicationContext.Users.First();
             var entertainmentReview = new EntertainmentReviewDTO
             {
                 UserId = user.Id,
@@ -66,7 +59,8 @@ namespace CityTraveler.Tests
                 Description = "description"
             };
             var review = await _service.AddReviewEntertainment(entertainmentId, entertainmentReview);
-            Assert.IsNotNull(review);         
+            Assert.IsNotNull(review);
+            Assert.AreEqual(entertainmentReview.EntertainmentId, entertainmentId);
         }
 
         [Test]
@@ -86,13 +80,12 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddReviewTripTest()
         {
-            var triptId = ArrangeTests.ApplicationContext.Trips
-               .First().Id;
-            var user = ArrangeTests.ApplicationContext.Users
-               .First();
+            var triptId = ArrangeTests.ApplicationContext.Trips.First().Id;
+            var user = ArrangeTests.ApplicationContext.Users.First();
             var tripReview = new TripReviewDTO { UserId = user.Id };
             var review = await _service.AddReviewTrip(triptId, tripReview);
             Assert.IsNotNull(review);
+            Assert.AreEqual(tripReview.TripId, triptId);
         }
 
         [Test]
@@ -191,7 +184,7 @@ namespace CityTraveler.Tests
         public async Task AddCommentThrowsTest()
         {
             var result = await _service.AddComment(new CommentDTO { Status = 1, ReviewId = Guid.NewGuid() }) ;
-            Assert.AreEqual(result, false);
+            Assert.IsFalse(result);
         }
 
         [Test]
@@ -261,7 +254,7 @@ namespace CityTraveler.Tests
         public async Task AddImageThrowsTest()
         {
             var result = await _service.AddImage(new ReviewImageDTO { Title = "title" , ReviewId = Guid.NewGuid() });
-            Assert.AreEqual(result, false);
+            Assert.IsFalse(result);
         }
 
         [Test]
@@ -272,14 +265,14 @@ namespace CityTraveler.Tests
             var image = await ArrangeTests.ApplicationContext.Images.FirstAsync(x => x.Id == firstReview.Images.ElementAt(0).Id);
             var review = await _service.RemoveImage(image.Id);
             Assert.True(review);
-            Assert.True(!ArrangeTests.ApplicationContext.Images.Contains(image));
+            Assert.False(ArrangeTests.ApplicationContext.Images.Contains(image));
         }
 
         [Test]
         public async Task RemoveImageThrowsImageTest()
         {
             var result = await _service.RemoveImage(Guid.NewGuid());
-            Assert.IsFalse(result); ;
+            Assert.IsFalse(result);
         }
     }
 }

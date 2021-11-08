@@ -8,7 +8,7 @@ using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface ICityArchitectureService : IServiceMetadata
+    public interface ICityArchitectureService
     {
         public Task<bool> AddEntertainmentsAsync(IEnumerable<EntertainmentGetDTO> entertaiments);
         public Task<bool> AddEntertainmentAsync(EntertainmentGetDTO entertaimentDTO);

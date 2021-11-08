@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IMapService : IServiceMetadata 
+    public interface IMapService
     {
         public Task<StreetShowDTO> FindStreetDTOByCoordinates(CoordinatesDTO coordinatesDto);
         public Task<StreetModel> FindStreetByCoordinates(CoordinatesDTO coordinatesDto);

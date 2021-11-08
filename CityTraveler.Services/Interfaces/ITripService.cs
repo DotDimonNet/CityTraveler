@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface ITripService : IServiceMetadata
+    public interface ITripService 
     {
         public Task<bool> AddNewTripAsync(AddNewTripDTO newTrip);
         public Task<bool> DeleteTripAsync(Guid tripId);

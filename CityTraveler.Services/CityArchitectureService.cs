@@ -19,9 +19,6 @@ namespace CityTraveler.Services
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper; 
 
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
-
         public CityArchitectureService(ApplicationContext context, IMapper mapper, ILogger<CityArchitectureService> logger)
         {
             _logger = logger;

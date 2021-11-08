@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IEntertainmentService : IServiceMetadata
+    public interface IEntertainmentService
     {
         public IEnumerable<EntertainmentShowDTO> GetAllDTO(int typeId = 0);
         public IEnumerable<EntertaimentModel> GetEntertainmentsByTitle(string title, int typeId = 0);
