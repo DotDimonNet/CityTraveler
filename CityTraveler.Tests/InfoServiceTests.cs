@@ -24,7 +24,7 @@ namespace CityTraveler.Tests
                 .LastOrDefault(x => x.Trips.Count > 0);
             var mostPopularUserEntertaimentInTrips = ArrangeTests.ApplicationContext.Users
                  .FirstOrDefault(x => x.Id == userModel.Id).Trips
-                 .SelectMany(x => x.Entertaiment)
+                 .SelectMany(x => x.Entertaiments)
                  .OrderByDescending(x => x.Trips.Count())
                  .FirstOrDefault();
             var service = new InfoService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
@@ -41,7 +41,7 @@ namespace CityTraveler.Tests
         {
             var mostPopularEntertainment = ArrangeTests.ApplicationContext.Users
                 .SelectMany(x => x.Trips)
-                .SelectMany(x => x.Entertaiment)
+                .SelectMany(x => x.Entertaiments)
                 .OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
             var service = new InfoService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
             var entertaiment = await service.GetMostPopularEntertaimentInTripsAsync();

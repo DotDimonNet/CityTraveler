@@ -29,7 +29,7 @@ namespace CityTraveler.Controllers
         public async Task<IActionResult> GetUserLastComment(Guid userId)
         {
             return Json(_service.GetUserLastComment(userId));
-        }
+        }*/
         [HttpGet("get-last-comment")]
         public async Task<IActionResult> GetLastComment()
         {

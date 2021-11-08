@@ -38,7 +38,7 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Trips.SelectMany(x => x.Entertaiment).Distinct().Count();
+                return user.Trips.SelectMany(x => x.Entertaiments).Distinct().Count();
             }
             catch (Exception e)
             {
@@ -56,7 +56,7 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                var trips = user.Trips.Where(x => x.Entertaiment.Contains(entertaiment));
+                var trips = user.Trips.Where(x => x.Entertaiments.Contains(entertaiment));
                 return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
             }
             catch (Exception e)
@@ -95,7 +95,7 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Trips.Average(x => x.Entertaiment.Count);
+                return user.Trips.Average(x => x.Entertaiments.Count);
             }
             catch (Exception e)
             {
@@ -218,7 +218,7 @@ namespace CityTraveler.Services
         {
             try
             {
-               return _context.Trips.Average(x => x.Entertaiment.Count());
+               return _context.Trips.Average(x => x.Entertaiments.Count());
             }
             catch (Exception e)
             {

@@ -17,6 +17,7 @@ namespace CityTraveler.Tests
     class TripTest
     {
         private Mock<ILogger<TripService>> _loggerMock;
+        private TripService service;
 
         [SetUp]
         public async Task Setup()
@@ -25,6 +26,7 @@ namespace CityTraveler.Tests
 
            
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<TripService>());
+            service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
 
         }
         [Test]
@@ -43,8 +45,6 @@ namespace CityTraveler.Tests
         public async Task GetDefaultTripByIdTest()
         {
             var trip = ArrangeTests.ApplicationContext.Trips.First();
-
-            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
             var model = ArrangeTests.TestMapper.Map<TripModel, DefaultTripDTO>(trip);
 
             var testTrip = service.GetDefaultTripById(trip.Id);
