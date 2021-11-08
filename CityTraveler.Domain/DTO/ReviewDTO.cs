@@ -31,7 +31,7 @@ namespace CityTraveler.Domain.DTO
         public string Title { get; set; }
         public string Description { get; set; }
         public string UserName { get; set; }
-        public ImageShowDTO MainImage { get; set; }
+        public ImageDTO MainImage { get; set; }
         public DateTime Modified { get; set; }
         public double RatingValue { get; set; }
     }

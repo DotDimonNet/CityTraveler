@@ -15,11 +15,6 @@ namespace CityTraveler.Mapping
 
             
             CreateMap<TripModel, DefaultTripDTO>().ReverseMap();
-           
-
-
-            CreateMap<TripModel, DefaultTripDTO>();
-            CreateMap<DefaultTripDTO, TripDTO>();
 
             CreateMap<TripModel, TripDTO>().ReverseMap();
         }

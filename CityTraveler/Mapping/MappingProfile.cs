@@ -20,8 +20,10 @@ namespace CityTraveler.Mapping
             CreateMap<AddressModel, AddressShowDTO>();
             CreateMap<PriceDTO, EntertaimentPriceModel>();
             CreateMap<CoordinatesDTO, CoordinatesModel>();
-            CreateMap<ReviewImageModel, ImageShowDTO>();
+            CreateMap<ReviewImageModel, ImageDTO>();
             CreateMap<ImageGetDTO, EntertaimentImageModel>();
+            CreateMap<ImageGetDTO, ImageModel>().ReverseMap();
+            CreateMap<ImageDTO, ImageModel>().ReverseMap();
             CreateMap<AddressGetDTO, AddressModel>()
                 .ForMember(x => x.StreetId, o => o.Ignore());
             CreateMap<ReviewModel, ReviewPreviewDTO>()
