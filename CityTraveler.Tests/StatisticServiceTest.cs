@@ -18,7 +18,7 @@ namespace CityTraveler.Tests
             await ArrangeTests.SetupDbContext();
         }
 
-        [Test]
+        /*[Test]
         public async Task GetAverageRatingUserTripTest()
         {
             var userId = ArrangeTests.ApplicationContext.Users.FirstOrDefault(x => x.Trips.Count > 0).Id;
@@ -56,7 +56,7 @@ namespace CityTraveler.Tests
 
             var Age = await service.GetAverageAgeUser();
             Assert.IsNotNull(Age);
-        }
+        }*/
 
     }
 }

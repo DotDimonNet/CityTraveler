@@ -36,100 +36,160 @@ namespace CityTraveler.Services
         public bool IsActive { get ; set ; }
         public string Version { get ; set ; }
 
-        public async Task<EntertainmentShowDTO> GetMostPopularEntertaimentInTrips(Guid userId = default)
+        const string messageExceptionObjectNull = "Object not found";
+        const string messageExceptionArgument = "Invalid arguments";
+
+        public async Task<EntertainmentShowDTO> GetMostPopularEntertaimentInTripsAsync(Guid userId = default)
         {
             try
             {
                 var entertaiment = userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
-                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
+                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).AsEnumerable().OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
+                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
 
-                return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertaiment);
+                if(entertaiment != null)
+                {
+                    return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertaiment);
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);
              }
             catch(Exception e)
             {
                 _logger.LogError( $"Error:{e.Message}");
-                throw new InfoServiceException($"Failed to get the most popular entertaiment in trips: {e.Message}");
+                return null;
             }  
         }
-        public async Task<TripDTO> GetTripByMaxChoiceOfUsers()
+        public async Task<TripDTO> GetMostPopularTripAsync()
         {
-            if(_context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefault() == null)
+            try
+            {          
+                var trip = await _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();
+                if(trip != null)
+                {
+                    return _mapper.Map<TripModel, TripDTO>(trip);
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);
+            }
+            catch(Exception e)
             {
-                throw new InfoServiceException($"Trip is not found");
+                _logger.LogError($"Error: {e.Message}");
+                return null;
             }
 
-            var trip = await  _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();
-            
-            return _mapper.Map<TripModel, TripDTO>(trip);     
         }
-        public async Task<ReviewDTO> GetReviewByMaxComments(Guid userId = default)
+        public async Task<ReviewDTO> GetReviewByMaxCommentsAsync(Guid userId = default)
         {
             try
             {
                 var review = userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.AsEnumerable().OrderByDescending(x => x.Comments.Count).FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Reviews).OrderByDescending(x => x.Comments.Count).AsEnumerable().FirstOrDefault();
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.OrderByDescending(x => x.Comments.Count).FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Reviews).OrderByDescending(x => x.Comments.Count).FirstOrDefault();
                 
-                return _mapper.Map<ReviewModel, ReviewDTO>(review);
-            }
-                
+                if(review != null)
+                {
+                    return _mapper.Map<ReviewModel, ReviewDTO>(review);
+                }
+                throw new InfoServiceException(messageExceptionObjectNull); 
+            } 
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                throw new InfoServiceException($"Failed to get the review: {e.Message}");
+                return null;
             }          
         }
 
-        public async Task<TripDTO> GetTripByMaxReview(Guid userId = default)
+        public async Task<TripDTO> GetTripByMaxReviewAsync(Guid userId = default)
         {
             try
             {
                 var trip = userId != Guid.Empty
-                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderByDescending(x => x.Reviews.Count).AsEnumerable().FirstOrDefault()
-                : _context.Users.SelectMany(x => x.Trips).OrderByDescending(x => x.Reviews.Count).AsEnumerable().FirstOrDefault();
-               
-                return _mapper.Map<TripModel, TripDTO>(trip);
+                ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderByDescending(x => x.Reviews.Count).FirstOrDefault()
+                : _context.Users.SelectMany(x => x.Trips).OrderByDescending(x => x.Reviews.Count).FirstOrDefault();
 
+                if (trip != null)
+                {
+                    return _mapper.Map<TripModel, TripDTO>(trip);
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);   
             }
-   
             catch (Exception e)
             {
                 _logger.LogError($"Error:{e.Message}");
-                throw new InfoServiceException($"Failed to get the trip: {e.Message}");
+                return null;
             }
         }
 
-        public IEnumerable<TripDTO> GetLastTripsByPeriod(DateTime start, DateTime end)
+        public async Task<IEnumerable<TripDTO>> GetLastTripsByPeriodAsync(DateTime start, DateTime end)
         {
-            if (start > end)
+            try
             {
-                throw new InfoServiceException("Invalid arguments");
+                if (start > end)
+                {
+                    throw new InfoServiceException(messageExceptionArgument);
+                }
+
+                var trips = await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripStart < end));
+
+                if (trips!= null)
+                {
+                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(trips);
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);
             }
-                
-            var trips = _context.Trips.Where(x => x.TripStart > start && x.TripStart < end);
+            catch(Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                return Enumerable.Empty<TripDTO>();
+            }
             
-            return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(trips);
         }
 
-        public IEnumerable<TripDTO> GetTripsByLowPrice(int count = 3)
+        public async Task<IEnumerable<TripDTO>> GetTripsByLowPriceAsync(int count)
         {
-            var trips = _context.Trips.OrderBy(x => x.Price.Value).Take(count);
-           
-            return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(trips);
-        }
-
-        public async Task<int> GetRegisteredUsersByPeriod(DateTime start, DateTime end)
-        {
-            if (start > end)
+            try
             {
-                throw new InfoServiceException("Invalid arguments");
-            }        
-            return await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);    
+                var trips =await Task.Run(() => _context.Trips.OrderBy(x => x.Price.Value).Take(count));
+
+                if (trips != null)
+                {
+                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(trips);
+                }
+
+                throw new InfoServiceException(messageExceptionObjectNull);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                return Enumerable.Empty<TripDTO>();
+            }
+            
         }
-        public IEnumerable<TripDTO> GetMostlyUsedTemplates(int count = 5)
+
+        public async Task<int> GetRegisteredUsersByPeriodAsync(DateTime start, DateTime end)
+        {
+            try
+            {
+                if (start > end)
+                {
+                    throw new InfoServiceException("Invalid arguments");
+                }
+                var usersCount = await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
+                if (usersCount != 0)
+                {
+                    return usersCount;
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                return 0;
+            }
+              
+        }
+        public async Task<IEnumerable<TripDTO>> GetMostlyUsedTemplatesAsync(int count = 5)
         {
             try
             {
@@ -137,49 +197,61 @@ namespace CityTraveler.Services
                     .OrderByDescending(g => g.Count())
                     .Select(x => x.Key)
                     .Take(count);
-                var templatesTriModel = _context.Trips.Where(x => templateIds.Contains(x.Id));
+                var templatesTriModel =Task.Run(() => _context.Trips.Where(x => templateIds.Contains(x.Id)));
 
-                return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(templatesTriModel);
+                return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(await templatesTriModel);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                throw new InfoServiceException($"Failed to get mostly used templates: {e.Message}");
+                return Enumerable.Empty<TripDTO>();
             }
             
         }
 
-        public int GetUsersCountTripsDateRange(DateTime start, DateTime end)
+        public async Task<int> GetUsersCountTripsDateRangeAsync(DateTime start, DateTime end)
         {
+        
             if (start > end)
             {
-                throw new InfoServiceException("Invalid arguments");
+                throw new InfoServiceException(messageExceptionArgument);
             }
                 
-            return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).SelectMany(x => x.Users).Distinct().Count();
+            return await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).SelectMany(x => x.Users).Distinct().Count());
         }
 
-        public async Task<TripDTO> GetLongestTrip()
+        public async Task<TripDTO> GetLongestTripAsync()
         {
-            var trip = await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
-
-            return _mapper.Map<TripModel, TripDTO>(trip);
+            try
+            {
+                var trip = await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
+                if (trip != null)
+                {
+                    return _mapper.Map<TripModel, TripDTO>(trip);
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e}");
+                return null;
+            }
         }
 
-        public async Task<TripDTO> GetShortestTrip()
+        public async Task<TripDTO> GetShortestTripAsync()
         {
             var trip = await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
             return _mapper.Map<TripModel, TripDTO>(trip);          
         }
 
-        public int GetTripsCreatedByPeriod(DateTime start, DateTime end)
+        public async Task<int> GetTripsCreatedByPeriodAsync(DateTime start, DateTime end)
         {
             if (start > end)
             {
                 throw new InfoServiceException("Invalid arguments");
             }
 
-            return _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count();
+            return await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count());
         }
     }
 }

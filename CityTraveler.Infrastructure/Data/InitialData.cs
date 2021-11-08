@@ -1,6 +1,5 @@
 ﻿using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace CityTraveler.Infrastucture.Data
     {
         public static void SetupEnums(ApplicationContext _context)
         {
-            if (!_context.CommentStatuses.Any())
+            /*if (!_context.CommentStatuses.Any())
             {
                 _context.AddRange(
                     CommentStatus.Liked,
@@ -19,17 +18,17 @@ namespace CityTraveler.Infrastucture.Data
                     CommentStatus.Suprised);
 
                 _context.SaveChanges();
-            }
+            }*/
 
-            if (!_context.EntertainmentType.Any())
+            /*if (!_context.EntertainmentType.Any())
             {
                 _context.AddRange(
                     EntertainmentType.Event,
                     EntertainmentType.Institution,
-                    EntertainmentType.Landskape);
+                    EntertainmentType.Landscape);
 
                 _context.SaveChanges();
-            }
+            }*/
 
 
             if (!_context.TripStatuses.Any())
@@ -94,7 +93,7 @@ namespace CityTraveler.Infrastucture.Data
                 var rnd = new Random();
                 var streetIndex = rnd.Next(0, 9);
 
-                var entertainmentType = EntertainmentType.Landskape;
+                var entertainmentType = EntertainmentType.Landscape;
                 switch (i % 3)
                 {
                     case 0:
@@ -141,19 +140,21 @@ namespace CityTraveler.Infrastucture.Data
             {
                 var user = new UserProfileModel()
                 {
+                    Name = $"user{ i }",
                     Birthday = new DateTime(2018 - i, 9, 13),
-                    Id = Guid.NewGuid(),
+                    Gender = "male",
+                    AvatarSrc = $"AvatarSrc{i}",
                     User = new ApplicationUserModel
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                            new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                        new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
@@ -171,8 +172,8 @@ namespace CityTraveler.Infrastucture.Data
 
                 users.Add(user);
             }
-           context.UserProfiles.AddRangeAsync(users);
-           context.SaveChanges();*/
+            context.UserProfiles.AddRangeAsync(users);
+            context.SaveChanges();*/
             /* var reviews = new List<ReviewModel>();
              for (int i = 0; i < 10; i++)
              {
@@ -193,7 +194,7 @@ namespace CityTraveler.Infrastucture.Data
              }
              context.Reviews.AddRange(reviews);
              context.SaveChanges();*/
-            
+
             context.Ratings.Add(new RatingModel
             {
                 Value = 5,

@@ -19,10 +19,10 @@ namespace CityTraveler.Services.Interfaces
         public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0);
         public IEnumerable<EntertaimentModel> GetEntertainmentsByCoordinates(CoordinatesDTO coordinates, int typeId = 0);
         public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinates, int typeId = 0);
-        public Task<EntertaimentModel> GetEntertainmentById(Guid guids, int typeId = 0);
-        public Task<EntertainmentShowDTO> GetEntertainmentDTOById(Guid guids, int typeId = 0);
-        public Task<EntertaimentModel> GetEntertainmentByAddress(AddressGetDTO address, int typeId = 0);
-        public Task<EntertainmentShowDTO> GetEntertainmentDTOByAddress(AddressGetDTO address, int typeId = 0);
+        public Task<EntertaimentModel> GetEntertainmentByIdAsync(Guid guids, int typeId = 0);
+        public Task<EntertainmentShowDTO> GetEntertainmentDTOByIdAsync(Guid guids, int typeId = 0);
+        public Task<EntertaimentModel> GetEntertainmentByAddressAsync(AddressGetDTO address, int typeId = 0);
+        public Task<EntertainmentShowDTO> GetEntertainmentDTOByAddressAsync(AddressGetDTO address, int typeId = 0);
         public double GetAverageRating(EntertaimentModel entertaiment);
     }
 }
