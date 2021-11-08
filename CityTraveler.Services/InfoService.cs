@@ -45,9 +45,9 @@ namespace CityTraveler.Services
             {
                 var entertaiment = userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
-                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
+                    .SelectMany(x => x.Entertaiments).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
+                    .SelectMany(x => x.Entertaiments).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
 
                 if(entertaiment != null)
                 {

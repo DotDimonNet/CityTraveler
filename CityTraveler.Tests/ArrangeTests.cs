@@ -157,19 +157,19 @@ namespace CityTraveler.Tests
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
@@ -206,7 +206,7 @@ namespace CityTraveler.Tests
                         {
                             new TripModel
                             {
-                                Entertaiment = new List<EntertaimentModel>
+                                Entertaiments = new List<EntertaimentModel>
                                 {
                                     new EntertaimentModel(),
                                     new EntertaimentModel(),
@@ -306,7 +306,7 @@ namespace CityTraveler.Tests
                 {
                     TripStart = DateTime.Now,
                     TripEnd = DateTime.Now.AddHours(4),
-                    Entertaiment = new List<EntertaimentModel>(),
+                    Entertaiments = new List<EntertaimentModel>(),
                     Price = new TripPriceModel(),
                     Title = $"TripTitle{i}",
                     Description = $"TripDescription{i}",

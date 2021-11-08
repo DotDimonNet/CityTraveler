@@ -100,7 +100,7 @@ namespace CityTraveler.Services
                         && x.OptimalSpent >= filter.OptimalSpent
                         && x.TripStatus.Id == filter.TripStatus
                         && x.Users.Where(x => users.Contains(x)).Any()
-                        && x.Entertaiment.Where(x => entertainment.Contains(x)).Any()
+                        && x.Entertaiments.Where(x => entertainment.Contains(x)).Any()
                         && x.Title.Contains(filter.Title)
                         && x.Price.Value >= filter.PriceMore
                         && x.Price.Value <= filter.PriceLess
@@ -113,7 +113,7 @@ namespace CityTraveler.Services
                        && x.RealSpent >= filter.RealSpent
                        && x.OptimalSpent >= filter.OptimalSpent
                        && x.Users.Where(x => users.Contains(x)).Count()!=-1
-                       && x.Entertaiment.Where(x => entertainment.Contains(x)).Any()
+                       && x.Entertaiments.Where(x => entertainment.Contains(x)).Any()
                        && x.Title.Contains(filter.Title)
                        && x.Price.Value >= filter.PriceMore
                        && x.Price.Value <= filter.PriceLess

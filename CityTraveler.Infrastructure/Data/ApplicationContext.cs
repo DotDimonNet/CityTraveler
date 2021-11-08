@@ -56,7 +56,7 @@ namespace CityTraveler.Infrastucture.Data
             builder.Entity<EntertaimentModel>().HasOne(x => x.AveragePrice).WithOne(x => x.Entertaiment).HasForeignKey<EntertaimentPriceModel>(x=>x.EntertaimentId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasMany(x => x.Images).WithOne(x => x.Trip).HasForeignKey(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasOne(x => x.Price).WithOne(x => x.Trip).HasForeignKey<TripPriceModel>(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<TripModel>().HasMany(x => x.Entertaiment).WithMany(x => x.Trips);
+            builder.Entity<TripModel>().HasMany(x => x.Entertaiments).WithMany(x => x.Trips);
             // builder.Entity<CommentStatus>().HasKey(x => x.ValueId).HasName("PK_CommentStatus");
             //builder.Entity<EntertainmentType>().HasKey(x => x.ValueId).HasName("PK_EntertainmentType");
             builder.Entity<TripStatus>().HasKey(x => x.ValueId).HasName("PK_TripStatus");
