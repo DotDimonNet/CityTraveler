@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IUserManagementService : IServiceMetadata
+    public interface IUserManagementService 
     {
         public Task<ApplicationUserModel> GetUserByIdAsync(Guid userId);
         public Task<IEnumerable<UserDTO>> GetUsersRangeAsync(int skip = 0, int take = 10);

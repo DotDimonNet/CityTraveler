@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface ISocialMediaService : IServiceMetadata
+    public interface ISocialMediaService
     {
         Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO rev);
         Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO rev);
