@@ -60,7 +60,7 @@ namespace CityTraveler.Domain.DTO
         public TimeSpan RealSpent { get; set; }
         public DateTime TripStart { get; set; }
         public DateTime TripEnd { get; set; }
-        public IEnumerable<ImageDTO> Images { get; set; } = new List<ImageDTO>();
+        public IEnumerable<ImageShowDTO> Images { get; set; } = new List<ImageShowDTO>();
         public IEnumerable<ReviewPreviewDTO> Reviews { get; set; } = new List<ReviewPreviewDTO>();
         public IEnumerable<EntertainmentShowDTO> Entertaiments { get; set; } = new List<EntertainmentShowDTO>();
         public IEnumerable<UserDTO> Users { get; set; } = new List<UserDTO>();

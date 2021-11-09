@@ -286,25 +286,5 @@ namespace CityTraveler.Services
                 return false;
             }
         }
-
-        public async Task<bool> AddCoordinatesToStreet(CoordinatesDTO coordinatesDTO, string streetId)
-        {
-            var street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == Guid.Parse(streetId));
-            if (street == null)
-            {
-                _logger.LogWarning($"Warning: Street was not founded by id - {streetId}");
-                return false;
-            }
-            else
-            {
-                street.Coordinates.Add(_mapper.Map<CoordinatesDTO, CoordinatesStreetModel>(coordinatesDTO));
-                return true;
-            }
-        }
-
-        public bool AddCoordinatesToStreet(CoordinatesDTO coordinatesDTO)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
