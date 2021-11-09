@@ -25,11 +25,11 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get-last-comment")]
+        [HttpGet("get-user-last-comment")]
         public async Task<IActionResult> GetUserLastComment(Guid userId)
         {
             return Json(_service.GetUserLastComment(userId));
-        }
+        }*/
         [HttpGet("get-last-comment")]
         public async Task<IActionResult> GetLastComment()
         {

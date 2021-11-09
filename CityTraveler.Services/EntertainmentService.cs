@@ -47,23 +47,6 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByTitle(string title, int typeId = 0)
-        {
-            switch (typeId)
-            {
-                case 0:
-                    return _context.Entertaiments.Where(x => x.Title.Contains(title));
-
-                case var n when n > 0 && n < 4:
-                    return _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
-                        && x.Title.Contains(title));
-
-                default:
-                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return new List<EntertaimentModel>();
-            }
-        }
-
         public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByTitle(string title, int typeId = 0)
         {
             switch (typeId)
@@ -83,23 +66,6 @@ namespace CityTraveler.Services
                 default:
                     _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
                     return new List<EntertainmentPreviewDTO>();
-            }
-        }
-
-        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids, int typeId = 0)
-        {
-            switch (typeId)
-            {
-                case 0:
-                    return _context.Entertaiments.Where(x => ids.Contains(x.Id));
-
-                case var n when n > 0 && n < 4:
-                    return _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
-                        && ids.Contains(x.Id));
-
-                default:
-                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return new List<EntertaimentModel>();
             }
         }
 
@@ -125,24 +91,6 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle, int typeId = 0)
-        {
-            switch (typeId)
-            {
-                case 0:
-                    return _context.Entertaiments
-                    .Where(x => x.Address.Street.Title == streetTitle);
-
-                case var n when n > 0 && n < 4:
-                    return _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
-                        && x.Address.Street.Title == streetTitle);
-
-                default:
-                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return new List<EntertaimentModel>();
-            }
-        }
-
         public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0)
         {
             switch (typeId)
@@ -162,26 +110,6 @@ namespace CityTraveler.Services
                 default:
                     _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
                     return new List<EntertainmentPreviewDTO>();
-            }
-        }
-
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByCoordinates(CoordinatesDTO coordinatesDto, int typeId = 0)
-        {
-            switch (typeId)
-            {
-                case 0:
-                    return _context.Entertaiments
-                       .Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
-                       && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
-
-                case var n when n > 0 && n < 4:
-                    return _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
-                       && x.Address.Coordinates.Latitude == coordinatesDto.Latitude
-                       && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
-
-                default:
-                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return new List<EntertaimentModel>();
             }
         }
 
@@ -209,24 +137,6 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByIdAsync(Guid id, int typeId = 0)
-        {
-            switch (typeId)
-            {
-                case 0:
-                    return await _context.Entertaiments
-                    .FirstOrDefaultAsync(x => x.Id == id);
-
-                case var n when n > 0 && n < 4:
-                    return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Type == (EntertainmentType)typeId
-                       && x.Id == id);
-
-                default:
-                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return null;
-            }
-        }
-
         public async Task<EntertainmentShowDTO> GetEntertainmentDTOByIdAsync(Guid id, int typeId = 0)
         {
             switch (typeId)
@@ -242,29 +152,6 @@ namespace CityTraveler.Services
                     return entertainment != null
                         ? _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment)
                         : null;
-
-                default:
-                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return null;
-            }
-        }
-
-        public async Task<EntertaimentModel> GetEntertainmentByAddressAsync(AddressGetDTO addressDto, int typeId = 0)
-        {
-            switch (typeId)
-            {
-                case 0:
-                    return await _context.Entertaiments
-                       .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
-                       && x.Address.HouseNumber == addressDto.HouseNumber
-                       && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
-                       && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude);
-
-                case var n when n > 0 && n < 4:
-                    return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Type == (EntertainmentType)typeId
-                       && x.Address.HouseNumber == addressDto.HouseNumber
-                       && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
-                       && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude);
 
                 default:
                     _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");

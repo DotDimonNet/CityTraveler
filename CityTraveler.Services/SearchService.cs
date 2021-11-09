@@ -102,6 +102,7 @@ namespace CityTraveler.Services
                 _logger.LogWarning("RatingMore can`t be more than ratingLess.");
                 return Enumerable.Empty<TripDTO>();
             }
+
             if (filter.AverageRatingLess < 0)
             {
                 _logger.LogWarning("AverageRatingLess can`t be less than 0.");

@@ -30,6 +30,7 @@ namespace CityTraveler.Tests
         public static ILogger<SocialMediaService> LoggerSocialMedia { set; get; }
         public static ILogger<SearchService> LoggerSearchService { set; get; }
         public static ILogger<TripService> LoggerTrip { get; set; }
+        public static ILogger<InfoService> LoggerInfoService { get; set; }
         public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
         {
             return new Mock<ILogger<T>>();
@@ -56,6 +57,8 @@ namespace CityTraveler.Tests
             var config = new MapperConfiguration(cfg => {
                 cfg.AddProfile<MappingProfile>();
                 cfg.AddProfile<ReviewMapping>();
+                cfg.AddProfile<TripMapping>();
+                cfg.AddProfile<UserMappingProfile>();
             });
 
             TestMapper = new Mapper(config);
@@ -124,7 +127,7 @@ namespace CityTraveler.Tests
                     Title = $"Entertainment - {i}",
                     Address = new AddressModel()
                     {
-                        Coordinates = new CoordinatesModel()
+                        Coordinates = new CoordinatesAddressModel()
                         {
                             Latitude = i * 3 / 2 + 1.34,
                             Longitude = i * 5 / 2 + 1.34
@@ -157,19 +160,19 @@ namespace CityTraveler.Tests
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
@@ -206,7 +209,7 @@ namespace CityTraveler.Tests
                         {
                             new TripModel
                             {
-                                Entertaiment = new List<EntertaimentModel>
+                                Entertaiments = new List<EntertaimentModel>
                                 {
                                     new EntertaimentModel(),
                                     new EntertaimentModel(),
@@ -293,17 +296,17 @@ namespace CityTraveler.Tests
             {
                 var trip = new TripModel()
                 {
+                    Id = Guid.NewGuid(),
                     TripStart = DateTime.Now,
                     TripEnd = DateTime.Now.AddHours(4),
-                    Entertaiment = new List<EntertaimentModel>(),
+                    Entertaiments = new List<EntertaimentModel>(),
                     Price = new TripPriceModel(),
                     Title = $"TripTitle{i}",
                     Description = $"TripDescription{i}",
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}",
-                    TemplateId = Guid.NewGuid()
+                    TagSting = $"tripTagString{i}"
                 };
                 if (i % 2 == 0)
                 {
@@ -315,6 +318,14 @@ namespace CityTraveler.Tests
                 }
                 trips.Add(trip);
             }
+
+            trips.ForEach(x => 
+            {
+                x.TemplateId = trips.FirstOrDefault().Id;
+            });
+            trips.FirstOrDefault().TemplateId = Guid.Empty;
+
+
             await ApplicationContext.Trips.AddRangeAsync(trips);
             await ApplicationContext.SaveChangesAsync();
         }
