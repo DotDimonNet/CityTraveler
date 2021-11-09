@@ -19,7 +19,7 @@ namespace CityTraveler.Services
         private readonly IEntertainmentService _entertainmentService;
         private readonly IMapper _mapper;
 
-        public SearchService(ApplicationContext dbContext, IMapper mapper,ILogger<SearchService> logger, IEntertainmentService entertainmentService)
+        public SearchService(ApplicationContext dbContext, IMapper mapper, ILogger<SearchService> logger, IEntertainmentService entertainmentService)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -27,7 +27,7 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
+        /*public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
         {
             if (filter.PriceLess < filter.PriceMore)
             {
@@ -92,6 +92,11 @@ namespace CityTraveler.Services
             }
         }
 
+        private Task GetTripByName(string tripName)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<TripDTO>> FilterTrips(FilterTrips filter)
         {
             if (filter.PriceLess < filter.PriceMore)
@@ -126,7 +131,7 @@ namespace CityTraveler.Services
                     return Enumerable.Empty<TripDTO>();
              }
 
-            try
+            *//*try
                 {
                     var users = await GetUsersByName(filter.User ?? "");
                     var entertainment = _entertainmentService.GetEntertainmentsByTitle(filter.EntertaimentName);
@@ -190,7 +195,7 @@ namespace CityTraveler.Services
                     _logger.LogWarning($"Failed to filter users {e.Message}");
                     return Enumerable.Empty<UserDTO>();
                 }
-            }
+            }*//*
 
             public async Task<IEnumerable<ApplicationUserModel>> GetUsersByName(string name = "")
             {
@@ -216,6 +221,21 @@ namespace CityTraveler.Services
                     _logger.LogError($"Failed to get trips by name {e.Message}");
                     return Enumerable.Empty<TripModel>();
                 }
-            }
+            }*/
+
+        Task<IEnumerable<EntertainmentGetDTO>> ISearchService.FilterEntertainments(FilterEntertainment entertainment)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<TripDTO>> ISearchService.FilterTrips(FilterTrips trip)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<UserDTO>> ISearchService.FilterUsers(FilterUsers user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

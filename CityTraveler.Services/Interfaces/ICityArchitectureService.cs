@@ -17,6 +17,7 @@ namespace CityTraveler.Services.Interfaces
         public Task<bool> RemoveEntertainmentAsync(Guid id);
         public Task<bool> AddStreetAsync(StreetGetDTO street);
         public Task<bool> UpdateStreetAsync(StreetDTO streetDto);
+        public Task<bool> AddCoordinatesToStreet(CoordinatesDTO coordinatesDTO, string streetId);
         public bool ValidateStreets();
         public Task<bool> RemoveStreetAsync(Guid streetId);
         public bool ValidateAddresses();
