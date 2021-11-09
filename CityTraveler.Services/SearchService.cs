@@ -57,26 +57,25 @@ namespace CityTraveler.Services
                 _logger.LogWarning("PriceMore can`t be less than 0.");
                 return Enumerable.Empty<EntertainmentGetDTO>();
             }
-            var trips = await GetTripByName(filter.TripName);
-
             try
             {
+                var tripIds = _dbContext.Trips.Where(x => x.Title.Contains(filter.TripName)).Select(x=>x.Id);
                 var result = await Task.Run(() => filter.Type != -1 ?
                               _dbContext.Entertaiments.Where(x =>
                                x.Title.Contains(filter.Title)
                             && x.Address.Street.Title.Contains(filter.StreetName)
                             && x.Address.HouseNumber.Contains(filter.HouseNumber)
                             && x.Type == (EntertainmentType)filter.Type
-                            && x.Trips.Where(x => trips.Contains(x)).Any()
+                            && x.Trips.Any(x => tripIds.Contains(x.Id))
                             && x.AveragePrice.Value >= filter.PriceMore
                             && x.AveragePrice.Value <= filter.PriceLess
                             && x.AverageRating >= filter.RatingMore
                             && x.AverageRating <= filter.RatingLess) :
-                            _dbContext.Entertaiments.Where(x =>
-                               x.Title.Contains(filter.Title)
+                            _dbContext.Entertaiments.Where(x => 
+                            x.Title.Contains(filter.Title)
                             && x.Address.Street.Title.Contains(filter.StreetName)
                             && x.Address.HouseNumber.Contains(filter.HouseNumber)
-                            && x.Trips.Any(x => trips.Contains(x))
+                            && x.Trips.Any(x => tripIds.Contains(x.Id))
                             && x.AveragePrice.Value >= filter.PriceMore
                             && x.AveragePrice.Value <= filter.PriceLess
                             && x.AverageRating >= filter.RatingMore
@@ -126,8 +125,10 @@ namespace CityTraveler.Services
 
             try
             {
-                var users = await GetUsersByName(filter.User ?? "");
-                var entertainment = _entertainmentService.GetEntertainmentsByTitle(filter.EntertaimentName);
+                var userIds = _dbContext.Users.Where(x => x.Profile.Name.Contains(filter.User)).Select(x=>x.Id);
+                var entertainmentIds = _dbContext.Entertaiments
+                    .Where(x => x.Title.Contains(filter.EntertaimentName))
+                    .Select(x => x.Id);
                 var result = await Task.Run(() => filter.TripStatus != -1
                     ? _dbContext.Trips.Where(x =>
                         x.Description.Contains(filter.Description)
@@ -136,8 +137,8 @@ namespace CityTraveler.Services
                         && x.RealSpent >= filter.RealSpent
                         && x.OptimalSpent >= filter.OptimalSpent
                         && x.TripStatus.Id == filter.TripStatus
-                        && x.Users.Where(x => users.Contains(x)).Any()
-                        && x.Entertaiment.Where(x => entertainment.Contains(x)).Any()
+                        && x.Users.Any(x => userIds.Contains(x.Id))
+                        && x.Entertaiments.Where(x => entertainmentIds.Contains(x.Id)).Any()
                         && x.Title.Contains(filter.Title)
                         && x.Price.Value >= filter.PriceMore
                         && x.Price.Value <= filter.PriceLess
@@ -149,8 +150,8 @@ namespace CityTraveler.Services
                           && x.TripStart >= filter.TripStart
                           && x.RealSpent >= filter.RealSpent
                           && x.OptimalSpent >= filter.OptimalSpent
-                          && x.Users.Where(x => users.Contains(x)).Count() != -1
-                          && x.Entertaiment.Where(x => entertainment.Contains(x)).Any()
+                          && x.Users.Any(x => userIds.Contains(x.Id))
+                          && x.Entertaiments.Any(x => entertainmentIds.Contains(x.Id))
                           && x.Title.Contains(filter.Title)
                           && x.Price.Value >= filter.PriceMore
                           && x.Price.Value <= filter.PriceLess
@@ -191,32 +192,6 @@ namespace CityTraveler.Services
             {
                 _logger.LogWarning($"Failed to filter users {e.Message}");
                 return Enumerable.Empty<UserDTO>();
-            }
-        }
-
-        public async Task<IEnumerable<ApplicationUserModel>> GetUsersByName(string name = "")
-        {
-            try
-            {
-                return await Task.Run(() => _dbContext.Users.Where(x => x.Profile.Name.Contains(name)));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Failed to get users by name {e.Message}");
-                return Enumerable.Empty<ApplicationUserModel>();
-            }
-        }
-
-        public async Task<IEnumerable<TripModel>> GetTripByName(string name = "")
-        {
-            try
-            {
-                return await Task.Run(() => _dbContext.Trips.Where(x => x.Title.Contains(name)));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Failed to get trips by name {e.Message}");
-                return Enumerable.Empty<TripModel>();
             }
         }
     }
