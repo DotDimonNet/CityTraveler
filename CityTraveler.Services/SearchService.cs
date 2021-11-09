@@ -92,7 +92,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<IEnumerable<TripDTO>> FilterTrips(FilterTrips filter)
+       /* public async Task<IEnumerable<TripDTO>> FilterTrips(FilterTrips filter)
         {
             if (filter.PriceLess < filter.PriceMore)
             {
@@ -165,9 +165,9 @@ namespace CityTraveler.Services
                     _logger.LogError($"Failed to filter trips {e.Message}");
                     return Enumerable.Empty<TripDTO>();
                 }
-            }
+            }*/
 
-            public async Task<IEnumerable<UserDTO>> FilterUsers(FilterUsers filter)
+            /*public async Task<IEnumerable<UserDTO>> FilterUsers(FilterUsers filter)
             {
                 try
                 {
@@ -190,7 +190,7 @@ namespace CityTraveler.Services
                     _logger.LogWarning($"Failed to filter users {e.Message}");
                     return Enumerable.Empty<UserDTO>();
                 }
-            }
+            }*/
 
             public async Task<IEnumerable<ApplicationUserModel>> GetUsersByName(string name = "")
             {
@@ -217,5 +217,20 @@ namespace CityTraveler.Services
                     return Enumerable.Empty<TripModel>();
                 }
             }
+
+        Task<IEnumerable<UserDTO>> ISearchService.FilterUsers(FilterUsers user)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<TripDTO>> ISearchService.FilterTrips(FilterTrips trip)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<EntertainmentGetDTO>> ISearchService.FilterEntertainments(FilterEntertainment entertainment)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
