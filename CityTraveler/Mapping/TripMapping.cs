@@ -17,6 +17,12 @@ namespace CityTraveler.Mapping
             CreateMap<TripModel, DefaultTripDTO>().ReverseMap();
 
             CreateMap<TripModel, TripDTO>().ReverseMap();
+
+            CreateMap<TripModel, InfoTripDTO>()
+                .ForMember(x => x.Entertaiments, o => o.MapFrom(z => z.Entertaiment.AsEnumerable())).ReverseMap()
+                .ForMember(x => x.Images, o => o.MapFrom(z => z.Images.AsEnumerable())).ReverseMap()
+                .ForMember(x => x.Reviews, o => o.MapFrom(z => z.Reviews.AsEnumerable())).ReverseMap()
+                .ForMember(x => x.Users, o => o.MapFrom(z => z.Users.AsEnumerable())).ReverseMap();
         }
     }
 }
