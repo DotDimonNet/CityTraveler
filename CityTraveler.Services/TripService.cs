@@ -45,7 +45,6 @@ namespace CityTraveler.Services
                     var model = _mapper.Map<AddNewTripDTO, TripModel>(newTrip);
                     _context.Trips.Add(model);
                     await _context.SaveChangesAsync();
-
                     _logger.LogInformation($"New trip was created. Trip: {newTrip}");                   
                 }
 
@@ -54,7 +53,6 @@ namespace CityTraveler.Services
             catch (Exception e)
             {
                 _logger.LogError($"Exception on creating new trip! {e.Message}");
-
                 return false;
             }
         }
@@ -68,7 +66,6 @@ namespace CityTraveler.Services
                     var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
                     _context.Trips.Remove(trip);
                     await _context.SaveChangesAsync();
-
                     _logger.LogInformation($"Trip: {trip} with was deleted.");             
                 }
 
@@ -77,7 +74,6 @@ namespace CityTraveler.Services
             catch (Exception e)
             {
                 _logger.LogError($"Exception on deleting trip! Trip Id={tripId} was not foud. {e.Message}");
-
                 return false;
             }
         }
@@ -91,16 +87,14 @@ namespace CityTraveler.Services
                     var model = _mapper.Map<DefaultTripDTO, TripModel>(newDefaultTrip);
                     _context.Trips.Add(model);
                     await _context.SaveChangesAsync();
-
                     _logger.LogInformation($"New default trip was created. Trip: {newDefaultTrip}");
                 }
    
                 return true;
-            }
+            } 
             catch (Exception e)
             {
                 _logger.LogError($"Exception on creating new efault trip! {e.Message}");
-
                 return false;
             }
         }
@@ -113,7 +107,7 @@ namespace CityTraveler.Services
 
                 if (!trips.Any())
                 {
-                    _logger.LogWarning($"Problen with getting default trips. {trips} are null!");
+                    _logger.LogWarning($"Problem with getting default trips. {trips} are null!");
                 }
 
                 return trips.Select(x => _mapper.Map<TripModel, DefaultTripDTO>(x));
@@ -121,8 +115,7 @@ namespace CityTraveler.Services
             catch (Exception e)
             {
                 _logger.LogError($"Exception on getting default trips! {e.Message}");
-
-                return new List<DefaultTripDTO>();   
+                return Enumerable.Empty<DefaultTripDTO>(); 
             }        
         }
 
@@ -141,7 +134,6 @@ namespace CityTraveler.Services
             catch (Exception e)
             {
                 _logger.LogError($"Problen with finding default trip that contains Id={defaltTripId}! {e.Message}");
- 
                 return new List<DefaultTripDTO>().FirstOrDefault();
             }
         }
@@ -286,7 +278,7 @@ namespace CityTraveler.Services
                 var model = _mapper.Map<EntertainmentGetDTO, EntertaimentModel>(newEntertainment);
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
 
-                trip.Entertaiment.Add(model);
+                trip.Entertaiments.Add(model);
                 _context.Update(trip);
                 await _context.SaveChangesAsync();
                 return true;
@@ -311,7 +303,7 @@ namespace CityTraveler.Services
 
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
                 var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == entertainmentId);
-                trip.Entertaiment.Remove(entertainment);
+                trip.Entertaiments.Remove(entertainment);
                 _context.Update(trip);
                 _context.SaveChanges();
 
@@ -340,41 +332,6 @@ namespace CityTraveler.Services
             {
                 _logger.LogError($"Error: {e.Message}");
                 throw new TripServiceException($"Exception on  updating trip status! {e.Message}");
-            }
-        }
-
-
-        public async Task<bool> SetTripAsDefault(Guid tripId)
-        {
-            try
-            {
-                var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
-                trip.DafaultTrip = true;
-                _context.Update(trip);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error: {e.Message}");
-                throw new TripServiceException($"Exception on setting default as defaut trip! {e.Message}");
-            }
-        }
-
-        public async Task<bool> RemoveTripFromDefault(Guid tripId)
-        {
-            try
-            {
-                var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
-                trip.DafaultTrip = false;
-                _context.Update(trip);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error: {e.Message}");
-                throw new TripServiceException($"Exception on removing trip from default! {e.Message}");
             }
         }
     }

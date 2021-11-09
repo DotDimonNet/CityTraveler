@@ -124,7 +124,7 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Trips.SelectMany(x => x.Entertaiment).Distinct().OrderBy(x => x.Created);
+                return user.Trips.SelectMany(x => x.Entertaiments).Distinct().OrderBy(x => x.Created);
             }
             catch (Exception e)
             {

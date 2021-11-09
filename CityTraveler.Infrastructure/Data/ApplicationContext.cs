@@ -49,6 +49,7 @@ namespace CityTraveler.Infrastucture.Data
             builder.Entity<ReviewModel>().HasMany(x => x.Images).WithOne(x => x.Review).HasForeignKey(x => x.ReviewId).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<ReviewModel>().HasOne(x => x.Rating).WithOne(x => x.Review).HasForeignKey<RatingModel>(x => x.ReviewId).OnDelete(DeleteBehavior.ClientSetNull);
             builder.Entity<AddressModel>().HasOne(x => x.Coordinates).WithOne(x => x.Address).HasForeignKey<AddressModel>(x => x.CoordinatesId).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<StreetModel>().HasMany(x => x.Coordinates).WithOne(x => x.Street).HasForeignKey(x => x.Id).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<EntertaimentModel>().HasOne(x => x.Address).WithOne(x => x.Entertaiment).HasForeignKey<EntertaimentModel>(x => x.AddressId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<EntertaimentModel>().HasMany(x => x.Reviews).WithOne(x => x.Entertaiment).HasForeignKey(x => x.EntertainmentId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasMany(x => x.Reviews).WithOne(x => x.Trip).HasForeignKey(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
@@ -56,7 +57,7 @@ namespace CityTraveler.Infrastucture.Data
             builder.Entity<EntertaimentModel>().HasOne(x => x.AveragePrice).WithOne(x => x.Entertaiment).HasForeignKey<EntertaimentPriceModel>(x=>x.EntertaimentId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasMany(x => x.Images).WithOne(x => x.Trip).HasForeignKey(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasOne(x => x.Price).WithOne(x => x.Trip).HasForeignKey<TripPriceModel>(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<TripModel>().HasMany(x => x.Entertaiment).WithMany(x => x.Trips);
+            builder.Entity<TripModel>().HasMany(x => x.Entertaiments).WithMany(x => x.Trips);
             // builder.Entity<CommentStatus>().HasKey(x => x.ValueId).HasName("PK_CommentStatus");
             //builder.Entity<EntertainmentType>().HasKey(x => x.ValueId).HasName("PK_EntertainmentType");
             builder.Entity<TripStatus>().HasKey(x => x.ValueId).HasName("PK_TripStatus");

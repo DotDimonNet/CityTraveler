@@ -27,11 +27,6 @@ namespace CityTraveler.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public InfoService(ApplicationContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
 
         public bool IsActive { get ; set ; }
         public string Version { get ; set ; }
@@ -45,9 +40,9 @@ namespace CityTraveler.Services
             {
                 var entertaiment = userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips
-                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
+                    .SelectMany(x => x.Entertaiments).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
-                    .SelectMany(x => x.Entertaiment).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
+                    .SelectMany(x => x.Entertaiments).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
 
                 if(entertaiment != null)
                 {
@@ -61,23 +56,23 @@ namespace CityTraveler.Services
                 return null;
             }  
         }
-        public async Task<TripDTO> GetMostPopularTripAsync()
+        public async Task<InfoTripDTO> GetMostPopularTripAsync()
         {
             try
-            {          
+            {
                 var trip = await _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();
                 if(trip != null)
                 {
-                    return _mapper.Map<TripModel, TripDTO>(trip);
+                    return _mapper.Map<TripModel, InfoTripDTO>(trip);
                 }
                 throw new InfoServiceException(messageExceptionObjectNull);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogError($"Error: {e.Message}");
+                _logger.LogError($"Erorr:{e}");
                 return null;
-            }
-
+            }   
+        
         }
         public async Task<ReviewDTO> GetReviewByMaxCommentsAsync(Guid userId = default)
         {
@@ -100,7 +95,7 @@ namespace CityTraveler.Services
             }          
         }
 
-        public async Task<TripDTO> GetTripByMaxReviewAsync(Guid userId = default)
+        public async Task<InfoTripDTO> GetTripByMaxReviewAsync(Guid userId = default)
         {
             try
             {
@@ -110,7 +105,7 @@ namespace CityTraveler.Services
 
                 if (trip != null)
                 {
-                    return _mapper.Map<TripModel, TripDTO>(trip);
+                    return _mapper.Map<TripModel, InfoTripDTO>(trip);
                 }
                 throw new InfoServiceException(messageExceptionObjectNull);   
             }
@@ -121,7 +116,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<IEnumerable<TripDTO>> GetLastTripsByPeriodAsync(DateTime start, DateTime end)
+        public async Task<IEnumerable<InfoTripDTO>> GetLastTripsByPeriodAsync(DateTime start, DateTime end)
         {
             try
             {
@@ -134,19 +129,19 @@ namespace CityTraveler.Services
 
                 if (trips!= null)
                 {
-                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(trips);
+                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<InfoTripDTO>>(trips);
                 }
                 throw new InfoServiceException(messageExceptionObjectNull);
             }
             catch(Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                return Enumerable.Empty<TripDTO>();
+                return Enumerable.Empty<InfoTripDTO>();
             }
             
         }
 
-        public async Task<IEnumerable<TripDTO>> GetTripsByLowPriceAsync(int count)
+        public async Task<IEnumerable<InfoTripDTO>> GetTripsByLowPriceAsync(int count)
         {
             try
             {
@@ -154,7 +149,7 @@ namespace CityTraveler.Services
 
                 if (trips != null)
                 {
-                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(trips);
+                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<InfoTripDTO>>(trips);
                 }
 
                 throw new InfoServiceException(messageExceptionObjectNull);
@@ -162,7 +157,7 @@ namespace CityTraveler.Services
             catch(Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                return Enumerable.Empty<TripDTO>();
+                return Enumerable.Empty<InfoTripDTO>();
             }
             
         }
@@ -173,7 +168,7 @@ namespace CityTraveler.Services
             {
                 if (start > end)
                 {
-                    throw new InfoServiceException("Invalid arguments");
+                    throw new InfoServiceException(messageExceptionArgument);
                 }
                 var usersCount = await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
                 if (usersCount != 0)
@@ -189,7 +184,7 @@ namespace CityTraveler.Services
             }
               
         }
-        public async Task<IEnumerable<TripDTO>> GetMostlyUsedTemplatesAsync(int count = 5)
+        public async Task<IEnumerable<InfoTripDTO>> GetMostlyUsedTemplatesAsync(int count = 2)
         {
             try
             {
@@ -197,14 +192,14 @@ namespace CityTraveler.Services
                     .OrderByDescending(g => g.Count())
                     .Select(x => x.Key)
                     .Take(count);
-                var templatesTriModel =Task.Run(() => _context.Trips.Where(x => templateIds.Contains(x.Id)));
+                var templatesTripModel = await Task.Run(() => _context.Trips.Where(x => templateIds.Contains(x.Id)));
 
-                return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(await templatesTriModel);
+                return _mapper.Map<IQueryable<TripModel>, IEnumerable<InfoTripDTO>>(templatesTripModel);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                return Enumerable.Empty<TripDTO>();
+                return Enumerable.Empty<InfoTripDTO>();
             }
             
         }
@@ -220,14 +215,14 @@ namespace CityTraveler.Services
             return await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).SelectMany(x => x.Users).Distinct().Count());
         }
 
-        public async Task<TripDTO> GetLongestTripAsync()
+        public async Task<InfoTripDTO> GetLongestTripAsync()
         {
             try
             {
                 var trip = await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
                 if (trip != null)
                 {
-                    return _mapper.Map<TripModel, TripDTO>(trip);
+                    return _mapper.Map<TripModel, InfoTripDTO>(trip);
                 }
                 throw new InfoServiceException(messageExceptionObjectNull);
             }
@@ -238,20 +233,42 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<TripDTO> GetShortestTripAsync()
+        public async Task<InfoTripDTO> GetShortestTripAsync()
         {
-            var trip = await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
-            return _mapper.Map<TripModel, TripDTO>(trip);          
+            try
+            {
+                var trip = await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
+                if (trip != null)
+                {
+                    return _mapper.Map<TripModel, InfoTripDTO>(trip); 
+                }
+                throw new InfoServiceException(messageExceptionObjectNull);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error:{e}");
+                return null;
+            }          
         }
 
         public async Task<int> GetTripsCreatedByPeriodAsync(DateTime start, DateTime end)
         {
-            if (start > end)
-            {
-                throw new InfoServiceException("Invalid arguments");
+            try
+            { 
+                if (start > end)
+                    {
+                    throw new InfoServiceException(messageExceptionArgument);
+                    }
+                return await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count());
             }
+            catch (Exception e)
+            {
+                _logger.LogError("Error:{e}");
+                return 0;
+            }
+           
 
-            return await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripEnd < end).Count());
+           
         }
     }
 }

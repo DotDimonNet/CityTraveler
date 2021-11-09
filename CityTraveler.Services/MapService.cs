@@ -28,24 +28,13 @@ namespace CityTraveler.Services
         public bool IsActive { get; set; }
         public string Version { get; set; }
 
-        public async Task<StreetModel> FindStreetByCoordinates(CoordinatesDTO coordinatesDto)
-        {
-            return await _context.Streets.FirstOrDefaultAsync(x => x.Addresses
-               .Any(x => x.Coordinates.Latitude == coordinatesDto.Latitude
-               && x.Coordinates.Longitude == coordinatesDto.Longitude));
-        }
         public async Task<IEnumerable<StreetDTO>> FindStreetsDTOByTitle(string streetTitle)
         {
             var streets = _context.Streets.Where(x => x.Title.Contains(streetTitle));
 
-            if (! await streets.AnyAsync())
-            {
-                return new List<StreetDTO>();
-            }
-            else
-            {
-                return streets.Select(x => _mapper.Map<StreetModel, StreetDTO>(x));
-            }
+            return await streets.AnyAsync()
+                ? streets.Select(x => _mapper.Map<StreetModel, StreetDTO>(x))
+                : new List<StreetDTO>();
         }
 
         public async Task<StreetShowDTO> FindStreetDTOByCoordinates(CoordinatesDTO coordinatesDto)
@@ -79,25 +68,14 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<AddressModel> FindAddressesByCoordinates(CoordinatesDTO coordinatesDto)
-        {
-            return _context.Addresses.Where(x => x.Coordinates.Latitude == coordinatesDto.Latitude
-                && x.Coordinates.Longitude == coordinatesDto.Longitude);
-        }
-
         public IEnumerable<AddressShowDTO> FindAddressesDTOByCoordinates(CoordinatesDTO coordinatesDto)
         {
             var addresses = _context.Addresses.Where(x => x.Coordinates.Latitude == coordinatesDto.Latitude
                 && x.Coordinates.Longitude == coordinatesDto.Longitude);
 
-            if (addresses.Count() == 0)
-            {
-                return new List<AddressShowDTO>();
-            }
-            else
-            {
-                return addresses.Select(x => _mapper.Map<AddressModel, AddressShowDTO>(x));
-            }
+            return addresses.Any()
+                ? addresses.Select(x => _mapper.Map<AddressModel, AddressShowDTO>(x))
+                : new List<AddressShowDTO>();
         }
     }
 }
