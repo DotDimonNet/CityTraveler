@@ -137,13 +137,13 @@ namespace CityTraveler.Tests
                         Street = streets[streetIndex],
                     },
                     AveragePrice = new EntertaimentPriceModel(),
-                    Reviews = new List<EntertainmentReviewModel>()
+                    /*Reviews = new List<ReviewModel>()
                     {
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                    },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                    },*/
                     Type = entertainmentType,
                 };
                 entertainments.Add(entertainment);
@@ -214,10 +214,10 @@ namespace CityTraveler.Tests
                                     new EntertaimentModel(),
                                     new EntertaimentModel(),
                                 },
-                                Reviews = new List<TripReviewModel>
+                                Reviews = new List<ReviewModel>
                                 {
-                                   new TripReviewModel(),
-                                   new TripReviewModel(),
+                                   new ReviewModel(),
+                                   new ReviewModel(),
                                 }
                             }
                          }   
@@ -237,7 +237,7 @@ namespace CityTraveler.Tests
 
             for (int i = 0; i < 10; i++)
             {
-                var review = new TripReviewModel()
+                var review = new ReviewModel()
                 {
                     User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
                     Trip = new TripModel { },
