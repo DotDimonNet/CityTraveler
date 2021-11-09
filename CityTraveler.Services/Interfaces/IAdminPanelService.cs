@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IAdminPanelService : IServiceMetadata
+    public interface IAdminPanelService 
     {
         public Task<IEnumerable<UserChangeAdminDTO>> FilterUsers(FilterAdminUser filter);
         public Task<IEnumerable<EntertaimentModel>> FilterEntertaiments(FilterAdminEntertaiment filter);

@@ -20,9 +20,6 @@ namespace CityTraveler.Services
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
 
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
-
         public EntertainmentService(ApplicationContext context, IMapper mapper, ILogger<EntertainmentService> logger)
         {
             _logger = logger;

@@ -289,17 +289,6 @@ namespace CityTraveler.Tests
             await ApplicationContext.SaveChangesAsync();
         }
 
-
-        private static async Task GenerateDifferrentImages()
-        {
-            var images = new List<ImageModel>();
-            for (int i = 0; i < 4; i++)
-            {
-                var userImage = new UserImageModel();
-            }
-        }
-
-
         private static async Task GenerateTrips()
         {
             var trips = new List<TripModel>();

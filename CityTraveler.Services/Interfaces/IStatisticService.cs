@@ -8,7 +8,7 @@ using CityTraveler.Domain.DTO;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IStatisticService : IServiceMetadata
+    public interface IStatisticService 
     {
         public Task<int> QuantityPassEntertaiment(Guid userId);
         public Task<IEnumerable<TripDTO>> GetTripVisitEntertaiment(Guid userId, EntertaimentModel entertaiment);

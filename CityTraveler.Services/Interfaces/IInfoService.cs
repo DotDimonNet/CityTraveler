@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IInfoService : IServiceMetadata
+    public interface IInfoService 
     {
         public Task<EntertainmentShowDTO> GetMostPopularEntertaimentInTripsAsync(Guid userId = default);
         public Task<InfoTripDTO> GetMostPopularTripAsync();
