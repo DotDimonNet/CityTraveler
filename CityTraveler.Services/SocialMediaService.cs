@@ -75,16 +75,16 @@ namespace CityTraveler.Services
             try
             {
                 if (!await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId)
-                && !await _dbContext.Trips.AnyAsync(x => x.Id == objectId))
+                    && !await _dbContext.Trips.AnyAsync(x => x.Id == objectId))
                 {
                     _logger.LogError("Object not found");
                     return Enumerable.Empty<ReviewDTO>();
                 }
                 var entertainment = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == objectId);
-                var trip = await  _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
-                return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) ?
-                     entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x)) :
-                     trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
+                var trip = await _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
+                return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) 
+                    ? entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x)) 
+                    : trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
             }
             catch (Exception e) 
             {

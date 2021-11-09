@@ -35,7 +35,7 @@ namespace CityTraveler.Mapping
                 ReverseMap();
             CreateMap<IEnumerable<EntertainmentGetDTO>, IEnumerable<EntertaimentModel>>();
             CreateMap<IEnumerable<TripDTO>, IEnumerable<TripModel>>();
-            CreateMap<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>();
+            CreateMap< IEnumerable < UserDTO > , IEnumerable <ApplicationUserModel>>();
         }
     }
 }
