@@ -77,7 +77,7 @@ namespace CityTraveler.Controllers
             return Json(_service.GetDefaultTrips(skip, take));
         }
     
-        [HttpGet("default-trip-bu-id")]
+        [HttpGet("default-trip-by-id")]
         public IActionResult GetDefaulttripById([FromQuery] Guid defaultTripId)
         {
             return Json(_service.GetDefaultTripById(defaultTripId));

@@ -13,10 +13,13 @@ namespace CityTraveler.Mapping
         {
             CreateMap<AddNewTripDTO, TripModel>().ReverseMap();
 
-            
-            CreateMap<TripModel, DefaultTripDTO>().ReverseMap();
 
-            CreateMap<TripModel, TripDTO>().ReverseMap();
+            CreateMap<TripModel, DefaultTripDTO>()
+                .ForMember(x => x.Price, o => o.MapFrom(z=>z.Price.Value)).ReverseMap();
+
+            CreateMap<TripModel, TripDTO>()
+                .ForMember(x => x.Price, o => o.MapFrom(z => z.Price.Value))
+                .ReverseMap();
         }
     }
 }
