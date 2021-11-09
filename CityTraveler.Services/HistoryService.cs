@@ -23,8 +23,6 @@ namespace CityTraveler.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
         public async Task<CommentDTO> GetUserLastComment(Guid userId)
         {
             if (!_context.Users.Any(x => x.Id == userId))

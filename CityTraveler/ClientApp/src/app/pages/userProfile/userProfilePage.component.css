@@ -1,0 +1,9 @@
+body {
+  width: 5px!important;
+}
+
+.user-data {
+  font-size: larger;
+  font-weight: bold;
+  color: red;
+}

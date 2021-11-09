@@ -15,14 +15,9 @@ namespace CityTraveler.Domain.DTO
         public ICollection<CommentDTO> Comments { get; set; } = new List<CommentDTO>();
         public string Title { get; set; }
         public string Description { get; set; }
-    }
-    public class EntertainmentReviewDTO : ReviewDTO
-    {
         public Guid EntertainmentId { get; set; }
-    }
-    public class TripReviewDTO : ReviewDTO
-    {
         public Guid TripId { get; set; }
+
     }
 
     public class ReviewPreviewDTO

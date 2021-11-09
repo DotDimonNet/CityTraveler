@@ -48,4 +48,22 @@ namespace CityTraveler.Domain.DTO
         public DateTime TripStart { get; set; }
         public IEnumerable<EntertainmentGetDTO> Entertaiments { get; set; } = new List<EntertainmentGetDTO>();
     }
+
+    public class InfoTripDTO
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string TagSting { get; set; }
+        public PriceDTO Price { get; set; }
+        public double AverageRating { get; set; }
+        public TimeSpan OptimalSpent { get; set; }
+        public TimeSpan RealSpent { get; set; }
+        public DateTime TripStart { get; set; }
+        public DateTime TripEnd { get; set; }
+        public IEnumerable<ImageDTO> Images { get; set; } = new List<ImageDTO>();
+        public IEnumerable<ReviewPreviewDTO> Reviews { get; set; } = new List<ReviewPreviewDTO>();
+        public IEnumerable<EntertainmentShowDTO> Entertaiments { get; set; } = new List<EntertainmentShowDTO>();
+        public IEnumerable<UserDTO> Users { get; set; } = new List<UserDTO>();
+
+    }
 }

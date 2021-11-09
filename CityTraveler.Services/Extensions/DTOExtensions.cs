@@ -65,7 +65,7 @@ namespace CityTraveler.Services.Extensions
                // TripStatus = tripDTO.TripStatus,
                 TagSting = tripDTO.TagSting,
                 Images = new List<TripImageModel>(),
-                Reviews = new List<TripReviewModel>(),
+                Reviews = new List<ReviewModel>(),
                 Entertaiments = new List<EntertaimentModel>()
             };
         }
@@ -92,7 +92,7 @@ namespace CityTraveler.Services.Extensions
                 Price = new TripPriceModel(),
                 OptimalSpent = defaultTripDTO.OptimalSpent,
                 Images = new List<TripImageModel>(),
-                Reviews = new List<TripReviewModel>(),
+                Reviews = new List<ReviewModel>(),
                 Entertaiments = new List<EntertaimentModel>(),
                 DafaultTrip =defaultTripDTO.DefaultTrip
             };

@@ -14,7 +14,7 @@ namespace CityTraveler.Domain.Entities
         public virtual IEnumerable<TripModel> Trips { get; set; } = new List<TripModel>();
         public virtual EntertaimentPriceModel AveragePrice { get; set; }
         public virtual IEnumerable<EntertaimentImageModel> Images { get; set; } = new List<EntertaimentImageModel>();
-        public virtual IEnumerable<EntertainmentReviewModel> Reviews { get; set; } = new List<EntertainmentReviewModel>();
+        public virtual IEnumerable<ReviewModel> Reviews { get; set; } = new List<ReviewModel>();
         public virtual double AverageRating { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
