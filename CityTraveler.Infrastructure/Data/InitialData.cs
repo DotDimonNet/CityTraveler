@@ -118,13 +118,13 @@ namespace CityTraveler.Infrastucture.Data
                         Street = streets[streetIndex],
                     },
                     AveragePrice = new EntertaimentPriceModel(),
-                    Reviews = new List<EntertainmentReviewModel>()
-                    {/*
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },*/
-                    },
+                    /*Reviews = new List<ReviewModel>()
+                    {*//*
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new EReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },*//*
+                    },*/
                     Type = entertainmentType,
                 };
                 entertainments.Add(entertainment);
@@ -198,7 +198,7 @@ namespace CityTraveler.Infrastucture.Data
             context.Ratings.Add(new RatingModel
             {
                 Value = 5,
-                Review = new EntertainmentReviewModel
+                Review = new ReviewModel
                 {
                     Title = "Review",
                     Description = "Review description",
