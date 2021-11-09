@@ -14,12 +14,10 @@ namespace CityTraveler.Domain.Entities
     public class CoordinatesAddressModel : CoordinatesModel
     {
         public virtual AddressModel Address { get; set; }
-        public virtual Guid AddressId { get; set; }
     }
 
     public class CoordinatesStreetModel : CoordinatesModel
     {
         public virtual StreetModel Street { get; set; }
-        public virtual Guid StreetId { get; set; }
     }
 }

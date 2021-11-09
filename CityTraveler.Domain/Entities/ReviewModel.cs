@@ -15,20 +15,9 @@ namespace CityTraveler.Domain.Entities
         public virtual ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>();
         public string Title { get; set; }
         public string Description { get; set; }
+        public virtual Guid? EntertainmentId { get; set; }
+        public virtual EntertaimentModel Entertaiment { get; set; } = null;
+        public virtual TripModel Trip { get; set; } = null;
+        public virtual Guid? TripId { get; set; }
     }
-    public class EntertainmentReviewModel : ReviewModel 
-    {
-        public virtual Guid EntertainmentId { get; set; }
-        public virtual EntertaimentModel Entertaiment { get; set; }
-    }
-    public class TripReviewModel : ReviewModel 
-    {
-        public virtual TripModel Trip { get; set; }
-        public virtual Guid TripId { get; set; }
-    }
-    /*public class RatingReviewModel : ReviewModel
-    {
-        public virtual Guid RatingId { get; set; }
-        public virtual RatingModel Rating { get; set; }
-    }*/
 }
