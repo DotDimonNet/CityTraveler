@@ -20,7 +20,7 @@ namespace CityTraveler.Mapping
 
             CreateMap<TripModel, InfoTripDTO>()
                 .ForMember(x => x.Entertaiments, o => o.MapFrom(z => z.Entertaiments.AsEnumerable())).ReverseMap()
-                //.ForMember(x => x.Images, o => o.MapFrom(z => z.Images.AsEnumerable())).ReverseMap()
+                .ForMember(x => x.Images, o => o.MapFrom(z => z.Images.AsEnumerable())).ReverseMap()
                 .ForMember(x => x.Reviews, o => o.MapFrom(z => z.Reviews.AsEnumerable())).ReverseMap()
                 .ForMember(x => x.Users, o => o.MapFrom(z => z.Users.AsEnumerable())).ReverseMap();
         }
