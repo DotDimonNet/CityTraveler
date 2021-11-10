@@ -19,7 +19,7 @@ namespace CityTraveler.Services.Interfaces
         public Task<double> GetAveragePriceUserTrip(Guid userId);
         public Task<int> GetCountPassedUserTrip(Guid userId);
         public Task<IEnumerable<TripPrewievDTO>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd);
-        public Task<double> GetAverageAgeUser();
+        public Task<DateTime> GetAverageAgeUser();
         public Task<double> GetAvarageEnternaimentInTrip();
         public Task<double> GetAverageUserReviewRating(Guid userId);
     }

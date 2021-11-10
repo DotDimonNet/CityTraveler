@@ -63,7 +63,7 @@ namespace CityTraveler.Services.Extensions
                 Title = tripDTO.Title,
                 Description = tripDTO.Description,
                // TripStatus = tripDTO.TripStatus,
-                TagSting = tripDTO.TagSting,
+                TagString = tripDTO.TagSting,
                 Images = new List<TripImageModel>(),
                 Reviews = new List<TripReviewModel>(),
                 Entertaiments = new List<EntertaimentModel>()
@@ -81,6 +81,7 @@ namespace CityTraveler.Services.Extensions
             };
         }
 
+
         public static TripModel ToDefaultTrip(this DefaultTripDTO defaultTripDTO)
         {
             return new TripModel
@@ -97,5 +98,6 @@ namespace CityTraveler.Services.Extensions
                 DafaultTrip =defaultTripDTO.DefaultTrip
             };
         }
+
     }
 }

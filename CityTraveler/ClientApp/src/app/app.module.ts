@@ -13,11 +13,18 @@ import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.co
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+
+import { DefaultTripPageComponent } from './pages/defaultTripPage/defaultTripPage.component';
+import { DefaultTrip } from './models/defaultTrip.model';
+import { TripService } from './services/tripService';
+import { TripDataService } from './services/tripService.data';
+
 import { SocialMediaDataService } from './services/socialMediaService.data';
 import { SocialMediaService } from './services/socialMediaService';
 import { AddReviewTripPageComponent } from './pages/socialMedia/addReviewTripPage.component';
 import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.component';
 import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
+
 
 @NgModule({
   declarations: [
@@ -27,6 +34,9 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
+
+    DefaultTripPageComponent
+
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
@@ -39,6 +49,7 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
+      { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
@@ -50,8 +61,13 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
   providers: [
     UserManagementService,
     UserManagementDataService,
+
+    TripService,
+    TripDataService
+
     SocialMediaDataService,
     SocialMediaService
+
   ],
   bootstrap: [AppComponent]
 })

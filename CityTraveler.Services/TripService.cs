@@ -165,9 +165,9 @@ namespace CityTraveler.Services
                     .Take(take)
                     .Where(x => x.Title==title && x.AverageRating == rating
                     && x.OptimalSpent == optimalSpent && x.Price.Value == price
-                    && x.TagSting==tag);
+                    && x.TagString==tag);
 
-                return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
+                return trips.Where(x=>x.DafaultTrip != true).Select(x => _mapper.Map<TripModel, TripDTO>(x));
             }
             catch (Exception e)
             {
@@ -175,24 +175,6 @@ namespace CityTraveler.Services
                     $"Rating={rating}, OptimalSpent={optimalSpent}, Price={price}, Tag={tag}. {e.Message}");
                 return Enumerable.Empty<TripDTO>();
             }
-        }
-
-        public IEnumerable<TripModel> GetTripsByName(string tripName)
-        {
-            try
-            {
-                if (tripName == null)
-                {
-                    _logger.LogWarning($"Problem with finding with Title={tripName}"); 
-                }
-
-                return _context.Trips.Where(x => x.Title == tripName);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Exception on finding trip that contains Title={tripName}! {e.Message}");
-                return Enumerable.Empty<TripModel>();
-            }        
         }
 
         public IEnumerable<TripModel> GetTripsByStatus(string status)

@@ -23,6 +23,6 @@ namespace CityTraveler.Domain.Entities
         public TimeSpan RealSpent { get; set; }
         public virtual TripStatus TripStatus { get; set; }
         public bool DafaultTrip { get; set; } 
-        public string TagSting { get; set; }
+        public string TagString { get; set; }
     }
 }
