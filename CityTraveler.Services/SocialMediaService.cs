@@ -26,7 +26,7 @@ namespace CityTraveler.Services
             _logger = logger;
         }
 
-        public async Task<ReviewDTO> AddReviewEntertainment(Guid enterId, ReviewDTO review)
+        public async Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO review)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace CityTraveler.Services
                     return null;
                 }
                 review.EntertainmentId = enterId;
-                var model = _mapper.Map<ReviewDTO, ReviewModel>(review);
+                var model = _mapper.Map<EntertainmentReviewDTO, EntertainmentReviewModel>(review);
                 _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
@@ -48,7 +48,7 @@ namespace CityTraveler.Services
             return review;
         }
 
-        public async Task<ReviewDTO> AddReviewTrip(Guid tripId, ReviewDTO review)
+        public async Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO review)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace CityTraveler.Services
                     return null;
                 }
                 review.TripId = tripId;
-                var model = _mapper.Map<ReviewDTO, ReviewModel>(review);
+                var model = _mapper.Map<TripReviewDTO, TripReviewModel>(review);
                 _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
@@ -75,16 +75,16 @@ namespace CityTraveler.Services
             try
             {
                 if (!await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId)
-                    && !await _dbContext.Trips.AnyAsync(x => x.Id == objectId))
+                && !await _dbContext.Trips.AnyAsync(x => x.Id == objectId))
                 {
                     _logger.LogError("Object not found");
                     return Enumerable.Empty<ReviewDTO>();
                 }
                 var entertainment = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == objectId);
-                var trip = await _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
-                return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) 
-                    ? entertainment.Reviews.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)) 
-                    : trip.Reviews.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+                var trip = await  _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
+                return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) ?
+                     entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x)) :
+                     trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
             }
             catch (Exception e) 
             {

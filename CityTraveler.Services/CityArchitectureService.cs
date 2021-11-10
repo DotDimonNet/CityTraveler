@@ -286,5 +286,30 @@ namespace CityTraveler.Services
                 return false;
             }
         }
+
+        public async Task<bool> AddCoordinatesToStreet(CoordinatesDTO coordinatesDTO, string streetId)
+        {
+            var street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == Guid.Parse(streetId));
+
+            if (street == null)
+            {
+                _logger.LogWarning($"Warning: Street was not found by id - {streetId}");
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    street.Coordinates.Add(_mapper.Map<CoordinatesDTO, CoordinatesStreetModel>(coordinatesDTO));
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    _logger.LogError($"Error: Failed to add coordinates {coordinatesDTO.Latitude} - {coordinatesDTO.Longitude} to street {streetId}");
+                    return false;
+                }
+            }
+        }
     }
 }
