@@ -19,9 +19,6 @@ namespace CityTraveler.Services
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper; 
 
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
-
         public CityArchitectureService(ApplicationContext context, IMapper mapper, ILogger<CityArchitectureService> logger)
         {
             _logger = logger;
@@ -215,9 +212,7 @@ namespace CityTraveler.Services
             try
             {
                 var streets = _context.Streets
-                    .Where(x => x.StreetBeginningX == x.StreetEndingX
-                    && x.StreetBeginningY == x.StreetEndingY
-                    || string.IsNullOrEmpty(x.Title));
+                    .Where(x => string.IsNullOrEmpty(x.Title));
 
                 if (streets.Any())
                 {
@@ -289,6 +284,31 @@ namespace CityTraveler.Services
             {
                 _logger.LogError($"Error: {ex.Message}");
                 return false;
+            }
+        }
+
+        public async Task<bool> AddCoordinatesToStreet(CoordinatesDTO coordinatesDTO, string streetId)
+        {
+            var street = await _context.Streets.FirstOrDefaultAsync(x => x.Id == Guid.Parse(streetId));
+
+            if (street == null)
+            {
+                _logger.LogWarning($"Warning: Street was not found by id - {streetId}");
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    street.Coordinates.Add(_mapper.Map<CoordinatesDTO, CoordinatesStreetModel>(coordinatesDTO));
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    _logger.LogError($"Error: Failed to add coordinates {coordinatesDTO.Latitude} - {coordinatesDTO.Longitude} to street {streetId}");
+                    return false;
+                }
             }
         }
     }

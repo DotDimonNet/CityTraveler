@@ -28,7 +28,7 @@ namespace CityTraveler.Domain.DTO
         public double AverageRating { get; set; }
         public IEnumerable<TripPrewievDTO> Trips { get; set; }
         public IEnumerable<ReviewPreviewDTO> Reviews { get; set; }
-        IEnumerable<ImageShowDTO> Images { get; set; }
+        IEnumerable<ImageDTO> Images { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public Guid Id { set; get; }
@@ -43,7 +43,7 @@ namespace CityTraveler.Domain.DTO
         public double AverageRating { get; set; }
         public int ReviewsCount { get; set; }
         public int TripsCount { get; set; }
-        ImageShowDTO MainImage { get; set; }
+        ImageDTO MainImage { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public Guid Id { set; get; }

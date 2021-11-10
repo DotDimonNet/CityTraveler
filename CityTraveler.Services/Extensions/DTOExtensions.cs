@@ -65,8 +65,8 @@ namespace CityTraveler.Services.Extensions
                // TripStatus = tripDTO.TripStatus,
                 TagSting = tripDTO.TagSting,
                 Images = new List<TripImageModel>(),
-                Reviews = new List<TripReviewModel>(),
-                Entertaiment = new List<EntertaimentModel>()
+                Reviews = new List<ReviewModel>(),
+                Entertaiments = new List<EntertaimentModel>()
             };
         }
         public static TripModel ToNewTrip(this AddNewTripDTO newTripDTO)
@@ -76,7 +76,7 @@ namespace CityTraveler.Services.Extensions
                 Title = newTripDTO.Title,
                 Description = newTripDTO.Description,
                 TripStart = newTripDTO.TripStart,
-                Entertaiment = new List<EntertaimentModel>(),
+                Entertaiments = new List<EntertaimentModel>(),
                 //TripStatus = newTripDTO.TripStatus
             };
         }
@@ -92,8 +92,8 @@ namespace CityTraveler.Services.Extensions
                 Price = new TripPriceModel(),
                 OptimalSpent = defaultTripDTO.OptimalSpent,
                 Images = new List<TripImageModel>(),
-                Reviews = new List<TripReviewModel>(),
-                Entertaiment = new List<EntertaimentModel>(),
+                Reviews = new List<ReviewModel>(),
+                Entertaiments = new List<EntertaimentModel>(),
                 DafaultTrip =defaultTripDTO.DefaultTrip
             };
         }

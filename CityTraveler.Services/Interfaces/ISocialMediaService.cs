@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface ISocialMediaService : IServiceMetadata
+    public interface ISocialMediaService
     {
-        Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO rev);
-        Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO rev);
+        Task<ReviewDTO> AddReviewTrip(Guid tripId, ReviewDTO rev);
         Task<bool> RemoveReview(Guid reviewId);
         Task<bool> RemoveRating (Guid ratingId);
         Task<bool> UpdateReview(Guid Id, ReviewDTO model);

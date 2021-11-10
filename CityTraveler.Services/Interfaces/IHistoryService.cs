@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IHistoryService : IServiceMetadata
+    public interface IHistoryService
     {
         public Task<CommentDTO> GetUserLastComment(Guid userId);
         public Task<CommentDTO> GetLastComment();

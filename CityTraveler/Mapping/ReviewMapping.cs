@@ -29,16 +29,13 @@ namespace CityTraveler.Mapping
             CreateMap<ReviewModel, ReviewDTO>().
                 ForMember(x => x.Images, o => o.Ignore()).
                 ForMember(x => x.Comments, o => o.Ignore());
-            CreateMap<EntertainmentReviewDTO, EntertainmentReviewModel>().
+            CreateMap<ReviewDTO, ReviewModel>().
                 ReverseMap();
-            CreateMap<TripReviewDTO, TripReviewModel>().
+            CreateMap<ReviewDTO, ReviewModel>().
                 ReverseMap();
-
-            /*CreateMap<TripReviewModel, TripReviewDTO>().ReverseMap();
-            CreateMap<EntertainmentReviewModel, EntertainmentReviewDTO>().ReverseMap();*/
-            /*CreateMap<ReviewModel, ReviewDTO>().ReverseMap().
-                ForMember(x=>x.Id, o=>o.Ignore());*/
-           //CreateMap<CommentModel, CommentDTO>().ReverseMap();
+            CreateMap<IEnumerable<EntertainmentGetDTO>, IEnumerable<EntertaimentModel>>();
+            CreateMap<IEnumerable<TripDTO>, IEnumerable<TripModel>>();
+            CreateMap< IEnumerable < UserDTO > , IEnumerable <ApplicationUserModel>>();
         }
     }
 }

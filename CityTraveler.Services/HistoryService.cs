@@ -25,8 +25,6 @@ namespace CityTraveler.Services
             _logger = logger;
             _userManagementService = userManagementService;
         }
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
         public async Task<CommentDTO> GetUserLastComment(Guid userId)
         {
             try
@@ -110,6 +108,7 @@ namespace CityTraveler.Services
                 var user = await _userManagementService.GetUserByIdAsync(userId);
                 var entertaiments = user.Trips.SelectMany(x => x.Entertaiment).Distinct().OrderBy(x => x.Created);
                 return entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
+
             }
             catch (Exception e)
             {

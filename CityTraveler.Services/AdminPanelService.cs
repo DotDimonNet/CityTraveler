@@ -22,8 +22,6 @@ namespace CityTraveler.Services
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<AdminPanelService> _logger;
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
         public AdminPanelService(ApplicationContext context, IMapper mapper, ILogger<AdminPanelService> logger)
         {
             _context = context;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface ITripService : IServiceMetadata
+    public interface ITripService 
     {
         public Task<bool> AddNewTripAsync(AddNewTripDTO newTrip);
         public Task<bool> DeleteTripAsync(Guid tripId);
@@ -26,7 +26,5 @@ namespace CityTraveler.Services.Interfaces
         public Task<bool> DeleteEntertainmentFromTrip(Guid tripId, Guid entertainmentId);
         public IEnumerable<DefaultTripDTO> GetDefaultTrips(int skip = 0, int take=10);
         public DefaultTripDTO GetDefaultTripById(Guid defaltTripId);
-        public Task<bool> SetTripAsDefault(Guid tripId);
-        public Task<bool> RemoveTripFromDefault(Guid tripId);
     }
 }

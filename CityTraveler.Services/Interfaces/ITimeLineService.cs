@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface ITimeLineService:IServiceMetadata
+    public interface ITimeLineService
     {
         public Task<List<EntertaimentModel>> CreateTimeLine(IEnumerable<EntertainmentGetDTO> entertainments);
         public void MarkAsCompleted(Guid tripId, Guid entrtainmentId);
