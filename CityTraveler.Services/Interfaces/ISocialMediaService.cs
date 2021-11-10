@@ -10,8 +10,8 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface ISocialMediaService
     {
-        Task<ReviewDTO> AddReviewEntertainment(Guid enterId, ReviewDTO rev);
-        Task<ReviewDTO> AddReviewTrip(Guid tripId, ReviewDTO rev);
+        Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO rev);
+        Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO rev);
         Task<bool> RemoveReview(Guid reviewId);
         Task<bool> RemoveRating (Guid ratingId);
         Task<bool> UpdateReview(Guid Id, ReviewDTO model);
