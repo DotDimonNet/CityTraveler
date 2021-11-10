@@ -63,7 +63,7 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
-      { path: 'admin', component: AdminComponent}
+      { path: 'admin', component: AdminComponent},
       { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
       { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
       { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
@@ -78,9 +78,9 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     AdminDataService,
     AdminService,
     EntertainmentDataService,
-    EntertainmentService
+    EntertainmentService,
     TripService,
-    TripDataService
+    TripDataService,
     SocialMediaDataService,
     SocialMediaService
 

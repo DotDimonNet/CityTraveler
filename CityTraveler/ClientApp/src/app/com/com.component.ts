@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {StatisticService } from 'src/app/services/StatisticService';
+import { StatisticService } from 'src/app/services/StatisticService';
 
 @Component({
   selector: 'app-com',
@@ -9,12 +9,12 @@ import {StatisticService } from 'src/app/services/StatisticService';
 export class ComComponent implements OnInit{
   public d : number = 2;
 
-constructor(private service: StatisticService) {}
+  constructor(private service: StatisticService) {}
 
-ngOnInit() {
-  this.service.GetAverageAgeUser()
-  .subscribe((res: number) => {
-      this.d = res;
-  });
-}
+  ngOnInit() {
+    this.service.GetAverageAgeUser()
+    .subscribe((res: number) => {
+        this.d = res;
+    });
+  }
 }
