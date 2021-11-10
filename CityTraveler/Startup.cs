@@ -110,14 +110,17 @@ namespace CityTraveler
                 x.AddProfile<ReviewMapping>();
             });
             services.AddOptions();
+            services.AddScoped<DbInitializer>();
             services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddTransient<IInfoService, InfoService>();
-            services.AddScoped<DbInitializer>();
             services.AddTransient<ITripService, TripService>();
             services.AddTransient<IMapService, MapService>();
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
             services.AddTransient<ISocialMediaService, SocialMediaService>();
+            services.AddTransient<IStatisticService, StatisticService>();
+            services.AddTransient<IAdminPanelService, AdminPanelService>();
+            services.AddTransient<IHistoryService, HistoryService>();
             services.AddTransient(typeof(IImageService<>), typeof(ImageService<>));
             services.AddTransient<ISearchService, SearchService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
