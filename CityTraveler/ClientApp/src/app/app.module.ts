@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
+import { ComComponent } from './com/com.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
@@ -13,6 +14,11 @@ import { EntertainmentComponent } from './pages/entertainment/entertainment.comp
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+import { StatisticDataService } from './services/StatisticService.data';
+import { StatisticService } from './services/StatisticService';
+import { AdminComponent } from './pages/admin/admin.component';
+import { AdminService } from './services/adminService';
+import { AdminDataService } from './services/adminService.data';
 import { EntertainmentDataService } from './services/entertainmentService.data';
 import { EntertainmentService } from './services/entertainmentService';
 import { DefaultTripPageComponent } from './pages/defaultTripPage/defaultTripPage.component';
@@ -25,15 +31,16 @@ import { AddReviewTripPageComponent } from './pages/socialMedia/addReviewTripPag
 import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.component';
 import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
+    ComComponent,
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
+    AdminComponent
     EntertainmentComponent
     DefaultTripPageComponent
     SocialMediaPageComponent,
@@ -52,6 +59,8 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'com', component: ComComponent },
+      { path: 'admin', component: AdminComponent}
       {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
       {path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
       {path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
@@ -61,12 +70,17 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
   providers: [
     UserManagementService,
     UserManagementDataService,
+    StatisticDataService,
+    StatisticService,
+    AdminDataService,
+    AdminService,
     EntertainmentDataService,
     EntertainmentService
     TripService,
     TripDataService
     SocialMediaDataService,
     SocialMediaService
+
   ],
   bootstrap: [AppComponent]
 })
