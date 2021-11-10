@@ -11,6 +11,7 @@ export class UserManagementService {
     getUserProfile(userId: string) : Observable<IUserProfile> {
         return this.dataService.getUserProfile(userId);
     }
+  
     getUsers(props: IUserSearchProperties) : Observable<IUserProfile[]> {
         return this.dataService.getUsers(props);
     }

@@ -1,4 +1,4 @@
-﻿using CityTraveler.Repository.DbContext;
+using CityTraveler.Repository.DbContext;
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Domain.Entities;
@@ -25,7 +25,8 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get-user-last-comment")]
+        [HttpGet("get-last-user-comment")]
+
         public async Task<IActionResult> GetUserLastComment(Guid userId)
         {
             return Json(_service.GetUserLastComment(userId));

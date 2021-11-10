@@ -13,7 +13,7 @@ namespace CityTraveler.Services.Interfaces
     public interface IAdminPanelService 
     {
         public Task<IEnumerable<UserChangeAdminDTO>> FilterUsers(FilterAdminUser filter);
-        public Task<IEnumerable<EntertaimentModel>> FilterEntertaiments(FilterAdminEntertaiment filter);
+        public Task<IEnumerable<EntertainmentShowDTO>> FilterEntertaiments(FilterAdminEntertaiment filter);
         public Task<IEnumerable<TripDTO>> FilterTrips(FilterAdminTrip filter);
         public Task<IEnumerable<AddressShowDTO>> FindAdressStreets(FilterAdminStreet filter);
         public Task<IEnumerable<ReviewDTO>> FilterReview(FilterAdminReview filter);

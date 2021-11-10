@@ -1,0 +1,18 @@
+.entertainment-data {
+  font-size: larger;
+  font-weight: bold;
+  color: rgb(0, 145, 48);
+}
+
+.input {
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.btn-primary {
+  margin-right: 10px;
+}
+
+.saved {
+  color: rgb(255, 225, 0);
+}

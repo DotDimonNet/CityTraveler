@@ -10,16 +10,16 @@ import { UserManagementService } from 'src/app/services/userManagementService';
 })
 export class UserProfilePageComponent {
   public userInfo: IUserProfile = {
-      userId: "",
-      email: "",
-      userName: ""
-  } as IUserProfile;
+    userId: "",
+    email: "",
+    userName: ""
+  } as unknown as IUserProfile;
 
   public userId: string;
 
   constructor(private service: UserManagementService) {}
 
-   submit() {
+submit() {
     this.service.getUserProfile(this.userId)
     .subscribe((res: IUserProfile) => {
       this.userInfo = res;

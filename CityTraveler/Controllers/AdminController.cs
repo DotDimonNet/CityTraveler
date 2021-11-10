@@ -29,30 +29,30 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("get-users")]
-        public async Task<IActionResult> AdminFilterUsers(FilterAdminUser filter)
+        public async Task<IActionResult> AdminFilterUsers([FromQuery] FilterAdminUser filter)
         {
             return Json(_service.FilterUsers(filter));
         }
 
         [HttpGet("get-entertaiments")]
-        public async Task<IActionResult> AdminFilterEntertaiments(FilterAdminEntertaiment filter)
+        public async Task<IActionResult> AdminFilterEntertaiments([FromQuery] FilterAdminEntertaiment filter)
         {
             return Json(_service.FilterEntertaiments(filter)); 
         }
 
         [HttpGet("get-trips")]
-        public async Task<IActionResult> FilterTrips(FilterAdminTrip filter)
+        public async Task<IActionResult> FilterTrips([FromQuery] FilterAdminTrip filter)
         {
             return Json(_service.FilterTrips(filter));
         }
 
         [HttpGet("get-reviews")]
-        public async Task<IActionResult> FilterReview(FilterAdminReview filter)
+        public async Task<IActionResult> FilterReview([FromQuery] FilterAdminReview filter)
         {
             return  Json(_service.FilterReview(filter));
         }
         [HttpGet("get-streets")]
-        public async Task<IActionResult> FindAdressStreets(FilterAdminStreet filter)
+        public async Task<IActionResult> FindAdressStreets([FromQuery] FilterAdminStreet filter)
         {
             return Json(_service.FindAdressStreets(filter));
         }
