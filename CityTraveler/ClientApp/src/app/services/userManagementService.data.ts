@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { first, map, take } from "rxjs/operators";
-import { IUserProfile } from "../models/user.model";
+import { first, map } from "rxjs/operators";
+import { IUserProfile, IUserSearchProperties } from "../models/user.model";
 
 @Injectable()
 export class UserManagementDataService {
@@ -14,5 +14,10 @@ export class UserManagementDataService {
         .pipe(first(), map((res: any) => {
             return res as IUserProfile;
         }));
+    }
+
+    getUsers(props: IUserSearchProperties) : Observable<IUserProfile[]> {
+        return this.client.get(`/api/user/users-search?name=${props.name}&email=${props.email}&gender=${props.gender}`)
+        .pipe(first(), map((res: IUserProfile[]) => res));
     }
 }

@@ -12,6 +12,7 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+import { UserInfoComponent } from './pages/userProfile/components/userInfo/userInfo.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { UserManagementDataService } from './services/userManagementService.data
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    UserProfilePageComponent
+    UserProfilePageComponent,
+    UserInfoComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

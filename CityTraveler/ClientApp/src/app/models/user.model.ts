@@ -4,15 +4,12 @@ export interface IUserProfile {
     phoneNumber: string,
     email: string,
     avatar: string,
-    userId: string
+    userId: string,
+    gender: string
 }
 
-export class UserProfile {
-    static doSomething(a?: boolean): string {
-        return "";
-    }
-
-    dod() {
-        UserProfile.doSomething();
-    }
+export interface IUserSearchProperties {
+    name: string;
+    email: string;
+    gender: string;
 }
