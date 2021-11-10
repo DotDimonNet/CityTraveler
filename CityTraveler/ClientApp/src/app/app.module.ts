@@ -14,6 +14,7 @@ import { EntertainmentComponent } from './pages/entertainment/entertainment.comp
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+import { UserInfoComponent } from './pages/userProfile/components/userInfo/userInfo.component';
 import { StatisticDataService } from './services/StatisticService.data';
 import { StatisticService } from './services/StatisticService';
 import { AdminComponent } from './pages/admin/admin.component';
@@ -31,6 +32,7 @@ import { AddReviewTripPageComponent } from './pages/socialMedia/addReviewTripPag
 import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.component';
 import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,9 +42,10 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
-    AdminComponent
-    EntertainmentComponent
-    DefaultTripPageComponent
+    UserInfoComponent,
+    AdminComponent,
+    EntertainmentComponent,
+    DefaultTripPageComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
@@ -61,10 +64,10 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
       { path: 'admin', component: AdminComponent}
-      {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
-      {path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
-      {path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      {path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
+      { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
+      { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
+      { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
+      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
     ])
   ],
   providers: [

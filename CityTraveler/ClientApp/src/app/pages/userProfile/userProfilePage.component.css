@@ -5,5 +5,10 @@ body {
 .user-data {
   font-size: larger;
   font-weight: bold;
-  color: red;
+  color: gray;
+  margin: 10px;
+  text-align: right;
+}
+p {
+  font-weight: bold;
 }
