@@ -20,25 +20,23 @@ namespace CityTraveler.Services
         private readonly ILogger<StatisticService> _logger;
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
-        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger)
+        private readonly UserManagementService _userManagementService;
+        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger, UserManagementService userManagementService)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _userManagementService = userManagementService;
         }
         public bool IsActive { get; set; }
         public string Version { get; set; }
         public async Task<int> QuantityPassEntertaiment(Guid userId)
         {
-            if (! _context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return -1;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Trips.SelectMany(x => x.Entertaiments).Distinct().Count();
+                var user = await _userManagementService.GetUserByIdAsync(userId);
+                return user.Trips.SelectMany(x => x.Entertaiment).Distinct().Count();
+
             }
             catch (Exception e)
             {
@@ -46,36 +44,27 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get quantity of pass entertaiment {e.Message}");
             }
         }
-        public async Task<IEnumerable<TripDTO>> GetTripVisitEntertaiment(Guid userId,EntertaimentModel entertaiment)
+        public async Task<IEnumerable<TripPrewievDTO>> GetTripVisitEntertaiment(Guid userId,EntertaimentModel entertaiment)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return null;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                var trips = user.Trips.Where(x => x.Entertaiments.Contains(entertaiment));
-                return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
+                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var trips = user.Trips.Where(x => x.Entertaiment.Contains(entertaiment));
+                return trips.Select(x => _mapper.Map<TripModel, TripPrewievDTO>(x));
+
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                return Enumerable.Empty<TripDTO>();
+                return Enumerable.Empty<TripPrewievDTO>();
             }
 
         }
         public async Task<double> GetAverageRatingUserTrip(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return -1;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 return user.Trips.Average(x => x.AverageRating);
             }
             catch (Exception e)
@@ -87,15 +76,11 @@ namespace CityTraveler.Services
         }
         public async Task<double> GetAverageEntertaimentUserTrip(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return -1;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
-                return user.Trips.Average(x => x.Entertaiments.Count);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
+                return user.Trips.Average(x => x.Entertaiment.Count);
+
             }
             catch (Exception e)
             {
@@ -105,14 +90,9 @@ namespace CityTraveler.Services
         }
         public async Task<TimeSpan> GetMaxTimeUserTrip(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return TimeSpan.Zero;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 return user.Trips.Max(x => x.TripEnd - x.TripStart);
             }
             catch (Exception e)
@@ -123,14 +103,9 @@ namespace CityTraveler.Services
         }
         public async Task<TimeSpan> GetMinTimeUserTrip(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return TimeSpan.Zero;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 return user.Trips.Min(x => x.TripEnd - x.TripStart);
             }
             catch (Exception e)
@@ -141,14 +116,9 @@ namespace CityTraveler.Services
         }
         public async Task<double> GetAveragePriceUserTrip(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return -1;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 return user.Trips.Average(x => x.Price.Value);
             }
             catch (Exception e)
@@ -159,14 +129,9 @@ namespace CityTraveler.Services
         }
         public async Task<int> GetCountPassedUserTrip(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return -1;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 return user.Trips.Count(x => x.TripStatus == TripStatus.Passed);
             }
             catch (Exception e)
@@ -175,7 +140,7 @@ namespace CityTraveler.Services
                 throw new Exception($"Failed to get count of passed user trip {e.Message}");
             }
         }
-        public async Task<IEnumerable<TripDTO>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd)
+        public async Task<IEnumerable<TripPrewievDTO>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd)
         {
             if (!_context.Users.Any(x => x.Id == userId))
             {
@@ -189,16 +154,16 @@ namespace CityTraveler.Services
             }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 var trips = user.Trips.Where(x =>
                          x.Created < timeEnd
                          && x.Created > timeStart);
-                return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
+                return trips.Select(x => _mapper.Map<TripModel, TripPrewievDTO>(x));
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
-                return Enumerable.Empty<TripDTO>();
+                return Enumerable.Empty<TripPrewievDTO>();
             }
           
         }
@@ -228,14 +193,9 @@ namespace CityTraveler.Services
         }
         public async Task<double> GetAverageUserReviewRating(Guid userId)
         {
-            if (!_context.Users.Any(x => x.Id == userId))
-            {
-                _logger.LogWarning("User not found");
-                return -1;
-            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                var user = await _userManagementService.GetUserByIdAsync(userId);
                 return user.Reviews.Average(x => x.Rating.Value);
             }
             catch (Exception e)
