@@ -1,0 +1,55 @@
+<input class="input" type="text" placeholder="id" [(ngModel)]="id">
+<div> 
+  <button class="btn btn-primary" (click)="add()">Add</button>
+  <button class="btn btn-primary" (click)="getById()">Show</button>
+  <button class="btn btn-primary" (click)="clear()">Clear</button>
+</div>
+<hr>
+<div class="active-entertainment">
+  <div [hidden]="!entertainmentInfo.title" class="entertainment-data">
+    {{entertainmentInfo.title}}
+  </div>
+  <div [hidden]="!entertainmentInfo.id" class="id">
+    ID : {{entertainmentInfo.id}}
+  </div>
+  <div [hidden]="!entertainmentInfo.type" class="type">
+    Type : {{entertainmentInfo.type}}
+  </div>
+  <div [hidden]="!entertainmentInfo.address.street.title" class="title">
+    Street : {{entertainmentInfo.address.street.title}}
+  </div>
+  <div [hidden]="!entertainmentInfo.address.houseNumber" class="house">
+    House : {{entertainmentInfo.address.houseNumber}}
+  </div>
+  <div [hidden]="!entertainmentInfo.address.apartmentNumber" class="apartment">
+    Apartment : {{entertainmentInfo.address.apartmentNumber}}
+  </div>
+  <div [hidden]="!entertainmentInfo.description" class="street">
+    Description : {{entertainmentInfo.description}}
+  </div>
+  <hr [hidden]="!entertainmentInfo.id">
+</div>
+<div *ngFor="let info of saved" class="active-entertainment">
+  <div [hidden]="!entertainmentInfo.title" class="entertainment-data">
+    {{entertainment.title}}
+  </div>
+  <div [hidden]="!entertainmentInfo.id" class="id">
+    ID : {{entertainment.id}}
+  </div>
+  <div [hidden]="!entertainmentInfo.type" class="type">
+    Type : {{entertainment.type}}
+  </div>
+  <div [hidden]="!entertainmentInfo.address.street.title" class="title">
+    Street : {{entertainment.address.street.title}}
+  </div>
+  <div [hidden]="!entertainmentInfo.address.houseNumber" class="house">
+    House : {{entertainment.address.houseNumber}}
+  </div>
+  <div [hidden]="!entertainmentInfo.address.apartmentNumber" class="apartment">
+    Apartment : {{entertainment.address.apartmentNumber}}
+  </div>
+  <div [hidden]="!entertainmentInfo.description" class="street">
+    Description : {{entertainment.description}}
+  </div>
+  <hr [hidden]="!entertainmentInfo.id">
+</div>

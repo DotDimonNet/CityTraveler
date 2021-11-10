@@ -44,7 +44,7 @@ namespace CityTraveler.Infrastucture.Data
 
         public static void SetupData(ApplicationContext context)
         {
-            var trips = new List<TripModel>();
+            /*var trips = new List<TripModel>();
             for (int i = 0; i < 10; i++)
             {
                 var trip = new TripModel()
@@ -58,7 +58,7 @@ namespace CityTraveler.Infrastucture.Data
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}",
+                    TagString = $"tripTagString{i}",
                     TemplateId = Guid.NewGuid()
                 };
                 if (i % 2 == 0)
@@ -118,13 +118,13 @@ namespace CityTraveler.Infrastucture.Data
                         Street = streets[streetIndex],
                     },
                     AveragePrice = new EntertaimentPriceModel(),
-                    /*Reviews = new List<ReviewModel>()
+                    *//*Reviews = new List<ReviewModel>()
                     {*//*
                         new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
                         new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
                         new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
                         new EReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },*//*
-                    },*/
+                    },*//*
                     Type = entertainmentType,
                 };
                 entertainments.Add(entertainment);
@@ -135,7 +135,7 @@ namespace CityTraveler.Infrastucture.Data
             context.Entertaiments.AddRange(entertainments);
             context.SaveChanges();
             //Profiles
-            /*var users = new List<UserProfileModel>();
+            *//*var users = new List<UserProfileModel>();
             for (int i = 0; i < 10; i++)
             {
                 var user = new UserProfileModel()
@@ -193,12 +193,12 @@ namespace CityTraveler.Infrastucture.Data
 
              }
              context.Reviews.AddRange(reviews);
-             context.SaveChanges();*/
+             context.SaveChanges();*//*
 
             context.Ratings.Add(new RatingModel
             {
                 Value = 5,
-                Review = new ReviewModel
+                Review = new EntertainmentReviewModel
                 {
                     Title = "Review",
                     Description = "Review description",
@@ -208,7 +208,7 @@ namespace CityTraveler.Infrastucture.Data
                 UserId = context.Users.FirstOrDefault().Id
 
             });
-            /*context.Reviews.Add(new EntertainmentReviewModel
+            *//*context.Reviews.Add(new EntertainmentReviewModel
             {
                 Title = "Review",
                 Description = "Review description",
@@ -219,8 +219,8 @@ namespace CityTraveler.Infrastucture.Data
                     Value = 5,
                     //User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
                 }
-            });*/
-            context.SaveChanges();
+            });*//*
+            context.SaveChanges();*/
         }
     }
 }

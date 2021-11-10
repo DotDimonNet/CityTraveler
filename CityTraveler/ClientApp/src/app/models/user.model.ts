@@ -4,7 +4,7 @@ export interface IUserProfile {
     phoneNumber: string,
     email: string,
     avatar: string,
-    userId: string
+    useerId: string
 }
 
 export class UserProfile {
