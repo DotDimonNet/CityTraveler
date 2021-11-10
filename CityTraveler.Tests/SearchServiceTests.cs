@@ -21,8 +21,7 @@ namespace CityTraveler.Tests
         {
             await ArrangeTests.SetupDbContext();
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<SearchService>());
-            _service = new SearchService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object,
-                new EntertainmentService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.SetupTestLogger(new NullLogger<EntertainmentService>()).Object));
+            _service = new SearchService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object);
         }
 
         [Test]
