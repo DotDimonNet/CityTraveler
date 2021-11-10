@@ -26,29 +26,7 @@ namespace CityTraveler.Services
             _logger = logger;
         }
 
-        public async Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO review)
-        {
-            try
-            {
-                if (!_dbContext.Entertaiments.Any(x => x.Id == enterId))
-                {
-                    _logger.LogError("Entertainment not found");
-                    return null;
-                }
-                review.EntertainmentId = enterId;
-                var model = _mapper.Map<EntertainmentReviewDTO, EntertainmentReviewModel>(review);
-                _dbContext.Reviews.Add(model);
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception e) 
-            {
-                _logger.LogError($"Failed to add review to entertainment {e.Message}");
-                return null;
-            }
-            return review;
-        }
-
-        public async Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO review)
+        public async Task<ReviewDTO> AddReviewTrip(Guid tripId, ReviewDTO review)
         {
             try
             {
@@ -58,7 +36,7 @@ namespace CityTraveler.Services
                     return null;
                 }
                 review.TripId = tripId;
-                var model = _mapper.Map<TripReviewDTO, TripReviewModel>(review);
+                var model = _mapper.Map<ReviewDTO, ReviewModel>(review);
                 _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
@@ -83,8 +61,8 @@ namespace CityTraveler.Services
                 var entertainment = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == objectId);
                 var trip = await  _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
                 return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) ?
-                     entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x)) :
-                     trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
+                     entertainment.Reviews.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)) :
+                     trip.Reviews.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
             }
             catch (Exception e) 
             {
