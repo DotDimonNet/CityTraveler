@@ -27,7 +27,7 @@ namespace CityTraveler.Infrastucture.Data
 
         public async Task Initialize()
         {
-            _context.Database.EnsureDeleted();
+            /*_context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
             IdentityResult result;
@@ -90,7 +90,7 @@ namespace CityTraveler.Infrastucture.Data
                 _context.SaveChanges();
 
                 InitialData.SetupData(_context);
-            }
+            }*/
         }
     }
 

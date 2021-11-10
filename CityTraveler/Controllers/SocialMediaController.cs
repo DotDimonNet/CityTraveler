@@ -1,4 +1,4 @@
-﻿using CityTraveler.Services.Interfaces ;
+﻿using CityTraveler.Services.Interfaces;
 using CityTraveler.Services;
 using CityTraveler.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +25,15 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
+        [HttpPost("review-entertainment")]
+        public async Task<IActionResult> AddReview([FromQuery] EntertainmentReviewDTO review, Guid entertainmentId)
+        {
+            var result = await _service.AddReviewEntertainment(entertainmentId, review);
+            return Json(result);
+        }
+
         [HttpPost("review-trip")]
-        public async Task<IActionResult> AddReview([FromQuery] ReviewDTO review, Guid tripId)
+        public async Task<IActionResult> AddReview([FromQuery] TripReviewDTO review, Guid tripId)
         {
             var result = await _service.AddReviewTrip(tripId, review);
             return Json(result);
