@@ -106,7 +106,7 @@ namespace CityTraveler.Services
             try
             {
                 var user = await _userManagementService.GetUserByIdAsync(userId);
-                var entertaiments = user.Trips.SelectMany(x => x.Entertaiment).Distinct().OrderBy(x => x.Created);
+                var entertaiments = user.Trips.SelectMany(x => x.Entertaiments).Distinct().OrderBy(x => x.Created);
                 return entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
 
             }
