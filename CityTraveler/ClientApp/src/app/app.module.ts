@@ -3,15 +3,17 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
+import { EntertainmentComponent } from './pages/entertainment/entertainment.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+import { EntertainmentDataService } from './services/entertainmentService.data';
+import { EntertainmentService } from './services/entertainmentService';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { UserManagementDataService } from './services/userManagementService.data
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    UserProfilePageComponent
+    UserProfilePageComponent,
+    EntertainmentComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -29,13 +32,16 @@ import { UserManagementDataService } from './services/userManagementService.data
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
+      { path: 'entertainment', component: EntertainmentComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
   providers: [
     UserManagementService,
-    UserManagementDataService
+    UserManagementDataService,
+    EntertainmentDataService,
+    EntertainmentService
   ],
   bootstrap: [AppComponent]
 })

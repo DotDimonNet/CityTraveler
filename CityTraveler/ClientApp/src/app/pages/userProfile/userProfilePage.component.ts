@@ -18,7 +18,7 @@ export class UserProfilePageComponent implements OnInit {
   constructor(private service: UserManagementService) {}
 
     ngOnInit() {
-        this.service.getUserProfile('AFEB2BF5-552C-44D4-3531-08D9A38628E7')
+        this.service.getUserProfile('b96da308-e012-4696-3933-08d9a422b524')
         .subscribe((res: IUserProfile) => {
             this.userInfo = res;
         });
