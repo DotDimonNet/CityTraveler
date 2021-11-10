@@ -9,7 +9,7 @@ export class StatisticDataService {
     constructor(private client: HttpClient) {}
 
     GetAverageAgeUser() {
-        return this.client.get('/api/statistic/get-average-entertaiment-in-trip')
+        return this.client.get('/api/statistic/get-users-average-age')
         .pipe(first(), map((res: any) => {
             return res as number;
         }));

@@ -16,8 +16,8 @@ import { UserManagementDataService } from './services/userManagementService.data
 import { StatisticDataService } from './services/StatisticService.data';
 import { StatisticService } from './services/StatisticService';
 import { AdminComponent } from './pages/admin/admin.component';
+import { AdminService } from './services/adminService';
 import { AdminDataService } from './services/adminService.data';
-import { AdminService } from './services/admin.service';
 
 @NgModule({
   declarations: [

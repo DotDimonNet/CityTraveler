@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { title } from 'process';
+import { IAdminAddress } from 'src/app/models/adminAddress.model';
+import { IFilterAdminStreet } from 'src/app/models/filters/filterAdminStreet';
+import { AdminService } from 'src/app/services/adminService';
 
 @Component({
   selector: 'app-admin',
@@ -7,9 +11,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminComponent implements OnInit {
 
-  constructor() { }
+  filter: IFilterAdminStreet = 
+  { 
+    title : "",
+    description : ""
+  };
+  addresses: IAdminAddress[] = [];
+  constructor(private service: AdminService) { }
 
   ngOnInit() {
+      this.getAddress();
+  }
+  getAddress() : void{
+    this.service.GetAddressStreets(this.filter).subscribe(res => this.addresses = res);
   }
 
 }
