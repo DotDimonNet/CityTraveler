@@ -14,11 +14,11 @@ namespace CityTraveler.Services.Interfaces
     {
         public Task<CommentDTO> GetUserLastComment(Guid userId);
         public Task<CommentDTO> GetLastComment();
-        public Task<ReviewDTO> GetLastReview();
-        public Task<TripDTO> GetLastTrip();
-        public Task<TripDTO> GetUserLastTrip(Guid userId, bool passed = false);
-        public Task<IEnumerable<EntertaimentModel>> GetVisitEntertaiment(Guid userId, bool withoutReview = false);
-        public Task<ReviewDTO> GetUserLastReview(Guid userId);
+        public Task<ReviewPreviewDTO> GetLastReview();
+        public Task<TripPrewievDTO> GetLastTrip();
+        public Task<TripPrewievDTO> GetUserLastTrip(Guid userId, bool passed = false);
+        public Task<IEnumerable<EntertainmentPreviewDTO>> GetVisitEntertaiment(Guid userId, bool withoutReview = false);
+        public Task<ReviewPreviewDTO> GetUserLastReview(Guid userId);
         public Task<IEnumerable<CommentDTO>> GetUserComments(Guid userId);
         //public Task<Friend> GetLastAddedFriend(Guid userId);
 

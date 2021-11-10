@@ -48,28 +48,28 @@ namespace CityTraveler.Services
                 return Enumerable.Empty<UserChangeAdminDTO>();
             }
         }
-        public async Task<IEnumerable<EntertaimentModel>> FilterEntertaiments(FilterAdminEntertaiment filter)
+        public async Task<IEnumerable<EntertainmentShowDTO>> FilterEntertaiments(FilterAdminEntertaiment filter)
         {
-            if (filter.AveragePriceLess > filter.AveragePriceMore)
+            if (filter.AveragePriceLess < filter.AveragePriceMore)
             {
                 _logger.LogWarning("PriceLess can`t be more than priceMore");
                 return null;
             }
-            if(filter.AverageRatingLess > filter.AverageRatingMore)
+            if(filter.AverageRatingLess < filter.AverageRatingMore)
             {
                 _logger.LogWarning("RatingLess can`t be more than RatingMore");
                 return null;
             }
             try
             {
-                var entertaiment = _context.Entertaiments.Where(x => x.AverageRating > filter.AverageRatingLess
+                var entertaiments = _context.Entertaiments.Where(x => x.AverageRating > filter.AverageRatingLess
                             && x.AverageRating < filter.AverageRatingMore
                             && x.AveragePrice.Value < filter.AveragePriceMore
                             && x.AveragePrice.Value > filter.AveragePriceLess
                             && x.Description.Contains(filter.Description)
                             && x.Title.Contains(filter.Title));
-                 return  (filter.Type != -1) ?  entertaiment.Where(x => x.Type == (EntertainmentType)filter.Type) : entertaiment;
-
+                entertaiments = (filter.Type != -1) ? entertaiments.Where(x => x.Type == (EntertainmentType)filter.Type) : entertaiments;
+                return entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
             }
             catch (Exception e)
             {
@@ -129,7 +129,7 @@ namespace CityTraveler.Services
         }
         public async Task<IEnumerable<ReviewDTO>> FilterReview(FilterAdminReview filter)
         {
-            if (filter.RatingLess < filter.RatingMore)
+            if (filter.RatingLess > filter.RatingMore)
             {
                 _logger.LogWarning("RatingMore can`t be more than RatingLess.");
                 return null;

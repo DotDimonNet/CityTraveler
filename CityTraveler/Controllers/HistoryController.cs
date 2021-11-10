@@ -25,7 +25,7 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get-last-comment")]
+        [HttpGet("get-last-user-comment")]
         public async Task<IActionResult> GetUserLastComment(Guid userId)
         {
             return Json(_service.GetUserLastComment(userId));

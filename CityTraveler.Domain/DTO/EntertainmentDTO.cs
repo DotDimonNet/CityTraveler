@@ -35,7 +35,6 @@ namespace CityTraveler.Domain.DTO
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
     }
-
     public class EntertainmentPreviewDTO
     {
         public AddressShowDTO Address { get; set; }
