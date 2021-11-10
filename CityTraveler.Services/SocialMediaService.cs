@@ -26,7 +26,29 @@ namespace CityTraveler.Services
             _logger = logger;
         }
 
-        public async Task<ReviewDTO> AddReviewTrip(Guid tripId, ReviewDTO review)
+        public async Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO review)
+        {
+            try
+            {
+                if (!_dbContext.Entertaiments.Any(x => x.Id == enterId))
+                {
+                    _logger.LogError("Entertainment not found");
+                    return null;
+                }
+                review.EntertainmentId = enterId;
+                var model = _mapper.Map<EntertainmentReviewDTO, EntertainmentReviewModel>(review);
+                _dbContext.Reviews.Add(model);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to add review to entertainment {e.Message}");
+                return null;
+            }
+            return review;
+        }
+
+        public async Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO review)
         {
             try
             {
@@ -36,7 +58,7 @@ namespace CityTraveler.Services
                     return null;
                 }
                 review.TripId = tripId;
-                var model = _mapper.Map<ReviewDTO, ReviewModel>(review);
+                var model = _mapper.Map<TripReviewDTO, TripReviewModel>(review);
                 _dbContext.Reviews.Add(model);
                 await _dbContext.SaveChangesAsync();
             }
@@ -59,12 +81,12 @@ namespace CityTraveler.Services
                     return Enumerable.Empty<ReviewDTO>();
                 }
                 var entertainment = await _dbContext.Entertaiments.FirstOrDefaultAsync(x => x.Id == objectId);
-                var trip = await  _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
+                var trip = await _dbContext.Trips.FirstOrDefaultAsync(x => x.Id == objectId);
                 return await _dbContext.Entertaiments.AnyAsync(x => x.Id == objectId) ?
-                     entertainment.Reviews.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)) :
-                     trip.Reviews.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
+                     entertainment.Reviews.Select(x => _mapper.Map<EntertainmentReviewModel, EntertainmentReviewDTO>(x)) :
+                     trip.Reviews.Select(x => _mapper.Map<TripReviewModel, TripReviewDTO>(x));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get reviews {e.Message}");
                 return Enumerable.Empty<ReviewDTO>();
@@ -73,22 +95,23 @@ namespace CityTraveler.Services
 
         public async Task<IEnumerable<ReviewDTO>> GetReviews(int skip = 0, int take = 10)
         {
-            try {
+            try
+            {
                 if (skip < 0 || take < 0)
                 {
                     _logger.LogError("Invalid arguments");
                     return Enumerable.Empty<ReviewDTO>();
                 }
-                var reviewModels= _dbContext.Reviews.Skip(skip).Take(take);
+                var reviewModels = _dbContext.Reviews.Skip(skip).Take(take);
                 var reviews = new List<ReviewDTO>();
                 return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get reviews {e.Message}");
                 return Enumerable.Empty<ReviewDTO>();
             }
-}
+        }
 
         public async Task<IEnumerable<ReviewDTO>> GetUserReviews(Guid userId)
         {
@@ -102,7 +125,7 @@ namespace CityTraveler.Services
                 var reviewModels = _dbContext.Reviews.Where(x => x.UserId == userId);
                 return reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get reviews {e.Message}");
                 return Enumerable.Empty<ReviewDTO>();
@@ -122,7 +145,7 @@ namespace CityTraveler.Services
                 _dbContext.Ratings.Add(model);
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to post rating {e.Message}");
                 return false;
@@ -134,17 +157,18 @@ namespace CityTraveler.Services
         {
             try
             {
-                if (!_dbContext.Reviews.Where(x => x.Id == reviewId).Any())
+                if (!_dbContext.Reviews.Any(x => x.Id == reviewId))
                 {
                     _logger.LogError("Review not found");
                     return false;
                 }
                 var review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == reviewId);
                 var raiting = await _dbContext.Ratings.FirstOrDefaultAsync(x => x.ReviewId == review.Id);
-                _dbContext.Ratings.Remove(raiting);
+                if(raiting!=null)
+                    _dbContext.Ratings.Remove(raiting);
                 _dbContext.Images.RemoveRange(review.Images);
                 _dbContext.Reviews.Remove(review);
-                var n = await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
@@ -174,7 +198,7 @@ namespace CityTraveler.Services
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to add comment {e.Message}");
                 return false;
@@ -190,7 +214,7 @@ namespace CityTraveler.Services
                     _logger.LogError("Review not found");
                     return false;
                 }
-                var comment = await _dbContext.Comments.FirstOrDefaultAsync(x=> x.Id == commentId);
+                var comment = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == commentId);
                 _dbContext.Comments.Remove(comment);
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -202,7 +226,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> AddImage(ReviewImageDTO image) 
+        public async Task<bool> AddImage(ReviewImageDTO image)
         {
             try
             {
@@ -223,7 +247,7 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<bool> RemoveImage(Guid reviewImageId) 
+        public async Task<bool> RemoveImage(Guid reviewImageId)
         {
             try
             {
@@ -251,7 +275,7 @@ namespace CityTraveler.Services
                 var reviewModels = _dbContext.Reviews.Where(x => x.Title.Contains(title));
                 return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get review by title {e.Message}");
                 return Enumerable.Empty<ReviewDTO>();
@@ -265,7 +289,7 @@ namespace CityTraveler.Services
                 var reviewModels = _dbContext.Reviews.Where(x => x.Rating.Value == rating);
                 return await Task.Run(() => reviewModels.Select(x => _mapper.Map<ReviewModel, ReviewDTO>(x)));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get review by average raiting {e.Message}");
                 return Enumerable.Empty<ReviewDTO>();
@@ -279,7 +303,7 @@ namespace CityTraveler.Services
                 var commentModel = await _dbContext.Comments.FirstOrDefaultAsync(x => x.Id == comment);
                 return _mapper.Map<ReviewModel, ReviewDTO>(commentModel.Review);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get review by comment {e.Message}");
                 return null;
@@ -311,7 +335,7 @@ namespace CityTraveler.Services
                 }
                 return _mapper.Map<ReviewModel, ReviewDTO>(await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id == Id));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to get review by id {e.Message}");
                 return null;
@@ -330,7 +354,7 @@ namespace CityTraveler.Services
                 _dbContext.Ratings.Remove(await _dbContext.Ratings.FirstOrDefaultAsync(x => x.Id == ratingId));
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to remove raiting {e.Message}");
                 return false;
@@ -350,7 +374,7 @@ namespace CityTraveler.Services
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to update review {e.Message}");
                 return false;
@@ -371,7 +395,7 @@ namespace CityTraveler.Services
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError($"Failed to update comment {e.Message}");
                 return false;

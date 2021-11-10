@@ -10,12 +10,21 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
+import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+
 import { DefaultTripPageComponent } from './pages/defaultTripPage/defaultTripPage.component';
 import { DefaultTrip } from './models/defaultTrip.model';
 import { TripService } from './services/tripService';
 import { TripDataService } from './services/tripService.data';
+
+import { SocialMediaDataService } from './services/socialMediaService.data';
+import { SocialMediaService } from './services/socialMediaService';
+import { AddReviewTripPageComponent } from './pages/socialMedia/addReviewTripPage.component';
+import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.component';
+import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
+
 
 @NgModule({
   declarations: [
@@ -25,7 +34,13 @@ import { TripDataService } from './services/tripService.data';
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
+
     DefaultTripPageComponent
+
+    SocialMediaPageComponent,
+    AddReviewTripPageComponent,
+    DeleteReviewPageComponent,
+    DeleteCommentPageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -37,13 +52,22 @@ import { TripDataService } from './services/tripService.data';
       { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+      {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
+      {path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
+      {path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
+      {path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
     UserManagementService,
     UserManagementDataService,
+
     TripService,
     TripDataService
+
+    SocialMediaDataService,
+    SocialMediaService
+
   ],
   bootstrap: [AppComponent]
 })
