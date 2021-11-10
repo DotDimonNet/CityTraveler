@@ -120,6 +120,7 @@ namespace CityTraveler
             services.AddTransient<ISocialMediaService, SocialMediaService>();
             services.AddTransient(typeof(IImageService<>), typeof(ImageService<>));
             services.AddTransient<ISearchService, SearchService>();
+            services.AddTransient<IStatisticService, StatisticService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>

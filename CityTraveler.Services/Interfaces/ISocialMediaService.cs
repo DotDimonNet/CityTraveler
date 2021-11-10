@@ -13,7 +13,7 @@ namespace CityTraveler.Services.Interfaces
         Task<EntertainmentReviewDTO> AddReviewEntertainment(Guid enterId, EntertainmentReviewDTO rev);
         Task<TripReviewDTO> AddReviewTrip(Guid tripId, TripReviewDTO rev);
         Task<bool> RemoveReview(Guid reviewId);
-        Task<bool> RemoveRating (Guid ratingId);
+        Task<bool> RemoveRating(Guid ratingId);
         Task<bool> UpdateReview(Guid Id, ReviewDTO model);
         Task<bool> UpdateComment(Guid Id, CommentDTO model);
         Task<IEnumerable<ReviewDTO>> GetReviews(int skip = 0, int take = 10);

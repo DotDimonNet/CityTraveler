@@ -1,4 +1,4 @@
-﻿using CityTraveler.Services.Interfaces ;
+﻿using CityTraveler.Services.Interfaces;
 using CityTraveler.Services;
 using CityTraveler.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +29,7 @@ namespace CityTraveler.Controllers
         public async Task<IActionResult> AddReview([FromQuery] EntertainmentReviewDTO review, Guid entertainmentId)
         {
             var result = await _service.AddReviewEntertainment(entertainmentId, review);
-            return Json(result) ;
+            return Json(result);
         }
 
         [HttpPost("review-trip")]

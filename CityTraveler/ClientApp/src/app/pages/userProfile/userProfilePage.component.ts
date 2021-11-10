@@ -10,15 +10,15 @@ import { UserManagementService } from 'src/app/services/userManagementService';
 })
 export class UserProfilePageComponent implements OnInit {
   public userInfo: IUserProfile = {
-      userId: "",
-      email: "",
-      userName: ""
-  } as IUserProfile;
+    userId: "",
+    email: "",
+    userName: ""
+  } as unknown as IUserProfile;
 
   constructor(private service: UserManagementService) {}
 
     ngOnInit() {
-        this.service.getUserProfile('b96da308-e012-4696-3933-08d9a422b524')
+        this.service.getUserProfile('345B9A15-0886-462C-0CC7-08D9A436A380')
         .subscribe((res: IUserProfile) => {
             this.userInfo = res;
         });

@@ -23,10 +23,19 @@ namespace CityTraveler.Domain.DTO
         public IEnumerable<EntertainmentGetDTO> Entertaiments { get; set; } = new List<EntertainmentGetDTO>();
     }
 
-    public class DefaultTripDTO:TripDTO
+    public class DefaultTripDTO
     {
-       
+        public Guid Id { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string TagString { get; set; } = "";
+        public double Price { get; set; } = 0.0;
+        public double AverageRating { get; set; } = 0.0;
+        public TimeSpan OptimalSpent { get; set; } = new TimeSpan();
         public IEnumerable<UserDTO> Users { get; set; } = new List<UserDTO>();
+        public IEnumerable<ImageDTO> Images { get; set; } = new List<ImageDTO>();
+        public IEnumerable<ReviewDTO> Reviews { get; set; } = new List<ReviewDTO>();
+        public IEnumerable<EntertainmentGetDTO> Entertaiments { get; set; } = new List<EntertainmentGetDTO>();
         public bool DefaultTrip { get; set; } = true;
     }
 
@@ -43,6 +52,7 @@ namespace CityTraveler.Domain.DTO
 
     public class AddNewTripDTO
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime TripStart { get; set; }

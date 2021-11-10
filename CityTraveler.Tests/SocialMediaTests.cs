@@ -48,22 +48,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-        public async Task AddReviewEntertainmentTest()
-        {
-            var entertainmentId = ArrangeTests.ApplicationContext.Entertaiments.First().Id;
-            var user = ArrangeTests.ApplicationContext.Users.First();
-            var entertainmentReview = new EntertainmentReviewDTO
-            {
-                UserId = user.Id,
-                Title = "string",
-                Description = "description"
-            };
-            var review = await _service.AddReviewEntertainment(entertainmentId, entertainmentReview);
-            Assert.IsNotNull(review);
-            Assert.AreEqual(entertainmentReview.EntertainmentId, entertainmentId);
-        }
-
-        [Test]
         public async Task GetReviewsThrowsTest()
         {
             var result = await _service.GetReviews(-1, 5);
@@ -86,13 +70,6 @@ namespace CityTraveler.Tests
             var review = await _service.AddReviewTrip(triptId, tripReview);
             Assert.IsNotNull(review);
             Assert.AreEqual(tripReview.TripId, triptId);
-        }
-
-        [Test]
-        public async Task AddReviewEntertainmentThrowsTest()
-        {
-            var result = await _service.AddReviewEntertainment(Guid.NewGuid(), new EntertainmentReviewDTO { });
-            Assert.IsNull(result);
         }
 
         [Test]
