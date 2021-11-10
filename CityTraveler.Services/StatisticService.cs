@@ -20,8 +20,8 @@ namespace CityTraveler.Services
         private readonly ILogger<StatisticService> _logger;
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
-        
-        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger)
+        private readonly IUserManagementService _userManagementService;
+        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger, IUserManagementService userManagementService)
         {
             _context = context;
             _mapper = mapper;
@@ -166,11 +166,13 @@ namespace CityTraveler.Services
             }
           
         }
-        public async Task<double> GetAverageAgeUser()
+        public async Task<DateTime> GetAverageAgeUser()
         {
             try
             {
-                return _context.UserProfiles.Select(x => DateTime.Today.Year - x.Birthday.Year).Average();
+                var ticks = (long)await Task.Run(() => _context.UserProfiles.Select(x => x.Birthday.Ticks).ToList().Average());
+                var averageDate = new DateTime(ticks);
+                return averageDate;
             }
             catch (Exception e)
             {
