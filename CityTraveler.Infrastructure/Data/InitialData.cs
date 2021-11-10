@@ -58,7 +58,7 @@ namespace CityTraveler.Infrastucture.Data
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}",
+                    TagString = $"tripTagString{i}",
                     TemplateId = Guid.NewGuid()
                 };
                 if (i % 2 == 0)

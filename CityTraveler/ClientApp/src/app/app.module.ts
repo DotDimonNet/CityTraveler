@@ -12,6 +12,10 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
+import { DefaultTripPageComponent } from './pages/defaultTripPage/defaultTripPage.component';
+import { DefaultTrip } from './models/defaultTrip.model';
+import { TripService } from './services/tripService';
+import { TripDataService } from './services/tripService.data';
 
 @NgModule({
   declarations: [
@@ -20,7 +24,8 @@ import { UserManagementDataService } from './services/userManagementService.data
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    UserProfilePageComponent
+    UserProfilePageComponent,
+    DefaultTripPageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -29,13 +34,16 @@ import { UserManagementDataService } from './services/userManagementService.data
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
+      { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
   providers: [
     UserManagementService,
-    UserManagementDataService
+    UserManagementDataService,
+    TripService,
+    TripDataService
   ],
   bootstrap: [AppComponent]
 })
