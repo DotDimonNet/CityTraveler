@@ -6,11 +6,12 @@ import { first, map, take } from "rxjs/operators";
 @Injectable()
 export class StatisticDataService {
 
+    
     constructor(private client: HttpClient) {}
 
-    GetAverageAgeUser() {
+    GetAverageAgeUser() : Observable<number> {
         return this.client.get('/api/statistic/get-users-average-age')
-        .pipe(first(), map((res: any) => {
+        .pipe(first(), map((res: number) => {
             return res as number;
         }));
     }

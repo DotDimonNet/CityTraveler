@@ -7,7 +7,8 @@ import { AdminService } from 'src/app/services/adminService';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  styleUrls: ['./admin.component.css'],
+  providers:  [ AdminService ]
 })
 export class AdminComponent implements OnInit {
 
@@ -17,13 +18,18 @@ export class AdminComponent implements OnInit {
     description : ""
   };
   addresses: IAdminAddress[] = [];
+  pesp: any;
   constructor(private service: AdminService) { }
 
   ngOnInit() {
       this.getAddress();
   }
   getAddress() : void{
-    this.service.GetAddressStreets(this.filter).subscribe(res => this.addresses = res);
+    console.log(this.addresses);
+    this.service.GetAddressStreets(this.filter).subscribe((res: IAdminAddress[]) => this.addresses = res);
+    this.addresses.length;
+    console.log(this.addresses);
+
   }
 
 }

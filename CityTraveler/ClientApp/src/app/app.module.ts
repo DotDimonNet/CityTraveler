@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+
+
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
@@ -40,9 +42,9 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
-    AdminComponent
-    EntertainmentComponent
-    DefaultTripPageComponent
+    AdminComponent,
+    EntertainmentComponent,
+    DefaultTripPageComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
@@ -60,11 +62,11 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
-      { path: 'admin', component: AdminComponent}
-      {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
-      {path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
-      {path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      {path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
+      { path: 'admin', component: AdminComponent, pathMatch:'full'},
+      { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
+      { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
+      { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
+      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -75,9 +77,9 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     AdminDataService,
     AdminService,
     EntertainmentDataService,
-    EntertainmentService
+    EntertainmentService,
     TripService,
-    TripDataService
+    TripDataService,
     SocialMediaDataService,
     SocialMediaService
 
