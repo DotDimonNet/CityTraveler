@@ -11,6 +11,7 @@ namespace CityTraveler.Domain.Enums
         Landscape = 1,
         Institution = 2,
         Event = 3,
+        All = 4
     }
 
     /*public class EntertainmentType : Enumeration

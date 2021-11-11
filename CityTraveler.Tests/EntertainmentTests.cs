@@ -30,10 +30,9 @@ namespace CityTraveler.Tests
         public void GetAllDTOTest()
         {
             var allEntertainments = service.GetAllDTO();
-            var landscapeEntertainments = service.GetAllDTO(1);
-            var institutionEntertainments = service.GetAllDTO(2);
-            var eventEntertainments = service.GetAllDTO(3);
-            //var emptyEntertainments = service.GetAllDTO(4);
+            var landscapeEntertainments = service.GetAllDTO(EntertainmentType.Landscape);
+            var institutionEntertainments = service.GetAllDTO(EntertainmentType.Institution);
+            var eventEntertainments = service.GetAllDTO(EntertainmentType.Event);
 
             Assert.IsTrue(ArrangeTests.ApplicationContext.Entertaiments.Count() > 0);
             Assert.AreEqual(allEntertainments.Count(), ArrangeTests.ApplicationContext.Entertaiments.Count());
