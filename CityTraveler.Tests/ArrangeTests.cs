@@ -213,11 +213,6 @@ namespace CityTraveler.Tests
                                 {
                                     new EntertaimentModel(),
                                     new EntertaimentModel(),
-                                },
-                                Reviews = new List<ReviewModel>
-                                {
-                                   new ReviewModel(),
-                                   new ReviewModel(),
                                 }
                             }
                          }   
@@ -240,7 +235,6 @@ namespace CityTraveler.Tests
                 var review = new ReviewModel()
                 {
                     User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
-                    Trip = new TripModel { },
                     Rating = new RatingModel { Value = 5 }
                 };
 

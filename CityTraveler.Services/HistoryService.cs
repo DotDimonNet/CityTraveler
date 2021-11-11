@@ -17,13 +17,11 @@ namespace CityTraveler.Services
         private readonly ILogger<HistoryService> _logger;
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
-        private readonly UserManagementService _userManagementService;
-        public HistoryService(ApplicationContext context, IMapper mapper, ILogger<HistoryService> logger, UserManagementService userManagementService)
+        public HistoryService(ApplicationContext context, IMapper mapper, ILogger<HistoryService> logger)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
-            _userManagementService = userManagementService;
         }
         public async Task<CommentDTO> GetUserLastComment(Guid userId)
         {
@@ -89,7 +87,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
                 return passed 
                     ? _mapper.Map<TripModel, TripPrewievDTO>(user.Trips.LastOrDefault(x => x.TripStatus.Id == 3))
@@ -105,7 +103,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 var entertaiments = user.Trips.SelectMany(x => x.Entertaiments).Distinct().OrderBy(x => x.Created);
                 return entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
 

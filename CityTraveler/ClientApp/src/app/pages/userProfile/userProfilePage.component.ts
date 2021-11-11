@@ -8,19 +8,21 @@ import { UserManagementService } from 'src/app/services/userManagementService';
   templateUrl: './userProfilePage.component.html',
   styleUrls: ['./userProfilePage.component.css']
 })
-export class UserProfilePageComponent implements OnInit {
+export class UserProfilePageComponent {
   public userInfo: IUserProfile = {
     userId: "",
     email: "",
     userName: ""
   } as unknown as IUserProfile;
 
+  public userId: string;
+
   constructor(private service: UserManagementService) {}
 
-    ngOnInit() {
-        this.service.getUserProfile('345B9A15-0886-462C-0CC7-08D9A436A380')
-        .subscribe((res: IUserProfile) => {
-            this.userInfo = res;
-        });
-    }
+submit() {
+    this.service.getUserProfile(this.userId)
+    .subscribe((res: IUserProfile) => {
+      this.userInfo = res;
+    });
+  }
 }
