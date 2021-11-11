@@ -1,12 +1,27 @@
 <div class="user-data">
-  User profile:
+  User profile
 </div>
+<user-info></user-info>
 <div>
+  <label>Input user Id</label>
+  <input type="text" name="userId" [(ngModel)]="userId" />
+  <div> 
+    <button (click)="submit()"> Submit</button>
+  </div>
+</div>
+<form>
+  <div>
+  <p>User ID:</p>
   {{userInfo.userId}}
-</div>
-<div>
+  </div>
+  <div>
+  <p>User Name:</p>
   {{userInfo.userName}}
-</div>
-<div>
+  </div>
+  <div>
+  <p>Email:</p>
   {{userInfo.email}}
-</div>
+  </div>
+</form>
+
+

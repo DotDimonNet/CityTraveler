@@ -1,15 +1,7 @@
-﻿using CityTraveler.Repository.DbContext;
-using CityTraveler.Services.Interfaces;
-using CityTraveler.Domain.Enums;
-using CityTraveler.Domain.Entities;
-using CityTraveler.Domain.DTO;
+﻿using CityTraveler.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using CityTraveler.Services;
 using CityTraveler.Domain.Filters;
 using CityTraveler.Domain.Filters.Admin;
 
@@ -28,33 +20,38 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get-users")]
+        [HttpGet("users")]
         public async Task<IActionResult> AdminFilterUsers([FromQuery] FilterAdminUser filter)
         {
-            return Json(_service.FilterUsers(filter));
+            var users = await _service.FilterUsers(filter);
+            return Json(users);
         }
 
-        [HttpGet("get-entertaiments")]
+        [HttpGet("entertaiments")]
         public async Task<IActionResult> AdminFilterEntertaiments([FromQuery] FilterAdminEntertaiment filter)
         {
-            return Json(_service.FilterEntertaiments(filter)); 
+            var entertainments = await _service.FilterEntertaiments(filter);
+            return Json(entertainments); 
         }
 
-        [HttpGet("get-trips")]
+        [HttpGet("trips")]
         public async Task<IActionResult> FilterTrips([FromQuery] FilterAdminTrip filter)
         {
-            return Json(_service.FilterTrips(filter));
+            var trips = await _service.FilterTrips(filter);
+            return Json(trips);
         }
 
-        [HttpGet("get-reviews")]
+        [HttpGet("reviews")]
         public async Task<IActionResult> FilterReview([FromQuery] FilterAdminReview filter)
         {
-            return  Json(_service.FilterReview(filter));
+            var reviews = await _service.FilterReview(filter);
+            return Json(reviews);
         }
-        [HttpGet("get-streets")]
+        [HttpGet("streets")]
         public async Task<IActionResult> FindAdressStreets([FromQuery] FilterAdminStreet filter)
         {
-            return Json(_service.FindAdressStreets(filter));
+            var addresses = await _service.FindAdressStreets(filter);
+            return Json(addresses);
         }
     }
 }
