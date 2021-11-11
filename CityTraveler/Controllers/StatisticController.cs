@@ -38,7 +38,7 @@ namespace CityTraveler.Controllers
         [HttpGet("get-average-entertaiment-in-trip")]
         public async Task<IActionResult> GetAvarageEnternaimentInTrip()
         {
-            return Json(_service.GetAvarageEnternaimentInTrip());
+            return Json( await _service.GetAvarageEnternaimentInTrip());
         }
 
         [HttpGet("get-users-admin")]

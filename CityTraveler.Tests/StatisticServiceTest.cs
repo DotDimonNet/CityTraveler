@@ -21,8 +21,7 @@ namespace CityTraveler.Tests
         {
             await ArrangeTests.SetupDbContext();
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<StatisticService>());
-            _service = new StatisticService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object,
-            new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.SetupTestLogger(new NullLogger<UserManagementService>()).Object));
+            _service = new StatisticService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object);
         }
 
         [Test]

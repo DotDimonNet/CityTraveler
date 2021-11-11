@@ -20,8 +20,7 @@ namespace CityTraveler.Tests
         {
             await ArrangeTests.SetupDbContext();
             _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<HistoryService>());
-            _service = new HistoryService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object,
-            new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.SetupTestLogger(new NullLogger<UserManagementService>()).Object));
+            _service = new HistoryService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object);
         }
         [Test]
         public async Task GetUserLastTripTest()

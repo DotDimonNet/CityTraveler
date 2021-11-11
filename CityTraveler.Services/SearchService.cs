@@ -18,7 +18,7 @@ namespace CityTraveler.Services
         private readonly ILogger<SearchService> _logger;
         private readonly IMapper _mapper;
 
-        public SearchService(ApplicationContext dbContext, IMapper mapper, ILogger<SearchService> logger)
+        public SearchService(ApplicationContext dbContext, IMapper mapper, ILogger<SearchService> logger, IEntertainmentService entertainmentService)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -125,38 +125,34 @@ namespace CityTraveler.Services
 
             try
             {
-                var userIds = _dbContext.Users.Where(x => x.Profile.Name.Contains(filter.User)).Select(x=>x.Id);
-                var entertainmentIds = _dbContext.Entertaiments
-                    .Where(x => x.Title.Contains(filter.EntertaimentName))
-                    .Select(x => x.Id);
-                var result = await Task.Run(() => filter.TripStatus != -1
-                    ? _dbContext.Trips.Where(x =>
-                        x.Description.Contains(filter.Description)
-                        && x.TripEnd >= filter.TripEnd
-                        && x.TripStart >= filter.TripStart
-                        && x.RealSpent >= filter.RealSpent
-                        && x.OptimalSpent >= filter.OptimalSpent
-                        && x.TripStatus.Id == filter.TripStatus
-                        && x.Users.Any(x => userIds.Contains(x.Id))
-                        && x.Entertaiments.Where(x => entertainmentIds.Contains(x.Id)).Any()
-                        && x.Title.Contains(filter.Title)
-                        && x.Price.Value >= filter.PriceMore
-                        && x.Price.Value <= filter.PriceLess
-                        && x.AverageRating >= filter.AverageRatingMore
-                        && x.AverageRating <= filter.AverageRatingLess)
-                    : _dbContext.Trips.Where(x =>
-                          x.Description.Contains(filter.Description)
-                          && x.TripEnd >= filter.TripEnd
-                          && x.TripStart >= filter.TripStart
-                          && x.RealSpent >= filter.RealSpent
-                          && x.OptimalSpent >= filter.OptimalSpent
-                          && x.Users.Any(x => userIds.Contains(x.Id))
-                          && x.Entertaiments.Any(x => entertainmentIds.Contains(x.Id))
-                          && x.Title.Contains(filter.Title)
-                          && x.Price.Value >= filter.PriceMore
-                          && x.Price.Value <= filter.PriceLess
-                          && x.AverageRating >= filter.AverageRatingMore
-                          && x.AverageRating <= filter.AverageRatingLess));
+                var result = await Task.Run(() => filter.TripStatus != -1 ?
+                    _dbContext.Trips.Where(x =>
+                    x.Description.Contains(filter.Description)
+                    && x.TripEnd >= filter.TripEnd
+                    && x.TripStart >= filter.TripStart
+                    && x.RealSpent >= filter.RealSpent
+                    && x.OptimalSpent >= filter.OptimalSpent
+                    && x.TripStatus.Id == filter.TripStatus
+                    && x.Users.Any(x => x.Profile.Name.StartsWith(filter.User))
+                    && x.Entertaiments.Any(x => x.Title.StartsWith(filter.EntertaimentName))
+                    && x.Title.Contains(filter.Title)
+                    && x.Price.Value >= filter.PriceMore
+                    && x.Price.Value <= filter.PriceLess
+                    && x.AverageRating >= filter.AverageRatingMore
+                    && x.AverageRating <= filter.AverageRatingLess)
+                : _dbContext.Trips.Where(x =>
+                    x.Description.Contains(filter.Description)
+                    && x.TripEnd >= filter.TripEnd
+                    && x.TripStart >= filter.TripStart
+                    && x.RealSpent >= filter.RealSpent
+                    && x.OptimalSpent >= filter.OptimalSpent
+                    && x.Users.Any(x => x.Profile.Name.StartsWith(filter.User))
+                    && x.Entertaiments.Any(x => x.Title.StartsWith(filter.EntertaimentName))
+                    && x.Title.Contains(filter.Title)
+                    && x.Price.Value >= filter.PriceMore
+                    && x.Price.Value <= filter.PriceLess
+                    && x.AverageRating >= filter.AverageRatingMore
+                    && x.AverageRating <= filter.AverageRatingLess));
                 return _mapper.Map<IEnumerable<TripModel>, IEnumerable<TripDTO>>(result);
             }
             catch (Exception e)
@@ -170,28 +166,50 @@ namespace CityTraveler.Services
         {
             try
             {
-                var entertainmentsIds = _dbContext.Entertaiments
-                    .Where(x => x.Title.Contains(filter.EntertainmentName))
-                    .Select(x => x.Id);
-
                 var tripsIds = _dbContext.Entertaiments
-                    .Where(x => entertainmentsIds.Contains(x.Id))
-                    .SelectMany(x => x.Trips).Select(x => x.Id);
+                    .Where(x => x.Title.Contains(filter.EntertainmentName))
+                    .SelectMany(x => x.Trips)
+                    .Select(x => x.Id);
 
                 var result = await Task.Run(() => tripsIds.Any()
                     ? _dbContext.Users.Where(x =>
                         x.UserName.Contains(filter.UserName)
                         && x.Profile.Gender.Contains(filter.Gender)
-                        && x.Trips.Any(x => tripsIds.Contains(x.Id)))
-                    : _dbContext.Users.Where(x =>
-                        x.UserName.Contains(filter.UserName)
-                        && x.Profile.Gender.Contains(filter.Gender)));
-                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(result);
+                        && x.Trips.Where(x => tripsIds.Contains(x.Id)).Any())
+                    : Enumerable.Empty<ApplicationUserModel>());
+
+                return _mapper.Map<IEnumerable<UserDTO>>(result);
             }
             catch (Exception e)
             {
                 _logger.LogWarning($"Failed to filter users {e.Message}");
                 return Enumerable.Empty<UserDTO>();
+            }
+        }
+
+        public async Task<IEnumerable<ApplicationUserModel>> GetUsersByName(string name = "")
+        {
+            try
+            {
+                return await Task.Run(() => _dbContext.Users.Where(x => x.Profile.Name.Contains(name)));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to get users by name {e.Message}");
+                return Enumerable.Empty<ApplicationUserModel>();
+            }
+        }
+
+        public async Task<IEnumerable<TripModel>> GetTripByName(string name = "")
+        {
+            try
+            {
+                return await Task.Run(() => _dbContext.Trips.Where(x => x.Title.Contains(name)));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to get trips by name {e.Message}");
+                return Enumerable.Empty<TripModel>();
             }
         }
     }
