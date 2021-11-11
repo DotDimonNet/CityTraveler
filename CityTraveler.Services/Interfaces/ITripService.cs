@@ -15,8 +15,6 @@ namespace CityTraveler.Services.Interfaces
         public Task<bool> DeleteTripAsync(Guid tripId);
         public Task<bool> AddDefaultTrip(DefaultTripDTO newDefaultTrip);
         public IEnumerable<TripDTO> GetTrips(string title, double rating, TimeSpan optimalSpent, double price, string tag, int skip = 0, int take = 10);
-        //public IEnumerable<TripDTO> GetTripsByName(string tripName);
-        public IEnumerable<TripModel> GetTripsByName(string tripName);
         public TripDTO GetTripById(Guid tripId);
         public IEnumerable<TripModel> GetTripsByStatus(string status);
         public Task<bool> UpdateTripSatusAsync(Guid tripId, TripStatus newStatus);

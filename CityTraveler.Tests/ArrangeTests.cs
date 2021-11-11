@@ -213,11 +213,6 @@ namespace CityTraveler.Tests
                                 {
                                     new EntertaimentModel(),
                                     new EntertaimentModel(),
-                                },
-                                Reviews = new List<ReviewModel>
-                                {
-                                   new ReviewModel(),
-                                   new ReviewModel(),
                                 }
                             }
                          }   
@@ -240,7 +235,6 @@ namespace CityTraveler.Tests
                 var review = new ReviewModel()
                 {
                     User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
-                    Trip = new TripModel { },
                     Rating = new RatingModel { Value = 5 }
                 };
 
@@ -300,13 +294,14 @@ namespace CityTraveler.Tests
                     TripStart = DateTime.Now,
                     TripEnd = DateTime.Now.AddHours(4),
                     Entertaiments = new List<EntertaimentModel>(),
+                    Images = new List<TripImageModel>(),
                     Price = new TripPriceModel(),
                     Title = $"TripTitle{i}",
                     Description = $"TripDescription{i}",
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}"
+                    TagString = $"tripTagString{i}"
                 };
                 if (i % 2 == 0)
                 {
@@ -318,12 +313,6 @@ namespace CityTraveler.Tests
                 }
                 trips.Add(trip);
             }
-
-            trips.ForEach(x => 
-            {
-                x.TemplateId = trips.FirstOrDefault().Id;
-            });
-            trips.FirstOrDefault().TemplateId = Guid.Empty;
 
 
             await ApplicationContext.Trips.AddRangeAsync(trips);

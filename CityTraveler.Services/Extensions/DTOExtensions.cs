@@ -63,7 +63,7 @@ namespace CityTraveler.Services.Extensions
                 Title = tripDTO.Title,
                 Description = tripDTO.Description,
                // TripStatus = tripDTO.TripStatus,
-                TagSting = tripDTO.TagSting,
+                TagString = tripDTO.TagSting,
                 Images = new List<TripImageModel>(),
                 Reviews = new List<TripReviewModel>(),
                 Entertaiments = new List<EntertaimentModel>()
@@ -81,13 +81,13 @@ namespace CityTraveler.Services.Extensions
             };
         }
 
+
         public static TripModel ToDefaultTrip(this DefaultTripDTO defaultTripDTO)
         {
             return new TripModel
             {
                 Title = defaultTripDTO.Title,
                 Description = defaultTripDTO.Description,
-                TagSting = defaultTripDTO.TagSting,
                 AverageRating = defaultTripDTO.AverageRating,
                 Price = new TripPriceModel(),
                 OptimalSpent = defaultTripDTO.OptimalSpent,
@@ -97,5 +97,6 @@ namespace CityTraveler.Services.Extensions
                 DafaultTrip =defaultTripDTO.DefaultTrip
             };
         }
+
     }
 }

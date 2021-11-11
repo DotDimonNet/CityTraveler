@@ -44,7 +44,7 @@ namespace CityTraveler.Services
 
 
 
-        public async Task<ApplicationUserModel> GetUserByIdAsync(Guid userId)
+        public async Task<UserDTO> GetUserByIdAsync(Guid userId)
         {
             try
             { 
@@ -53,7 +53,7 @@ namespace CityTraveler.Services
                 if (userExist)
                 {
                     var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-                    return user;
+                    return _mapper.Map<ApplicationUserModel, UserDTO>(user);
                 }
                 throw new UserManagemenServiceException(messageExceptionObjectNull);
             }
@@ -75,7 +75,7 @@ namespace CityTraveler.Services
 
                 var users = await Task.Run(() => _context.Users.Skip(skip).Take(take));
 
-                if(users != null)
+                if(users.Any())
                 {
                     return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
                 }
@@ -92,26 +92,22 @@ namespace CityTraveler.Services
         public async Task<IEnumerable<UserDTO>> GetUsersAsync(IEnumerable<Guid> guids)
         {
             var users = await Task.Run(() => _context.Users.Where(x => guids.Contains(x.Id)));
-            if (users != null)
+            if (users.Any())
             {
                 return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
             }
             throw new UserManagemenServiceException(messageExceptionObjectNull);
         }
 
-        public async Task<IEnumerable<UserDTO>> GetUsersByPropetiesAsync(string name = "", string email = "", string gender = "", DateTime birthday = default)
+        public async Task<IEnumerable<UserDTO>> GetUsersByPropetiesAsync(string name = "", string email = "", string gender = "")
         {
             try
             {
                 var users = await Task.Run(() =>  _context.Users
                 .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender
-                .Contains(gender) && x.Email.Contains(email) && x.Profile.Birthday.Date == birthday.Date));
+                .Contains(gender) && x.Email.Contains(email)));
 
-                if (users != null)
-                {
-                    return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
-                }
-                throw new UserManagemenServiceException(messageExceptionObjectNull);
+                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
 
             }
             catch (Exception e)

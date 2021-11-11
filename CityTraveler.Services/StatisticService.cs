@@ -20,13 +20,12 @@ namespace CityTraveler.Services
         private readonly ILogger<StatisticService> _logger;
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
-        private readonly UserManagementService _userManagementService;
-        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger, UserManagementService userManagementService)
+        private readonly IUserManagementService _userManagementService;
+        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger, IUserManagementService userManagementService)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
-            _userManagementService = userManagementService;
         }
         public bool IsActive { get; set; }
         public string Version { get; set; }
@@ -34,7 +33,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.SelectMany(x => x.Entertaiments).Distinct().Count();
 
             }
@@ -48,7 +47,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 var trips = user.Trips.Where(x => x.Entertaiments.Contains(entertaiment));
                 return trips.Select(x => _mapper.Map<TripModel, TripPrewievDTO>(x));
 
@@ -64,7 +63,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Average(x => x.AverageRating);
             }
             catch (Exception e)
@@ -78,7 +77,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Average(x => x.Entertaiments.Count);
 
             }
@@ -92,7 +91,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Max(x => x.TripEnd - x.TripStart);
             }
             catch (Exception e)
@@ -105,7 +104,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Min(x => x.TripEnd - x.TripStart);
             }
             catch (Exception e)
@@ -118,7 +117,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Average(x => x.Price.Value);
             }
             catch (Exception e)
@@ -131,7 +130,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Count(x => x.TripStatus == TripStatus.Passed);
             }
             catch (Exception e)
@@ -154,7 +153,7 @@ namespace CityTraveler.Services
             }
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 var trips = user.Trips.Where(x =>
                          x.Created < timeEnd
                          && x.Created > timeStart);
@@ -167,11 +166,13 @@ namespace CityTraveler.Services
             }
           
         }
-        public async Task<double> GetAverageAgeUser()
+        public async Task<DateTime> GetAverageAgeUser()
         {
             try
             {
-                return _context.UserProfiles.Average(x => DateTime.Today.Year - x.Birthday.Year);
+                var ticks = (long)await Task.Run(() => _context.UserProfiles.Select(x => x.Birthday.Ticks).ToList().Average());
+                var averageDate = new DateTime(ticks);
+                return averageDate;
             }
             catch (Exception e)
             {
@@ -195,7 +196,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                var user = await _userManagementService.GetUserByIdAsync(userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Reviews.Average(x => x.Rating.Value);
             }
             catch (Exception e)
