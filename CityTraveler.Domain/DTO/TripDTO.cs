@@ -39,6 +39,7 @@ namespace CityTraveler.Domain.DTO
         public bool DefaultTrip { get; set; } = true;
     }
 
+
     public class TripPrewievDTO 
     {
         public Guid Id { get; set; }
@@ -52,7 +53,6 @@ namespace CityTraveler.Domain.DTO
 
     public class AddNewTripDTO
     {
-        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime TripStart { get; set; }
@@ -74,6 +74,5 @@ namespace CityTraveler.Domain.DTO
         public IEnumerable<ReviewPreviewDTO> Reviews { get; set; } = new List<ReviewPreviewDTO>();
         public IEnumerable<EntertainmentShowDTO> Entertaiments { get; set; } = new List<EntertainmentShowDTO>();
         public IEnumerable<UserDTO> Users { get; set; } = new List<UserDTO>();
-
     }
 }
