@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+
+
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
@@ -49,9 +51,9 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
-    UserInfoComponent,
-    AdminComponent,
-    DefaultTripPageComponent,
+    AdminComponent
+    EntertainmentComponent
+    DefaultTripPageComponent
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
@@ -72,14 +74,11 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
-      { path: 'admin', component: AdminComponent},
-      { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
-      { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
-      { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' },
-      { path: 'search-entertainments', component: SearchServiceComponent, pathMatch: 'full' },
-      { path: 'search-users', component: SearchUsersComponent, pathMatch: 'full' },
-      { path: 'search-trips', component: SearchTripsComponent, pathMatch: 'full' }
+      { path: 'admin', component: AdminComponent}
+      {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
+      {path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
+      {path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
+      {path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -89,6 +88,8 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     StatisticService,
     AdminDataService,
     AdminService,
+    EntertainmentDataService,
+    EntertainmentService
     TripService,
     TripDataService,
     SocialMediaDataService,

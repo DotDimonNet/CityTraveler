@@ -6,7 +6,8 @@ import { AdminService } from 'src/app/services/adminService';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  styleUrls: ['./admin.component.css'],
+  providers:  [ AdminService ]
 })
 export class AdminComponent implements OnInit {
 
@@ -16,6 +17,7 @@ export class AdminComponent implements OnInit {
     description : ""
   };
   addresses: IAdminAddress[] = [];
+  pesp: any;
   constructor(private service: AdminService) { }
 
   ngOnInit() {
