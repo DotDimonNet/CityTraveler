@@ -1,0 +1,11 @@
+.default-trip-info-block{
+    border-bottom: 3px solid black;
+    padding-bottom: 15px;
+    margin-top: 15px;
+}
+.default-trip-info-element-description-text{
+    text-align: justify;
+}
+.image-area{
+    height: 100px;
+}

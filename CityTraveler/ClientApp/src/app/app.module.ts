@@ -22,7 +22,7 @@ import { AdminService } from './services/adminService';
 import { AdminDataService } from './services/adminService.data';
 import { EntertainmentDataService } from './services/entertainmentService.data';
 import { EntertainmentService } from './services/entertainmentService';
-import { DefaultTripPageComponent } from './pages/defaultTripPage/defaultTripPage.component';
+import { DefaultTripPageComponent } from './pages/defaultTrip/defaultTripPage.component';
 import { DefaultTrip } from './models/defaultTrip.model';
 import { TripService } from './services/tripService';
 import { TripDataService } from './services/tripService.data';
