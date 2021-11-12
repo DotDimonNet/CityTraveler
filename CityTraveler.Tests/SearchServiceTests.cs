@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
-using CityTraveler.Domain.Errors;
 using CityTraveler.Services;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 
@@ -15,62 +13,65 @@ namespace CityTraveler.Tests
 {
     public class SearchServiceTests
     {
+        private Mock<ILogger<SearchService>> _loggerMock;
+        private SearchService _service;
+
         [SetUp]
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
+            _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<SearchService>());
+            _service = new SearchService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object);
         }
 
         [Test]
         public async Task FilterUsersNullFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var users = await service.FilterUsers(new FilterUsers { });
-            Assert.IsNotNull(users);
-            Console.WriteLine(users.Count());
-            Console.WriteLine(ArrangeTests.ApplicationContext.Users.Count());
-            foreach (ApplicationUserModel user in users)
+            var users = await _service.FilterUsers(new FilterUsers { });
+            Assert.IsNotNull (users);
+
+            foreach (var user in users.ToList())
             {
-                Assert.True(user.UserName.Contains(""));
-                Assert.True(user.Profile.Gender.Contains(""));
+                Assert.NotNull(user.Name);
+                Assert.NotNull(user.Gender);
             }
         }
+
         [Test]
         public async Task FilterUsersAllFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var users = await service.FilterUsers(new FilterUsers {UserName = "kate", 
-                EntertainmentName = "entertainment", Gender = "f"  });
+            var users = await _service.FilterUsers(new FilterUsers
+            {
+                UserName = "kate",
+                EntertainmentName = "entertainment",
+                Gender = "f"
+            });
             Assert.IsNotNull(users);
-            foreach (ApplicationUserModel user in users)
+            foreach (var user in users)
             {
-                Assert.True(user.UserName.Contains("kate"));
-                Assert.True(user.Profile.Gender.Contains("f"));
+                Assert.True(user.Name.Contains("kate"));
+                Assert.True(user.Gender.Contains("f"));
             }
         }
+
         [Test]
-        public void FilterTripsNullFieldsTest()
+        public async Task FilterTripsNullFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var trips = service.FilterTrips(new FilterTrips {});
+            var trips = await _service.FilterTrips(new FilterTrips { });
             Assert.IsNotNull(trips);
-            foreach (TripModel trip in trips)
+            foreach (var trip in trips)
             {
-                    Assert.True(trip.Title.Contains(""));
-                    Assert.True(trip.Description.Contains(""));
+                Assert.IsNotNull(trip.Title);
+                Assert.IsNotNull(trip.Description);
             }
         }
+
         [Test]
-        public void FilterTripsAllFieldsTest()
+        public async Task FilterTripsAllFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var trips = service.FilterTrips(new FilterTrips
+            var trips = await _service.FilterTrips(new FilterTrips
             {
-                TripStatus = TripStatus.Passed.Id,
+                TripStatus = 1,
                 TripEnd = DateTime.Now.AddYears(-2),
                 TripStart = DateTime.Now.AddYears(-3),
                 Title = "title",
@@ -84,68 +85,62 @@ namespace CityTraveler.Tests
                 OptimalSpent = TimeSpan.FromMinutes(50),
                 User = "kate",
 
-            }) ;
+            });
             Assert.IsNotNull(trips);
-            foreach (TripModel trip in trips)
+
+            foreach (var trip in trips)
             {
-                Assert.True(trip.TripStatus == TripStatus.Passed);
                 Assert.True(trip.Title.Contains("title"));
                 Assert.True(trip.Description.Contains("description"));
-                Assert.True(trip.RealSpent == TimeSpan.FromHours(2));
-                Assert.True(trip.OptimalSpent == TimeSpan.FromMinutes(50));
+                Assert.AreEqual(trip.RealSpent, TimeSpan.FromHours(2));
+                Assert.AreEqual(trip.OptimalSpent, TimeSpan.FromMinutes(50));
                 Assert.True(trip.AverageRating > 2);
                 Assert.True(trip.AverageRating < 4);
                 Assert.True(trip.AverageRating > 100);
                 Assert.True(trip.AverageRating < 200);
-
             }
         }
+
         [Test]
-        public void FilterTripsThrowsPriceTest()
+        public async Task FilterTripsThrowsPriceTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext, 
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips 
-            ( new FilterTrips
-            {
-                PriceLess = 100,
-                PriceMore = 200
-            })); 
-            Assert.That(result.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. " +
-                "The same is for rating."));
+            var result = await _service.FilterTrips(
+                new FilterTrips
+                {
+                    PriceLess = 100,
+                    PriceMore = 200
+                });
+            Assert.IsEmpty(result);
         }
+
         [Test]
-        public void FilterTripsThrowsRaitingTest()
+        public async Task FilterTripsThrowsRaitingTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var result = Assert.Throws<SearchServiceException>(() => service.FilterTrips(
-                new FilterTrips {
-                AverageRatingLess = 100,
-                AverageRatingMore = 200
-            }));
-            Assert.That(result.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. " +
-                "The same is for rating."));
+            var result = await _service.FilterTrips(
+                new FilterTrips
+                {
+                    AverageRatingLess = 100,
+                    AverageRatingMore = 200
+                });
+            Assert.IsEmpty(result);
         }
+
         [Test]
-        public void FilterEntertainmentsNullFieldsTest()
+        public async Task FilterEntertainmentsNullFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext, 
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var entertainments = service.FilterEntertainments(new FilterEntertainment { });
+            var entertainments = await _service.FilterEntertainments(new FilterEntertainment { });
             Assert.IsNotNull(entertainments);
-            foreach (EntertaimentModel entertainment in entertainments) 
+            foreach (var entertainment in entertainments)
             {
-                Assert.True(entertainment.Title.Contains(""));
+                Assert.IsNotNull(entertainment.Title);
             }
 
         }
+
         [Test]
-        public void FilterEntertainmentsAllFieldsTest()
+        public async Task FilterEntertainmentsAllFieldsTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var entertainments = service.FilterEntertainments(new FilterEntertainment
+            var entertainments = await _service.FilterEntertainments(new FilterEntertainment
             {
                 Title = "title",
                 PriceLess = 200,
@@ -155,145 +150,40 @@ namespace CityTraveler.Tests
                 RatingLess = 3,
                 RatingMore = 1,
                 TripName = "wonder",
-                Type = EntertainmentType.Event.Id
+                Type = (int)EntertainmentType.Event
 
             });
             Assert.IsNotNull(entertainments);
-            foreach (EntertaimentModel entertainment in entertainments)
+            foreach (var entertainment in entertainments)
             {
                 Assert.True(entertainment.Title.Contains("title"));
-                Assert.True(entertainment.Type == EntertainmentType.Event);
-                Assert.True(entertainment.AverageRating > 1);
-                Assert.True(entertainment.AverageRating < 3);
-                Assert.True(entertainment.Address.Street.Title.Contains("a"));
+                Assert.AreEqual(entertainment.Type, EntertainmentType.Event);
                 Assert.True(entertainment.Address.HouseNumber.Contains("2a"));
                 Assert.True(entertainment.AveragePrice.Value > 100);
                 Assert.True(entertainment.AveragePrice.Value < 200);
             }
         }
+
         [Test]
-        public void FilterEnetertainmentThrowsPriceTest()
+        public async Task FilterEnetertainmentThrowsPriceTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var ex = Assert.Throws<SearchServiceException>(() => 
-            service.FilterEntertainments(new FilterEntertainment
+            var result = await _service.FilterEntertainments(new FilterEntertainment
             {
                 PriceLess = 100,
                 PriceMore = 200
-            }));
-            Assert.That(ex.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. The same is for rating."));
+            });
+            Assert.IsEmpty(result);
         }
+
         [Test]
-        public void FilterEntertainmentThrowsRaitingTest()
+        public async Task FilterEntertainmentThrowsRaitingTest()
         {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var ex = Assert.Throws<SearchServiceException>(() =>
-            service.FilterEntertainments(new FilterEntertainment
+            var result = await _service.FilterEntertainments(new FilterEntertainment
             {
                 RatingLess = 100,
                 RatingMore = 200
-            }));
-            Assert.That(ex.Message, Is.EqualTo("PriceMore cant`b be more than priceLess. The same is for rating."));
-        }
-        [Test]
-        public void FilterUsersAlikeNullFieldsTest()
-        {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var users = service.FilterUsersAlike(new UserProfileModel {});
-            Assert.IsNotNull(users);
-            foreach (ApplicationUserModel user in users)
-            {
-                Assert.True(user.UserName.Contains(""));
-                Assert.True(user.Profile.Gender.Contains(""));
-            }
-        }
-        [Test]
-        public void FilterUsersAlikeAllFieldsTest()
-        {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var users = service.FilterUsersAlike(new UserProfileModel
-            {
-                Name = "kate",
-                Gender = "f",
-                Birthday = DateTime.Now.AddMonths(-2),
-                User= new ApplicationUserModel { },
-                AvatarSrc = "avatar"
             });
-            Assert.IsNotNull(users);
-            foreach (ApplicationUserModel user in users)
-            {
-                Assert.True(user.UserName.Contains("kate"));
-                Assert.True(user.Profile.Gender.Contains("f"));
-                Assert.True(user.Profile.AvatarSrc.Contains("avatar"));
-            }
-        }
-        [Test]
-        public void FilterEnetertainmentsAlikeNullFieldsTest()
-        {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var entertainments = service.FilterEntertainmentsAlike(new EntertaimentModel { });
-            Console.WriteLine(ArrangeTests.ApplicationContext.Entertaiments.Count());
-            Assert.IsNotNull(entertainments);
-        }
-        [Test]
-        public void FilterEntertainmentsAlikeAllFieldsTest()
-        {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var entertainments = service.FilterEntertainmentsAlike(new EntertaimentModel
-            {
-                Description = "desc",
-                AverageRating = 5,
-                Title = "title",
-                Type = EntertainmentType.Institution
-
-            });
-            Assert.IsNotNull(entertainments);
-            foreach (EntertaimentModel entertainment in entertainments)
-            {
-                Assert.True(entertainment.Description.Contains("desc"));
-                Assert.True(entertainment.AverageRating == 5);
-                Assert.True(entertainment.Title.Contains("title"));
-                Assert.True(entertainment.Type == EntertainmentType.Institution);
-            }
-        }
-        [Test]
-        public void FilterTripsAlikeNullFieldsTest()
-        {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var trips = service.FilterTripsAlike(new TripModel { });
-            Assert.IsNotNull(trips);
-            foreach (TripModel trip in trips)
-            {
-                Assert.True(trip.Description.Contains(""));
-                Assert.True(trip.Title.Contains(""));
-            }
-        }
-        [Test]
-        public void FilterTripsAlikeAllFieldsTest()
-        {
-            var service = new SearchService(ArrangeTests.ApplicationContext,
-                new ServiceContext(ArrangeTests.ApplicationContext));
-            var trips = service.FilterTripsAlike(new TripModel
-            {
-                Description = "desc",
-                AverageRating = 5,
-                Title = "title",
-                Price = new TripPriceModel { }
-            });
-            Assert.IsNotNull(trips);
-            foreach (TripModel trip in trips)
-            {
-                Assert.True(trip.Description.Contains("desc"));
-                Assert.True(trip.AverageRating == 5);
-                Assert.True(trip.Title.Contains("title"));
-            }
+            Assert.IsEmpty(result);
         }
 
     }

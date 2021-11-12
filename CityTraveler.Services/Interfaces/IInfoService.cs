@@ -1,4 +1,5 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace CityTraveler.Services.Interfaces
 {
-    public interface IInfoService : IServiceMetadata
+    public interface IInfoService 
     {
-        public Task<EntertaimentModel> GetMostPopularEntertaimentInTrips(Guid userId = default);
-        public Task<TripModel> GetTripByMaxChoiceOfUsers();
-        public Task<ReviewModel> GetReviewByMaxComments(Guid userId = default);
-        //public Task<TripModel> GetMostlyUsedTemplate();
-        public Task<TripModel> GetTripByMaxReview(Guid userId = default);
-        public IEnumerable<TripModel> GetLastTripsByPeriod(DateTime srart, DateTime end);
-        public Task<TripModel> GetTripByLowPrice();
-        public Task<int> GetRegisteredUsersByPeriod(DateTime start, DateTime end);
-        public int GetUsersCountTripsDateRange(DateTime start, DateTime end);
-        public Task<TripModel> GetLongestTrip();
-        public Task<TripModel> GetShortestTrip();
-        public int GetTripsCreatedByPeriod(DateTime start, DateTime end);
+        public Task<EntertainmentShowDTO> GetMostPopularEntertaimentInTripsAsync(Guid userId = default);
+        public Task<InfoTripDTO> GetMostPopularTripAsync();
+        public Task<ReviewDTO> GetReviewByMaxCommentsAsync(Guid userId = default);
+        public Task<IEnumerable<InfoTripDTO>> GetMostlyUsedTemplatesAsync(int count);
+        public Task<InfoTripDTO> GetTripByMaxReviewAsync(Guid userId = default);
+        public Task <IEnumerable<InfoTripDTO>> GetLastTripsByPeriodAsync(DateTime srart, DateTime end);
+        public Task <IEnumerable<InfoTripDTO>> GetTripsByLowPriceAsync(int count);
+        public Task<int> GetRegisteredUsersByPeriodAsync(DateTime start, DateTime end);
+        public Task<int> GetUsersCountTripsDateRangeAsync(DateTime start, DateTime end);
+        public Task<InfoTripDTO> GetLongestTripAsync();
+        public Task<InfoTripDTO> GetShortestTripAsync();
+        public Task<int> GetTripsCreatedByPeriodAsync(DateTime start, DateTime end);
 
 
 

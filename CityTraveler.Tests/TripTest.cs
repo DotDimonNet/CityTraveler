@@ -1,7 +1,10 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Errors;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -13,274 +16,76 @@ namespace CityTraveler.Tests
 {
     class TripTest
     {
+        private Mock<ILogger<TripService>> _loggerMock;
+        private TripService service;
+
         [SetUp]
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
+
+           
+            _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<TripService>());
+            service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
+
         }
-
-        [Test]
-        public async Task GetTripByIdTest()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trip = service.GetTripById(tripId);
-            Assert.IsNotNull(trip);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task GetTripsTest()
-        {
-            var trip = ArrangeTests.ApplicationContext.Trips;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTrips();
-            Assert.IsNotNull(trips);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task GetTripsByName()
-        {
-            var tripTitle = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Title;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByName(tripTitle);
-            Assert.IsNotNull(trips);
-            foreach (var trip in trips)
-            {
-                Assert.AreEqual(trip.Title, tripTitle);
-            }
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task AddNewTripTest()
-        {
-            var trip = new TripModel();        
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var newTrip = await service.AddNewTripAsync(trip);
-            Assert.True(newTrip);
-
-            ArrangeTests.UserManagerMock
-               .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-         
-       
-
         [Test]
         public async Task DeleteTripTest()
         {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var deletedTrip = await  service.DeleteTripAsync(tripId);
-            Assert.True(deletedTrip);
+            var trip = ArrangeTests.ApplicationContext.Trips.FirstOrDefault();
+            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
 
-            ArrangeTests.UserManagerMock
-               .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
+            var isRemoved = await service.DeleteTripAsync(trip.Id);
+
+            Assert.IsTrue(isRemoved);
+            Assert.IsFalse(ArrangeTests.ApplicationContext.Trips.Contains(trip));
         }
 
         [Test]
-        public async Task GetTripsByDateTest()
+        public async Task GetDefaultTripByIdTest()
         {
-            var tripDate = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().TripStart;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trip = service.GetTripsByDate(tripDate);
-            Assert.IsNotNull(trip);
-            
-            ArrangeTests.UserManagerMock
-              .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
+            var trip = ArrangeTests.ApplicationContext.Trips.First();
+            var model = ArrangeTests.TestMapper.Map<TripModel, DefaultTripDTO>(trip);
+
+            var testTrip = service.GetDefaultTripById(trip.Id);
+            Assert.IsNotNull(model);
+            Assert.IsNotNull(testTrip);
+            Assert.AreEqual(model, testTrip);
         }
 
         [Test]
-        public async Task GetTripsByAverageRatingTest()
+        public async Task AddTripAsyncTest()
         {
-            var tripRating = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().AverageRating;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trip = service.GetTripsByAverageRating(tripRating);
-            Assert.IsNotNull(trip);
 
-            ArrangeTests.UserManagerMock
-              .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }     
+            var tripDTO = new AddNewTripDTO() { Title = "Trip Title 111", Description = "Trip Description 111" };
 
-        [Test]
-        public async Task GetTripsByEntertainmentTest()
-        {
-            var entertainmentId = ArrangeTests.ApplicationContext.Entertaiments.FirstOrDefault().Id;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByEntertainmentAsync(entertainmentId);
-            Assert.IsNotNull(trips);
+            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
 
-            ArrangeTests.UserManagerMock
-             .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
+
+
+            var isAdded = await service.AddNewTripAsync(tripDTO);
+
+            Assert.IsTrue(isAdded);
         }
 
         [Test]
-        public async Task GetTripsByEntertainmentNameTest()
+        public async Task AdfDefaultTripTest()
         {
-            var entertainmentName = ArrangeTests.ApplicationContext.Entertaiments.FirstOrDefault().Title;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByEntartainmentName(entertainmentName);
-            Assert.IsNotNull(trips);
+            var defaultTripDTO = new DefaultTripDTO() { Title = "Default Trip Title", Description = "Default trip Description" };
+            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
+            var isAdded = await service.AddDefaultTrip(defaultTripDTO);
 
-            ArrangeTests.UserManagerMock
-             .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
+            Assert.IsTrue(isAdded);
         }
 
         [Test]
-        public async Task GettripsByAverageRatingtest()
+        public async Task GetDefaultTripsTets()
         {
-            var tripaveragerating = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().AverageRating;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByAverageRating(tripaveragerating);
-            Assert.IsNotNull(trips);
+            var service = new TripService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerTrip);
+            var defautTrips = service.GetDefaultTrips();
 
-            ArrangeTests.UserManagerMock
-             .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task GetTripsByStatusTest()
-        {
-            var tripStatus = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().TripStatus;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByStatus(tripStatus);
-            Assert.IsNotNull(trips);
-
-            ArrangeTests.UserManagerMock
-            .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task UpdatetripStatusAsyncTest()
-        {
-            var tripid = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var newtripSattus = ArrangeTests.ApplicationContext.TripStatuses.FirstOrDefault(x=>x.Name=="Passed");
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trip = await service.UpdateTripSatusAsync(tripid, newtripSattus);
-            Assert.True(trip);
-
-            ArrangeTests.UserManagerMock
-            .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        } 
-
-        [Test]
-        public async Task GetTripsByPriceTest()
-        {
-            var tripPrice = ArrangeTests.ApplicationContext.Prices.FirstOrDefault().Value;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByPrice(tripPrice);
-            Assert.IsNotNull(trips);
-            foreach ( var trip in trips)
-            {
-                Assert.AreEqual(trip.Price.Value, tripPrice);
-            }
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task UpdateTripTitleAsyncTest()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var newTripTile = "NewTripTitle";
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trip = await service.UpdateTripTitleAsync(tripId,newTripTile);
-            Assert.True(trip);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task UpdateTripDescriptionTest()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var newtripDescription = "New trip Description";
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trip = await service.UpdateTripDescriptionAsync(tripId, newtripDescription);
-            Assert.True(trip);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task AddEntertainmentToTripTets()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var trip = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x => x.Id == tripId);
-            EntertaimentModel newEntertainment = new EntertaimentModel { Title = "New Entertainment Title" };
-            
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var isAdded = await service.AddEntertainmetToTripAsync(tripId, newEntertainment);
-            Assert.IsNotNull(isAdded);
-            Assert.True(isAdded);
-            Assert.True(trip.Entertaiment.Contains(newEntertainment));
-
-            ArrangeTests.UserManagerMock
-               .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        } 
-
-        [Test]
-        public async Task DeleteEntertainmentFromTripTest()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var trip = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x=>x.Id==tripId);
-            var entertainment = await  ArrangeTests.ApplicationContext.Entertaiments.FirstOrDefaultAsync();
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var removedEntertainment = await service.DeleteEntertainmentFromTrip(tripId, entertainment);
-            Assert.True(removedEntertainment);
-            Assert.False(trip.Entertaiment.Contains(entertainment));
-
-            ArrangeTests.UserManagerMock
-               .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-        [Test]
-        public async Task GetTripsByTagTest()
-        {
-            var tripTagString = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().TagSting;
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var trips = service.GetTripsByTag(tripTagString);
-            Assert.IsNotNull(trips);
-     
-            ArrangeTests.UserManagerMock
-              .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task SetTripsAsDefaultTest()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var trip = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x=>x.Id==tripId);
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var settedTripAsDafault = await service.SetTripAsDefault(tripId);
-            Assert.True(settedTripAsDafault);
-            Assert.AreEqual(settedTripAsDafault, trip.DafaultTrip == true);
-
-            ArrangeTests.UserManagerMock
-             .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task RemoveTripFromDefaultTest()
-        {
-            var tripId = ArrangeTests.ApplicationContext.Trips.FirstOrDefault().Id;
-            var trip = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x=>x.Id==tripId);
-            var service = new TripService(ArrangeTests.ApplicationContext);
-            var removedReipFromDefault = await service.RemooveTripFromDefault(tripId);
-            Assert.True(removedReipFromDefault);
-            Assert.AreEqual(removedReipFromDefault, trip.DafaultTrip==false);
-
-            ArrangeTests.UserManagerMock
-            .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
+            Assert.IsNotNull(defautTrips);
+            Assert.IsNotEmpty(defautTrips);
         }
     }
 }

@@ -1,9 +1,13 @@
-﻿using CityTraveler.Domain.Entities;
+﻿using AutoMapper;
+using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Infrastucture.Data;
+using CityTraveler.Mapping;
+using CityTraveler.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,9 +21,20 @@ namespace CityTraveler.Tests
     {
         public static ApplicationContext ApplicationContext { get; set; }
 
-        public static Mock<UserManager<ApplicationUserModel>> UserManagerMock;
-        public static Mock<SignInManager<ApplicationUserModel>> SignInManagerMock;
-        public static Mock<RoleManager<ApplicationUserRole>> RoleManagerMock;
+        public static Mock<UserManager<ApplicationUserModel>> UserManagerMock { get; set; }
+        public static Mock<SignInManager<ApplicationUserModel>> SignInManagerMock { get; set; }
+        public static Mock<RoleManager<ApplicationUserRole>> RoleManagerMock { get; set; }
+        public static IMapper TestMapper { get; set; }
+        public static ILogger<CityArchitectureService> LoggerCityArchitecture { set; get; }
+        public static ILogger<EntertainmentService> LoggerEntertainment { set; get; }
+        public static ILogger<SocialMediaService> LoggerSocialMedia { set; get; }
+        public static ILogger<SearchService> LoggerSearchService { set; get; }
+        public static ILogger<TripService> LoggerTrip { get; set; }
+        public static ILogger<InfoService> LoggerInfoService { get; set; }
+        public static Mock<ILogger<T>> SetupTestLogger<T>(ILogger<T> logger) where T : class
+        {
+            return new Mock<ILogger<T>>();
+        }
 
         public static async Task SetupDbContext()
         {
@@ -38,6 +53,16 @@ namespace CityTraveler.Tests
             await GenerateComment();
             await GenerateTrips();
             await GenerateUserData();
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.AddProfile<MappingProfile>();
+                cfg.AddProfile<ReviewMapping>();
+                cfg.AddProfile<TripMapping>();
+                cfg.AddProfile<UserMappingProfile>();
+            });
+
+            TestMapper = new Mapper(config);
+            
         }
 
         private static void SetupManagementMocks()
@@ -87,7 +112,7 @@ namespace CityTraveler.Tests
                 var rnd = new Random();
                 var streetIndex = rnd.Next(0, 9);
 
-                var entertainmentType = EntertainmentType.Landskape;
+                var entertainmentType = EntertainmentType.Landscape;
                 switch (i % 3)
                 {
                     case 0:
@@ -102,7 +127,7 @@ namespace CityTraveler.Tests
                     Title = $"Entertainment - {i}",
                     Address = new AddressModel()
                     {
-                        Coordinates = new CoordinatesModel()
+                        Coordinates = new CoordinatesAddressModel()
                         {
                             Latitude = i * 3 / 2 + 1.34,
                             Longitude = i * 5 / 2 + 1.34
@@ -112,13 +137,13 @@ namespace CityTraveler.Tests
                         Street = streets[streetIndex],
                     },
                     AveragePrice = new EntertaimentPriceModel(),
-                    Reviews = new List<EntertainmentReviewModel>()
+                    /*Reviews = new List<ReviewModel>()
                     {
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                        new EntertainmentReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
-                    },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                        new ReviewModel() { Rating = new RatingModel() { Value = rnd.Next(1, 5) } },
+                    },*/
                     Type = entertainmentType,
                 };
                 entertainments.Add(entertainment);
@@ -135,19 +160,19 @@ namespace CityTraveler.Tests
                     {
                         Trips = new List<TripModel>
                         {
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                          new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                                new EntertaimentModel(),
                            }},
-                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiment = new List<EntertaimentModel>()
+                           new TripModel {AverageRating = i ,TripStatus= TripStatus.Passed, Entertaiments = new List<EntertaimentModel>()
                            {
                                new EntertaimentModel(),
                                new EntertaimentModel(),
@@ -184,15 +209,10 @@ namespace CityTraveler.Tests
                         {
                             new TripModel
                             {
-                                Entertaiment = new List<EntertaimentModel>
+                                Entertaiments = new List<EntertaimentModel>
                                 {
                                     new EntertaimentModel(),
                                     new EntertaimentModel(),
-                                },
-                                Reviews = new List<TripReviewModel>
-                                {
-                                   new TripReviewModel(),
-                                   new TripReviewModel(),
                                 }
                             }
                          }   
@@ -212,10 +232,9 @@ namespace CityTraveler.Tests
 
             for (int i = 0; i < 10; i++)
             {
-                var review = new TripReviewModel()
+                var review = new ReviewModel()
                 {
                     User = new ApplicationUserModel { Profile = new UserProfileModel { Name = "lll" } },
-                    Trip = new TripModel { },
                     Rating = new RatingModel { Value = 5 }
                 };
 
@@ -264,17 +283,6 @@ namespace CityTraveler.Tests
             await ApplicationContext.SaveChangesAsync();
         }
 
-
-        private static async Task GenerateDifferrentImages()
-        {
-            var images = new List<ImageModel>();
-            for (int i = 0; i < 4; i++)
-            {
-                var userImage = new UserImageModel();
-            }
-        }
-
-
         private static async Task GenerateTrips()
         {
             var trips = new List<TripModel>();
@@ -282,17 +290,19 @@ namespace CityTraveler.Tests
             {
                 var trip = new TripModel()
                 {
+                    Id = Guid.NewGuid(),
                     TripStart = DateTime.Now,
                     TripEnd = DateTime.Now.AddHours(4),
-                    Entertaiment = new List<EntertaimentModel>(),
+                    Entertaiments = new List<EntertaimentModel>(),
+                    Images = new List<TripImageModel>(),
                     Price = new TripPriceModel(),
                     Title = $"TripTitle{i}",
                     Description = $"TripDescription{i}",
                     OptimalSpent = TimeSpan.Zero,
                     RealSpent = TimeSpan.Zero,
                     TripStatus = TripStatus.New,
-                    TagSting = $"tripTagString{i}",
-                 };
+                    TagString = $"tripTagString{i}"
+                };
                 if (i % 2 == 0)
                 {
                     trip.DafaultTrip = true;
@@ -303,6 +313,8 @@ namespace CityTraveler.Tests
                 }
                 trips.Add(trip);
             }
+
+
             await ApplicationContext.Trips.AddRangeAsync(trips);
             await ApplicationContext.SaveChangesAsync();
         }

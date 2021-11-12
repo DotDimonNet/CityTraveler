@@ -27,13 +27,9 @@ namespace CityTraveler.Infrastucture.Data
 
         public async Task Initialize()
         {
-            _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
             IdentityResult result;
-
-            InitialData.SetupEnums(_context);
-            InitialData.SetupData(_context);
 
             if (!_context.Roles.Any(r => r.Name == Roles.Admin))
             {

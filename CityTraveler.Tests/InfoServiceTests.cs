@@ -1,6 +1,8 @@
 ﻿using CityTraveler.Domain.Entities;
 using CityTraveler.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -11,26 +13,28 @@ namespace CityTraveler.Tests
 {
     public class InfoServiceTests
     {
+        private Mock<ILogger<InfoService>> _loggerMock;
+        private InfoService service;
+
         [SetUp]
         public async Task Setup()
         {
             await ArrangeTests.SetupDbContext();
+            _loggerMock = ArrangeTests.SetupTestLogger(new NullLogger<InfoService>());
+            service = new InfoService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, _loggerMock.Object);
         }
 
         [Test]
-
         public async Task GetMostPopularUserEntertaimentTripsTests()
         {
             var userModel = ArrangeTests.ApplicationContext.Users
                 .LastOrDefault(x => x.Trips.Count > 0);
             var mostPopularUserEntertaimentInTrips = ArrangeTests.ApplicationContext.Users
                  .FirstOrDefault(x => x.Id == userModel.Id).Trips
-                 .SelectMany(x => x.Entertaiment)
-                 .OrderByDescending(x => x.Trips.Count)
+                 .SelectMany(x => x.Entertaiments)
+                 .OrderByDescending(x => x.Trips.Count())
                  .FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-
-            var entertaiment = await service.GetMostPopularEntertaimentInTrips(userModel.Id);
+            var entertaiment = await service.GetMostPopularEntertaimentInTripsAsync(userModel.Id);
 
             Assert.IsNotNull(entertaiment);
             Assert.AreEqual(entertaiment.Id, mostPopularUserEntertaimentInTrips.Id);
@@ -42,27 +46,25 @@ namespace CityTraveler.Tests
         {
             var mostPopularEntertainment = ArrangeTests.ApplicationContext.Users
                 .SelectMany(x => x.Trips)
-                .SelectMany(x => x.Entertaiment)
-                .OrderByDescending(x => x.Trips.Count).FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var entertaiment = await service.GetMostPopularEntertaimentInTrips();
+                .SelectMany(x => x.Entertaiments)
+                .OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
+            var entertaiment = await service.GetMostPopularEntertaimentInTripsAsync();
 
             Assert.IsNotNull(entertaiment);
             Assert.AreEqual(mostPopularEntertainment.Id, entertaiment.Id);
             Assert.AreEqual(mostPopularEntertainment.Title, entertaiment.Title);
-            Assert.AreEqual(mostPopularEntertainment.Trips.Count, entertaiment.Trips.Count);
+            Assert.AreEqual(mostPopularEntertainment.Begin, entertaiment.Begin);
         }
 
         [Test]
-        public async Task GetTripByMaxChoiceOfUsersTest()
+        public async Task GetMostPopularTripTest()
         {
             var trip = ArrangeTests.ApplicationContext.Trips
                 .OrderByDescending(x => x.Users.Count).FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripFromMethod = await service.GetTripByMaxChoiceOfUsers();
+            var tripFromMethod = await service.GetMostPopularTripAsync();
 
-            Assert.AreEqual(tripFromMethod.Id, trip.Id);
-            Assert.AreSame(trip, tripFromMethod);
+            Assert.AreEqual(tripFromMethod.Title, trip.Title);
+            Assert.AreEqual(tripFromMethod.Users.Count(), trip.Users.Count());
             Assert.IsNotNull(tripFromMethod);
          }
 
@@ -76,10 +78,9 @@ namespace CityTraveler.Tests
                 .OrderByDescending(x => x.Comments.Count)
                 .FirstOrDefault();
 
-            var serviceInfoService = new InfoService(ArrangeTests.ApplicationContext);
-            var review = await serviceInfoService.GetReviewByMaxComments(user.Id);
+            var review = await service.GetReviewByMaxCommentsAsync(user.Id);
 
-            Assert.AreEqual(review.Id, userReview.Id);
+            Assert.AreEqual(review.UserId, userReview.UserId);
             Assert.AreEqual(userReview.Comments.Count, review.Comments.Count);
             Assert.IsNotNull(review);
         }
@@ -92,27 +93,25 @@ namespace CityTraveler.Tests
                 .SelectMany(x => x.Reviews)
                 .OrderByDescending(x => x.Comments.Count)
                 .FirstOrDefault();
-            var serviceInfoservice = new InfoService(ArrangeTests.ApplicationContext);
-            var reviewActual = await serviceInfoservice.GetReviewByMaxComments();
 
-            Assert.AreEqual(reviewExpected.Id, reviewActual.Id);
+            var reviewActual = await service.GetReviewByMaxCommentsAsync();
+
+            Assert.AreEqual(reviewExpected.UserId, reviewActual.UserId);
             Assert.AreEqual(reviewExpected.Comments.Count, reviewActual.Comments.Count);
             Assert.IsNotNull(reviewActual);
         }
 
         [Test]
-
         public async Task GetTripByMaxReviewTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Users
                 .SelectMany(x => x.Trips)
                 .OrderByDescending(x => x.Reviews.Count > 0).FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripActual = await service.GetTripByMaxReview();
+
+            var tripActual = await service.GetTripByMaxReviewAsync();
 
             Assert.AreEqual(tripExpected.Title, tripActual.Title);
-            Assert.AreEqual(tripExpected.Reviews.Count, tripActual.Reviews.Count);
-            Assert.AreEqual(tripExpected.Id, tripActual.Id);
+            Assert.AreEqual(tripExpected.Reviews.Count, tripActual.Reviews.Count());
             Assert.IsNotNull(tripActual);
         }
 
@@ -126,34 +125,31 @@ namespace CityTraveler.Tests
                 .Trips
                 .OrderByDescending(x => x.Reviews.Count)
                 .FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripActual = await service.GetTripByMaxReview(user.Id);
 
-            Assert.AreEqual(tripExpected.Reviews.Count, tripActual.Reviews.Count);
-            Assert.AreEqual(tripExpected.Id, tripActual.Id);
+            var tripActual = await service.GetTripByMaxReviewAsync(user.Id);
+
+            Assert.AreEqual(tripExpected.Reviews.Count(), tripActual.Reviews.Count());
             Assert.IsNotNull(tripActual);
         }
 
         [Test]
-
-        public void GetlastTripByPeriodTest()
+        public async Task GetlastTripByPeriodTest()
         {
             var startDateTime = DateTime.Now;
             var endDateTime = DateTime.Now.AddHours(4);
             var tripsExpected = ArrangeTests.ApplicationContext
                 .Trips.Where(x => x.TripStart > startDateTime && x.TripEnd < endDateTime);
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripsActual = service.GetLastTripsByPeriod(startDateTime, endDateTime);
+
+            var tripsActual = await service.GetLastTripsByPeriodAsync(startDateTime, endDateTime);
 
             Assert.IsNotNull(tripsActual);
-            Assert.AreEqual(tripsExpected.Count(), tripsActual.Count());
+            Assert.AreEqual(tripsExpected.Count(),tripsActual.Count());
 
 
             foreach (var tripactual in tripsActual)
             {
                 Assert.AreEqual(tripsExpected.Select(x => x.TripStart), tripsActual.Select(x => x.TripStart));
                 Assert.AreEqual(tripsExpected.Select(x => x.TripEnd), tripsActual.Select(x => x.TripEnd));
-                Assert.AreEqual(tripsExpected.Select(x => x.Id), tripsActual.Select(x => x.Id));
             }
         }
 
@@ -164,100 +160,94 @@ namespace CityTraveler.Tests
             var endOfPeriod = DateTime.Now.AddMilliseconds(4);
             var usersExpected = ArrangeTests.ApplicationContext.Users
                 .Count(x => x.Profile.Created > startOfPeriod && x.Profile.Created < endOfPeriod);
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var usersActual = await service.GetRegisteredUsersByPeriod(startOfPeriod, endOfPeriod);
+
+            var usersActual = await service.GetRegisteredUsersByPeriodAsync(startOfPeriod, endOfPeriod);
 
             Assert.AreEqual(usersExpected, usersActual);
             Assert.IsNotEmpty(usersActual.ToString(), usersExpected.ToString());
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
         }
 
-        /*[Test]
-
-        public async Task GetMostlyUsedTemplateTest()
+        [Test]
+        public async Task GetMostlyUsedTemplatesTest()
         {
-            var templateId = ArrangeTests.ApplicationContext.Trips
-                .Select(x => x.TemplateId).GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
-            var templateExpected = ArrangeTests.ApplicationContext.Trips.FirstOrDefault(x => x.TemplateId == templateId);
+            var count = 2;
+            var templateIds = ArrangeTests.ApplicationContext.Trips
+                .Select(x => x.TemplateId)
+                .GroupBy(x => x)
+                .OrderByDescending(g => g.Count())
+                .Select(x => x.Key)
+                .Take(count);
 
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var templateActual = await service.GetMostlyUsedTemplate();
+            var templatesActual = await service.GetMostlyUsedTemplatesAsync(count);
 
-            Assert.IsNotNull(templateActual);
-            Assert.AreEqual(templateExpected, templateActual);
-            Assert.AreEqual(templateExpected.Id, templateActual.Id);
-
-            ArrangeTests.UserManagerMock
-                .Verify(x => x.CreateAsync(It.IsAny<ApplicationUserModel>(), It.IsAny<string>()), Times.Once);
-        }*/
+            Assert.IsNotEmpty(templatesActual);
+            //Assert.AreEqual(templatesActual.Count(), count);
+        }    
 
         [Test]
-
-        public void GetUsersCountTripsDateRangeTest()
+        public async Task GetUsersCountTripsDateRangeTest()
         {
             var startOfPeriod = DateTime.Now;
             var endOfPeriod = DateTime.Now.AddMilliseconds(4);
             var usersCreatedTripByperiodExpected = ArrangeTests.ApplicationContext.Trips
                 .Where(x => x.TripStart > startOfPeriod && x.TripEnd < endOfPeriod)
                 .SelectMany(x => x.Users).Count();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var usersCreatedTripsByPeriodActual = service.GetUsersCountTripsDateRange(startOfPeriod, endOfPeriod);
+
+            var usersCreatedTripsByPeriodActual = await service.GetUsersCountTripsDateRangeAsync(startOfPeriod, endOfPeriod);
 
             Assert.AreEqual(usersCreatedTripByperiodExpected, usersCreatedTripsByPeriodActual);
             Assert.IsNotNull(usersCreatedTripsByPeriodActual);
         }
 
         [Test]
-
         public async Task GetLongestTripTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Trips
                 .OrderByDescending(x => x.RealSpent).FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripActual = await service.GetLongestTrip();
+
+            var tripActual = await service.GetLongestTripAsync();
 
             Assert.IsNotNull(tripActual);
-            Assert.AreEqual(tripExpected.Id, tripActual.Id);
+            Assert.AreEqual(tripExpected.Title, tripActual.Title);
         }
 
         [Test]
-
         public async Task GetShortestTripTest()
         {
             var tripExpected = ArrangeTests.ApplicationContext.Trips
                 .OrderBy(x => x.RealSpent).FirstOrDefault();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripActual = await service.GetShortestTrip();
+
+            var tripActual = await service.GetShortestTripAsync();
 
             Assert.IsNotNull(tripActual);
-            Assert.AreEqual(tripExpected.Id, tripActual.Id);
+            Assert.AreEqual(tripExpected.Title, tripActual.Title);
         }
 
         [Test]
-        public void GetTripsCreatedByPeriod()
-
+        public async Task GetTripsCreatedByPeriod()
         {
             var startOfPeriod = DateTime.Now;
             var endOfPeriod = DateTime.Now.AddMilliseconds(4);
             var tripsCreatedExpected = ArrangeTests.ApplicationContext.Trips
                 .Where(x => x.TripStart > startOfPeriod && x.TripEnd < endOfPeriod).Count();
-            var service = new InfoService(ArrangeTests.ApplicationContext);
-            var tripscreatedActual = service.GetTripsCreatedByPeriod(startOfPeriod, endOfPeriod);
+
+            var tripscreatedActual =await service.GetTripsCreatedByPeriodAsync(startOfPeriod, endOfPeriod);
 
             Assert.IsNotNull(tripscreatedActual);
             Assert.AreEqual(tripsCreatedExpected, tripscreatedActual);
-
         }
 
+        [Test]
+        public async Task GetTripsByLowPriceTest()
+        {
+            var count = 3;
+            var trips = ArrangeTests.ApplicationContext
+                .Trips.OrderBy(x => x.Price.Value).Take(count);
 
+            var tripsByLowPrice =await service.GetTripsByLowPriceAsync(count);
 
-
-
-
-
-
+            Assert.IsNotEmpty(tripsByLowPrice);
+            Assert.AreEqual(tripsByLowPrice.Count(), count);
+        }
     }
-
 }

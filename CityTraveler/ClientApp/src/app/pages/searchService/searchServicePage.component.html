@@ -1,0 +1,49 @@
+<div class="class-form">
+    <h3>Search entertainments</h3>
+    <p>Input parameters by which you want to find entertainments</p>
+</div>
+<div class="container">
+    <div class="search-input">
+        <span>Street name</span>
+        <input type="text" name="Street name" [(ngModel)]="propsEntertainments.streetName" />
+    </div>
+    <div class="search-input">
+        <span>Type</span>
+        <input type="text" name="Type" [(ngModel)]="propsEntertainments.type" />
+    </div>
+    <div class="search-input">
+        <span>House number</span>
+        <input type="text" name="House number" [(ngModel)]="propsEntertainments.houseNumber" />
+    </div>
+    <div class="search-input">
+        <span>Trip name</span>
+        <input type="text" name="Trip name" [(ngModel)]="propsEntertainments.tripName" />
+    </div>
+    <div class="search-input">
+        <span>Title</span>
+        <input type="text" name="Title" [(ngModel)]="propsEntertainments.title" />
+    </div>
+    <div class="search-input">
+        <span>Price more</span>
+        <input type="text" name="Price more" [(ngModel)]="propsEntertainments.priceMore" />
+    </div>
+    <div class="search-input">
+        <span>Price Less</span>
+        <input type="text" name="Price less" [(ngModel)]="propsEntertainments.priceLess" />
+    </div>
+    <div class="search-input">
+        <span>Average rating more</span>
+        <input type="text" name="Average rating more" [(ngModel)]="propsEntertainments.ratingMore" />
+    </div>
+    <div class="search-input">
+        <span>Average rating less</span>
+        <input type="text" name="Average rating less" [(ngModel)]="propsEntertainments.ratingLess" />
+    </div>
+    <button (click)="submitEntertainments()">Search</button>
+</div>
+<div>
+    <div *ngFor="let entInfo of entertainments">
+        <div>Entertainment name: {{entInfo.Title}}</div>
+    </div>
+</div>
+

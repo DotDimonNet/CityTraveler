@@ -2,77 +2,203 @@
 using CityTraveler.Services.Interfaces;
 using CityTraveler.Infrastucture.Data;
 using CityTraveler.Domain.DTO;
-using CityTraveler.Services.Extensions;
+using CityTraveler.Domain.Errors;
 using CityTraveler.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace CityTraveler.Services
 {
     public class EntertainmentService : IEntertainmentService
     {
-        ApplicationContext _context;
+        private readonly ILogger<EntertainmentService> _logger;
+        private readonly ApplicationContext _context;
+        private readonly IMapper _mapper;
 
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
-
-        public EntertainmentService(ApplicationContext context) 
+        public EntertainmentService(ApplicationContext context, IMapper mapper, ILogger<EntertainmentService> logger)
         {
+            _logger = logger;
             _context = context;
+            _mapper = mapper;
         }
 
-        public IEnumerable<EntertaimentModel> GetAll()
+        public IEnumerable<EntertainmentShowDTO> GetAllDTO(EntertainmentType typeId = EntertainmentType.All)
         {
-            return _context.Entertaiments;
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _context.Entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId);
+
+                    return entertainments.Any()
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x))
+                        : new List<EntertainmentShowDTO>();
+
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return new List<EntertainmentShowDTO>();
+            }
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentByCoordinates(CoordinatesModel coordinates)
+        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByTitle(string title, EntertainmentType typeId = EntertainmentType.All)
         {
-            return await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Address.Coordinates == coordinates);
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _context.Entertaiments.Where(x => x.Title.Contains(title))
+                        .Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
+
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
+                        && x.Title.Contains(title));
+
+                    return entertainments.Any()
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x))
+                        : new List<EntertainmentPreviewDTO>();
+
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return new List<EntertainmentPreviewDTO>();
+            }
         }
 
-        public async Task<EntertaimentModel> GetEntertainmentById(Guid id)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> ids, EntertainmentType typeId = EntertainmentType.All)
         {
-            return await _context.Entertaiments
-                .FirstOrDefaultAsync(x => x.Id == id);
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _context.Entertaiments.Where(x => ids.Contains(x.Id))
+                        .Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
+                        && ids.Contains(x.Id));
+
+                    return entertainments.Any()
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x))
+                        : new List<EntertainmentShowDTO>();
+
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return new List<EntertainmentShowDTO>();
+            }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(StreetModel street)
+        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, EntertainmentType typeId = EntertainmentType.All)
         {
-            return _context.Entertaiments
-                .Where(x => x.Address.Street == street);
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _context.Entertaiments.Where(x => x.Address.Street.Title.Contains(streetTitle))
+                        .Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
+
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
+                        && x.Address.Street.Title.Contains(streetTitle));
+
+                    return entertainments.Any()
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x))
+                        : new List<EntertainmentPreviewDTO>();
+
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return new List<EntertainmentPreviewDTO>();
+            }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentsByStreet(string streetTitle)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinatesDto, EntertainmentType typeId = EntertainmentType.All)
         {
-            return _context.Entertaiments
-                .Where(x => x.Address.Street.Title == streetTitle);
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _context.Entertaiments.Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                        && x.Address.Coordinates.Longitude == coordinatesDto.Longitude)
+                        .Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
+                    && x.Address.Coordinates.Latitude == coordinatesDto.Latitude
+                    && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
+
+                    return entertainments.Any()
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x))
+                        : new List<EntertainmentShowDTO>();
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return new List<EntertainmentShowDTO>();
+            }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainmentByTitle(string title)
+        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByIdAsync(Guid id, EntertainmentType typeId = EntertainmentType.All)
         {
-            return _context.Entertaiments.Where(x=>x.Title.Contains(title));
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>
+                        (await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id));
+
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id
+                        && x.Type == typeId);
+
+                    return entertainment != null
+                        ? _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment)
+                        : null;
+
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return null;
+            }
         }
 
-        public IEnumerable<EntertaimentModel> GetEntertainments(IEnumerable<Guid> ids)
+        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByAddressAsync(AddressGetDTO addressDto, EntertainmentType typeId = EntertainmentType.All)
         {
-            return _context.Entertaiments.Where(x => ids.Contains(x.Id));
-        }
+            switch (typeId)
+            {
+                case EntertainmentType.All:
+                    return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>
+                        (await _context.Entertaiments
+                        .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
+                        && x.Address.HouseNumber == addressDto.HouseNumber
+                        && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
+                        && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude));
 
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(AddressModel address)
-        {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address == address);
-        }
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
+                        && x.Address.HouseNumber == addressDto.HouseNumber
+                        && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
+                        && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude
+                        && x.Type == typeId);
 
-        public async Task<EntertaimentModel> GetEntertainmentByAddress(string houseNumber, string apartmentNumber, string streetTitle)
-        {
-            return await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.HouseNumber == houseNumber 
-            && x.Address.ApartmentNumber == apartmentNumber && x.Address.Street.Title == streetTitle);
+                    return entertainment != null
+                        ? _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment)
+                        : null;
+
+                default:
+                    _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
+                    return null;
+            }
         }
 
         public double GetAverageRating(EntertaimentModel entertaiment)

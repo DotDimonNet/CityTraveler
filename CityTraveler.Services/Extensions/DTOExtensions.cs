@@ -2,6 +2,7 @@
 using CityTraveler.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using CityTraveler.Infrastucture.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,28 +53,50 @@ namespace CityTraveler.Services.Extensions
             };
             return user;
         }
-        public static EntertaimentModel ToEntertaiment(this EntertainmentDTO entertainmentDTO)
+       
+        public static TripModel ToTrip(this TripDTO tripDTO)
         {
-            try
+            return new TripModel
             {
-                return new EntertaimentModel()
-                {
-                    AddressId = entertainmentDTO.Address.Id,
-                    Address = entertainmentDTO.Address,
-                    Type = entertainmentDTO.Type,
-                    Trips = new List<TripModel>(),
-                    AveragePrice = entertainmentDTO.AveragePrice,
-                    Images = entertainmentDTO.Images,
-                    Reviews = new List<EntertainmentReviewModel>(),
-                    Title = entertainmentDTO.Title,
-                    Description = entertainmentDTO.Description,
-                };
-            }
-            catch (Exception)
-            { 
-                throw new Exception("EntertainmentDTO isn't correct");
-            }
-            
+                TripStart = tripDTO.TripStart,
+                TripEnd = tripDTO.TripEnd,
+                Title = tripDTO.Title,
+                Description = tripDTO.Description,
+               // TripStatus = tripDTO.TripStatus,
+                TagString = tripDTO.TagSting,
+                Images = new List<TripImageModel>(),
+                Reviews = new List<TripReviewModel>(),
+                Entertaiments = new List<EntertaimentModel>()
+            };
         }
+        public static TripModel ToNewTrip(this AddNewTripDTO newTripDTO)
+        {
+            return new TripModel 
+            {
+                Title = newTripDTO.Title,
+                Description = newTripDTO.Description,
+                TripStart = newTripDTO.TripStart,
+                Entertaiments = new List<EntertaimentModel>(),
+                //TripStatus = newTripDTO.TripStatus
+            };
+        }
+
+
+        public static TripModel ToDefaultTrip(this DefaultTripDTO defaultTripDTO)
+        {
+            return new TripModel
+            {
+                Title = defaultTripDTO.Title,
+                Description = defaultTripDTO.Description,
+                AverageRating = defaultTripDTO.AverageRating,
+                Price = new TripPriceModel(),
+                OptimalSpent = defaultTripDTO.OptimalSpent,
+                Images = new List<TripImageModel>(),
+                Reviews = new List<TripReviewModel>(),
+                Entertaiments = new List<EntertaimentModel>(),
+                DafaultTrip =defaultTripDTO.DefaultTrip
+            };
+        }
+
     }
 }

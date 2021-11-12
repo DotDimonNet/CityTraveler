@@ -2,12 +2,12 @@
 using CityTraveler.Domain.Entities;
 using CityTraveler.Domain.Enums;
 using CityTraveler.Services;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace CityTraveler.Tests
 {
@@ -24,9 +24,9 @@ namespace CityTraveler.Tests
         {
             var entertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
 
-            var isRemoved = await service.RemoveEntertainment(entertainment.Id);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
+            var isRemoved = await service.RemoveEntertainmentAsync(entertainment.Id);
 
             Assert.IsTrue(isRemoved);
             Assert.IsTrue(!ArrangeTests.ApplicationContext.Entertaiments.Contains(entertainment));
@@ -35,13 +35,11 @@ namespace CityTraveler.Tests
         [Test]
         public async Task RemoveEntertainmentExeptionTest()
         {
-            var entertainment = ArrangeTests.ApplicationContext.Entertaiments
-                .FirstOrDefault();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
             try
             {
-                var isRemoved = await service.RemoveEntertainment(Guid.NewGuid());
+                var isRemoved = await service.RemoveEntertainmentAsync(Guid.NewGuid());
             }
             catch (Exception e)
             {
@@ -50,20 +48,35 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-        public async Task SetEntertainmentTest()
+        public async Task AddEntertainmentsTest()
         {
-            var entertainments = ArrangeTests.ApplicationContext.Entertaiments
-                .Where(x=>x.Address.Street== ArrangeTests.ApplicationContext.Streets
-                .FirstOrDefault());
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var entertainmentsDTO = new List<EntertainmentGetDTO>()
+            {
+                new EntertainmentGetDTO()
+                {
+                    Address = new AddressGetDTO()
+                    {
+                        Coordinates = new CoordinatesDTO(){},
+                    },
+                    Type = (int)EntertainmentType.Event,
+                },
+                new EntertainmentGetDTO()
+                {
+                    Address = new AddressGetDTO()
+                    {
+                        Coordinates = new CoordinatesDTO(){},
+                    },
+                    Type = (int)EntertainmentType.Event,
+                },
+            };
+            var contextSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
-            var isSeted = await service.SetEntertaiment(entertainments);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
+            var isSeted = await service.AddEntertainmentsAsync(entertainmentsDTO);
+            var newContexSize = ArrangeTests.ApplicationContext.Entertaiments.Count();
 
             Assert.IsTrue(isSeted);
-            foreach (var item in entertainments)
-            {
-                Assert.IsTrue(ArrangeTests.ApplicationContext.Entertaiments.Contains(item));
-            }
+            Assert.AreNotEqual(contextSize, newContexSize);
         }
 
         [Test]
@@ -75,9 +88,9 @@ namespace CityTraveler.Tests
             var oldModifided = oldEntertainment.Modified;
             var oldCreated = oldEntertainment.Created;
             oldEntertainment.Title = "Updated";
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
-            var isUpdated = await service.UpdateEntertainment(oldEntertainment);
+            var isUpdated = await service.UpdateEntertainmentAsync(new EntertainmentUpdateDTO());
             
             var newEntertainment = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x=>x.Id==oldEntertainment.Id);
@@ -91,9 +104,9 @@ namespace CityTraveler.Tests
         public async Task UpdateEntertainmentExeptionTest()
         {
             var newEntertainment = new EntertaimentModel();
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
-            var isUpdated = await service.UpdateEntertainment(newEntertainment);
+            var isUpdated = await service.UpdateEntertainmentAsync(new EntertainmentUpdateDTO());
 
             var newEntertainmentAfter = ArrangeTests.ApplicationContext.Entertaiments
                 .FirstOrDefault(x => x.Id == newEntertainment.Id);
@@ -104,28 +117,30 @@ namespace CityTraveler.Tests
         [Test]
         public async Task AddEntertainmentTest()
         {
-            var dto = new EntertainmentDTO()
+            var dto = new EntertainmentGetDTO()
             {
-                Address = new AddressModel()
+                Address = new AddressGetDTO()
                 {
-                    Coordinates = new CoordinatesModel() { Latitude = 345, Longitude = 534 },
+                    Coordinates = new CoordinatesDTO()
+                    {
+                        Latitude = 234,
+                        Longitude = 543,
+                    },
                     HouseNumber = "23",
-                    ApartmentNumber = "24",
-                    Street = new StreetModel()
+                    ApartmentNumber = "34"
                 },
-                Type = EntertainmentType.Event,
-                AveragePrice = new EntertaimentPriceModel() { Title = "Average price", Value = 4567 },
+                Type = (int)EntertainmentType.Event,
                 Title = "Lorem",
                 Description = "Ipsum"
             };
-            var service = new CityArchitectureService(ArrangeTests.ApplicationContext);
-            var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
+            var service = new CityArchitectureService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper, ArrangeTests.LoggerCityArchitecture);
 
-            var isAdded = await service.AddEntertainment(dto);
+            var contextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
+            var isAdded = await service.AddEntertainmentAsync(dto);
 
             var newContextLenght = ArrangeTests.ApplicationContext.Entertaiments.Count();
             Assert.IsTrue(isAdded);
-            Assert.IsTrue(contextLenght == newContextLenght - 1);
+            Assert.AreNotEqual(contextLenght, newContextLenght);
         }
     }
 }

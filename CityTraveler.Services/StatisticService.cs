@@ -9,42 +9,55 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CityTraveler.Domain.Enums;
+using Microsoft.Extensions.Logging;
+using AutoMapper;
+using CityTraveler.Domain.DTO;
+
 namespace CityTraveler.Services
 {
     public class StatisticService : IStatisticService
     {
-        // 
-        private ApplicationContext _context;
-        public StatisticService(ApplicationContext context)
+        private readonly ILogger<StatisticService> _logger;
+        private readonly ApplicationContext _context;
+        private readonly IMapper _mapper;
+        private readonly IUserManagementService _userManagementService;
+        public StatisticService(ApplicationContext context, IMapper mapper, ILogger<StatisticService> logger, IUserManagementService userManagementService)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
-        public async Task<int> QuantityPassEntertaiment(Guid UserID)
-        {
-            int result;
-            try
-            {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                result = user.Trips.SelectMany(x => x.Entertaiment).Distinct().Count();
-            }
-            catch (Exception e)
-            {
-                throw new Exception(" ");
-            }
-            return result;
-        }
-        public async Task<IEnumerable<TripModel>> GetTripVisitEntertaiment(Guid UserID,EntertaimentModel rev)
+        public bool IsActive { get; set; }
+        public string Version { get; set; }
+        public async Task<int> QuantityPassEntertaiment(Guid userId)
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                return user.Trips.Where(x => x.Entertaiment.Contains(rev));
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                return user.Trips.SelectMany(x => x.Entertaiments).Distinct().Count();
+
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get quantity of pass entertaiment {e.Message}");
             }
-             
+        }
+        public async Task<IEnumerable<TripPrewievDTO>> GetTripVisitEntertaiment(Guid userId,EntertaimentModel entertaiment)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                var trips = user.Trips.Where(x => x.Entertaiments.Contains(entertaiment));
+                return trips.Select(x => _mapper.Map<TripModel, TripPrewievDTO>(x));
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                return Enumerable.Empty<TripPrewievDTO>();
+            }
+
         }
         public async Task<double> GetAverageRatingUserTrip(Guid userId)
         {
@@ -55,110 +68,142 @@ namespace CityTraveler.Services
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get average rating user trips {e.Message}");
             }
             
         }
-        public async Task<double> GetAverageEntertaimentUserTrip(Guid UserID)
+        public async Task<double> GetAverageEntertaimentUserTrip(Guid userId)
         {
-            double result;
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                result = user.Trips.Select(x => x.Entertaiment.Count).Average();
-            }
-            catch (Exception e)
-            {
-                throw new Exception(" ");
-            }
-            return result;
-        }
-        public async Task<TimeSpan> GetAverageTimeUserTrip(Guid UserID)
-        {
-            double result;
-            try
-            {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                result = user.Trips.Select(x => x.TripEnd.Subtract(x.TripStart)).Average(t => t.Ticks);
-                long averageTicksLong = Convert.ToInt64(result);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                return user.Trips.Average(x => x.Entertaiments.Count);
 
-                TimeSpan averageTimeSpan = TimeSpan.FromTicks(averageTicksLong);
-
-                return averageTimeSpan;
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get average count entertaiment user trip {e.Message}");
             }
         }
-        public async Task<double> GetAveragePriceUserTrip(Guid UserID)
+        public async Task<TimeSpan> GetMaxTimeUserTrip(Guid userId)
         {
-            double result;
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                result = user.Trips.Select(x => x.Price.Value).Average();
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                return user.Trips.Max(x => x.TripEnd - x.TripStart);
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get maximal time for Trip {e.Message}");
             }
-            return result;
         }
-        public async Task<int> GetCountPassedUserTrip(Guid UserID)
+        public async Task<TimeSpan> GetMinTimeUserTrip(Guid userId)
         {
-            
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                return user.Trips.Min(x => x.TripEnd - x.TripStart);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get minimal time for Trip {e.Message}");
+            }
+        }
+        public async Task<double> GetAveragePriceUserTrip(Guid userId)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                return user.Trips.Average(x => x.Price.Value);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get average price of user trips {e.Message}");
+            }
+        }
+        public async Task<int> GetCountPassedUserTrip(Guid userId)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
                 return user.Trips.Count(x => x.TripStatus == TripStatus.Passed);
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get count of passed user trip {e.Message}");
             }
-            
         }
-        public async Task<IEnumerable<TripModel>> GetActivityUserTrip(Guid UserID,DateTime time)
+        public async Task<IEnumerable<TripPrewievDTO>> GetActivityUserTrip(Guid userId, DateTime timeStart, DateTime timeEnd)
         {
-             
+            if (!_context.Users.Any(x => x.Id == userId))
+            {
+                _logger.LogWarning("User not found");
+                return null;
+            }
+            if (timeEnd < timeStart)
+            {
+                _logger.LogWarning("TimeStart can`t be more than TimeEnd");
+                return null;
+            }
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == UserID);
-                 return user.Trips.Where(x => x.Created < time);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                var trips = user.Trips.Where(x =>
+                         x.Created < timeEnd
+                         && x.Created > timeStart);
+                return trips.Select(x => _mapper.Map<TripModel, TripPrewievDTO>(x));
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                return Enumerable.Empty<TripPrewievDTO>();
             }
           
         }
-        public async Task<double> GetAverageAgeUser()
+        public async Task<DateTime> GetAverageAgeUser()
         {
             try
             {
-                return _context.UserProfiles.Select(x =>
-                     DateTime.Today.Year - x.Birthday.Year
-                ).Average();
+                var ticks = (long)await Task.Run(() => _context.UserProfiles.Select(x => x.Birthday.Ticks).ToList().Average());
+                var averageDate = new DateTime(ticks);
+                return averageDate;
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get average age user {e.Message}");
             }
         }
         public async Task<double> GetAvarageEnternaimentInTrip()
         {
-            
             try
             {
-               return _context.Trips.Select(x => x.Entertaiment.Count()).Average();
+               return _context.Trips.Average(x => x.Entertaiments.Count());
             }
             catch (Exception e)
             {
-                throw new Exception(" ");
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get average enternaiment all trip {e.Message}");
             }
-            
+        }
+        public async Task<double> GetAverageUserReviewRating(Guid userId)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                return user.Reviews.Average(x => x.Rating.Value);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                throw new Exception($"Failed to get average rating user reviews {e.Message}");
+            }
         }
     }
 

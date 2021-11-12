@@ -2,12 +2,12 @@ using CityTraveler.Domain.Entities;
 using CityTraveler.Infrastructure.Authorization;
 using CityTraveler.Infrastructure.Settings;
 using CityTraveler.Infrastucture.Data;
+using CityTraveler.Mapping;
 using CityTraveler.Services;
 using CityTraveler.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -68,7 +68,7 @@ namespace CityTraveler
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + "åæøÅÆØ";
+                options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + "Ã¥Ã¦Ã¸Ã…Ã†Ã˜";
                 options.Tokens.PasswordResetTokenProvider = nameof(PasswordResetTokenProvider);
             });
 
@@ -101,11 +101,29 @@ namespace CityTraveler
                 options.AddPolicy(Policies.RequireContentManagerRole, policy => policy.RequireClaim(ClaimTypes.Role, Roles.ContentManager));
                 options.AddPolicy(Policies.RequireUserRole, policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
             });
+
+            services.AddAutoMapper(x => 
+            {
+                x.AddProfile<TripMapping>();
+                x.AddProfile<MappingProfile>();
+                x.AddProfile<UserMappingProfile>();
+                x.AddProfile<ReviewMapping>();
+            });
             services.AddOptions();
             services.AddScoped<DbInitializer>();
+            services.AddTransient<IUserManagementService, UserManagementService>();
+            services.AddTransient<IInfoService, InfoService>();
             services.AddTransient<ITripService, TripService>();
+            services.AddTransient<IMapService, MapService>();
             services.AddTransient<IEntertainmentService, EntertainmentService>();
             services.AddTransient<ICityArchitectureService, CityArchitectureService>();
+            services.AddTransient<ISocialMediaService, SocialMediaService>();
+            services.AddTransient<IStatisticService, StatisticService>();
+            services.AddTransient<IAdminPanelService, AdminPanelService>();
+            services.AddTransient<IHistoryService, HistoryService>();
+            services.AddTransient(typeof(IImageService<>), typeof(ImageService<>));
+            services.AddTransient<ISearchService, SearchService>();
+            services.AddTransient<IStatisticService, StatisticService>();
             services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
             services.AddMvc();
             services.AddControllers(options =>
@@ -134,6 +152,7 @@ namespace CityTraveler
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbInitializer dbInitializer)
         {
+            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
