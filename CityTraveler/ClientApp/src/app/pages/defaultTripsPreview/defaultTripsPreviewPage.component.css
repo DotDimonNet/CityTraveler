@@ -1,0 +1,20 @@
+.default-trips-element{
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-bottom: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.default-trips-element-image{
+    width: 465px;
+    height: 291px;
+    background-color: cadetblue;
+}
+.default-trip-preview-description{
+    width: 465px;
+}
+.default-trips{
+    
+    padding-top: 20px;
+}

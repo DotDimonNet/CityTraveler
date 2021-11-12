@@ -19,11 +19,11 @@ import { StatisticDataService } from './services/StatisticService.data';
 import { StatisticService } from './services/StatisticService';
 import { AdminComponent } from './pages/admin/admin.component';
 import { AdminService } from './services/adminService';
-import { AdminDataService } from './services/adminService.data';
+import { AdminDataService } from './services/adminDataService';
 import { EntertainmentDataService } from './services/entertainmentService.data';
 import { EntertainmentService } from './services/entertainmentService';
 import { DefaultTripPageComponent } from './pages/defaultTrip/defaultTripPage.component';
-import { DefaultTrip } from './models/defaultTrip.model';
+import { DefaultTripsPagePreviewComponent } from './pages/defaultTripsPreview/defaultTripsPreviewPage.component';
 import { TripService } from './services/tripService';
 import { TripDataService } from './services/tripService.data';
 import { SocialMediaDataService } from './services/socialMediaService.data';
@@ -46,6 +46,7 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     AdminComponent,
     EntertainmentComponent,
     DefaultTripPageComponent,
+    DefaultTripsPagePreviewComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
@@ -59,7 +60,8 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
       { path: 'entertainment', component: EntertainmentComponent, pathMatch: 'full' },
-      { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
+      { path: 'default-trip/:id', component:DefaultTripPageComponent, pathMatch:'full'},
+      { path: 'default-trips-preview', component:DefaultTripsPagePreviewComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
@@ -83,7 +85,6 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     TripDataService,
     SocialMediaDataService,
     SocialMediaService
-
   ],
   bootstrap: [AppComponent]
 })

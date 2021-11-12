@@ -4,7 +4,7 @@ import { Identifier } from "typescript";
 import { IImageModel } from "./image.model";
 
 export interface IDefaultTripPreview{
-    Id: string,
+    id: string,
     title: string,
     description: string,
     tagString: string
