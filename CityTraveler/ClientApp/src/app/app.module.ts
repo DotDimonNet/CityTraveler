@@ -22,7 +22,7 @@ import { AdminService } from './services/adminService';
 import { AdminDataService } from './services/adminService.data';
 import { EntertainmentDataService } from './services/entertainmentService.data';
 import { EntertainmentService } from './services/entertainmentService';
-import { DefaultTripPageComponent } from './pages/defaultTripPage/defaultTripPage.component';
+import { DefaultTripPageComponent } from './pages/defaultTrip/defaultTripPage.component';
 import { DefaultTrip } from './models/defaultTrip.model';
 import { TripService } from './services/tripService';
 import { TripDataService } from './services/tripService.data';
@@ -31,6 +31,13 @@ import { SocialMediaService } from './services/socialMediaService';
 import { AddReviewTripPageComponent } from './pages/socialMedia/addReviewTripPage.component';
 import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.component';
 import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
+import { InfoDataService } from './services/InfoService.data';
+import { InfoService } from './services/InfoService';
+import { SearchDataService } from './services/searchService.data';
+import { SearchService } from './services/searchService';
+import { SearchServiceComponent } from './pages/searchService/searchService.component';
+import { SearchUsersComponent } from './pages/searchService/searchUsersPage.component';
+import { SearchTripsComponent } from './pages/searchService/searchTrips.component';
 
 
 @NgModule({
@@ -48,7 +55,10 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
-    DeleteCommentPageComponent
+    DeleteCommentPageComponent,
+    SearchServiceComponent,
+    SearchTripsComponent,
+    SearchUsersComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -66,7 +76,10 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
       { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
       { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
+      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' },
+      { path: 'search-entertainments', component: SearchServiceComponent, pathMatch: 'full' },
+      { path: 'search-users', component: SearchUsersComponent, pathMatch: 'full' },
+      { path: 'search-trips', component: SearchTripsComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -79,7 +92,9 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     TripService,
     TripDataService,
     SocialMediaDataService,
-    SocialMediaService
+    SocialMediaService,
+    SearchDataService,
+    SearchService
   ],
   bootstrap: [AppComponent]
 })

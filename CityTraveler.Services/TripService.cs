@@ -28,8 +28,6 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public bool IsActive { get; set; }
-        public string Version { get; set; }
         public Guid Id { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
@@ -177,16 +175,12 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<TripModel> GetTripsByStatus(string status)
+        //Kate`s fault
+        public IEnumerable<TripModel> GetTripsByStatus(TripStatus status)
         {
             try
             {
-                var isStatusExists = _context.TripStatuses.Any(x=>x.Name==status);
-                if (!isStatusExists && status == null)
-                {
-                    _logger.LogWarning($"Problem with finding trips with Status={status}!");
-                }
-                return _context.Trips.Where(x => x.TripStatus.Name == status);
+                return _context.Trips.Where(x => x.TripStatus == status);
             }
             catch (Exception e)
             {
@@ -304,8 +298,7 @@ namespace CityTraveler.Services
             try
             {
                 var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
-                var status = await _context.TripStatuses.FirstOrDefaultAsync(x => x.Id == newStatus.Id);
-                trip.TripStatus = status;
+                trip.TripStatus = newStatus;
                 _context.Update(trip);
                 await _context.SaveChangesAsync();
                 return true;

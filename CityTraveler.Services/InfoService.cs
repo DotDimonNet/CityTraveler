@@ -31,7 +31,6 @@ namespace CityTraveler.Services
         public bool IsActive { get ; set ; }
         public string Version { get ; set ; }
 
-        const string messageExceptionObjectNull = "Object not found";
         const string messageExceptionArgument = "Invalid arguments";
 
         public async Task<EntertainmentShowDTO> GetMostPopularEntertaimentInTripsAsync(Guid userId = default)
@@ -43,13 +42,10 @@ namespace CityTraveler.Services
                     .SelectMany(x => x.Entertaiments).OrderByDescending(x => x.Trips.Count()).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).Distinct()
                     .SelectMany(x => x.Entertaiments).OrderByDescending(x => x.Trips.Count()).FirstOrDefault();
+              
 
-                if(entertaiment != null)
-                {
-                    return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertaiment);
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);
-             }
+                return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertaiment);
+            }
             catch(Exception e)
             {
                 _logger.LogError( $"Error:{e.Message}");
@@ -61,11 +57,8 @@ namespace CityTraveler.Services
             try
             {
                 var trip = await _context.Trips.OrderByDescending(x => x.Users.Count).FirstOrDefaultAsync();
-                if(trip != null)
-                {
-                    return _mapper.Map<TripModel, InfoTripDTO>(trip);
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);
+                             
+                return _mapper.Map<TripModel, InfoTripDTO>(trip);
             }
             catch (Exception e)
             {
@@ -81,12 +74,8 @@ namespace CityTraveler.Services
                 var review = userId != Guid.Empty
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Reviews.OrderByDescending(x => x.Comments.Count).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Reviews).OrderByDescending(x => x.Comments.Count).FirstOrDefault();
-                
-                if(review != null)
-                {
-                    return _mapper.Map<ReviewModel, ReviewDTO>(review);
-                }
-                throw new InfoServiceException(messageExceptionObjectNull); 
+                          
+                return _mapper.Map<ReviewModel, ReviewDTO>(review);    
             } 
             catch (Exception e)
             {
@@ -103,11 +92,7 @@ namespace CityTraveler.Services
                 ? (await _context.Users.FirstOrDefaultAsync(x => x.Id == userId)).Trips.OrderByDescending(x => x.Reviews.Count).FirstOrDefault()
                 : _context.Users.SelectMany(x => x.Trips).OrderByDescending(x => x.Reviews.Count).FirstOrDefault();
 
-                if (trip != null)
-                {
-                    return _mapper.Map<TripModel, InfoTripDTO>(trip);
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);   
+                return _mapper.Map<TripModel, InfoTripDTO>(trip);
             }
             catch (Exception e)
             {
@@ -127,11 +112,7 @@ namespace CityTraveler.Services
 
                 var trips = await Task.Run(() => _context.Trips.Where(x => x.TripStart > start && x.TripStart < end));
 
-                if (trips!= null)
-                {
-                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<InfoTripDTO>>(trips);
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);
+               return _mapper.Map<IEnumerable<TripModel>, IEnumerable<InfoTripDTO>>(trips);
             }
             catch(Exception e)
             {
@@ -147,12 +128,7 @@ namespace CityTraveler.Services
             {
                 var trips =await Task.Run(() => _context.Trips.OrderBy(x => x.Price.Value).Take(count));
 
-                if (trips != null)
-                {
-                    return _mapper.Map<IEnumerable<TripModel>, IEnumerable<InfoTripDTO>>(trips);
-                }
-
-                throw new InfoServiceException(messageExceptionObjectNull);
+                return _mapper.Map<IEnumerable<TripModel>, IEnumerable<InfoTripDTO>>(trips);
             }
             catch(Exception e)
             {
@@ -171,11 +147,7 @@ namespace CityTraveler.Services
                     throw new InfoServiceException(messageExceptionArgument);
                 }
                 var usersCount = await _context.Users.CountAsync(x => x.Profile.Created > start && x.Profile.Created < end);
-                if (usersCount != 0)
-                {
-                    return usersCount;
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);
+                return usersCount;
             }
             catch(Exception e)
             {
@@ -220,11 +192,8 @@ namespace CityTraveler.Services
             try
             {
                 var trip = await _context.Trips.OrderByDescending(x => x.RealSpent).FirstOrDefaultAsync();
-                if (trip != null)
-                {
-                    return _mapper.Map<TripModel, InfoTripDTO>(trip);
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);
+                           
+                return _mapper.Map<TripModel, InfoTripDTO>(trip);
             }
             catch (Exception e)
             {
@@ -238,11 +207,8 @@ namespace CityTraveler.Services
             try
             {
                 var trip = await _context.Trips.OrderBy(x => x.RealSpent).FirstOrDefaultAsync();
-                if (trip != null)
-                {
-                    return _mapper.Map<TripModel, InfoTripDTO>(trip); 
-                }
-                throw new InfoServiceException(messageExceptionObjectNull);
+
+                return _mapper.Map<TripModel, InfoTripDTO>(trip); 
             }
             catch (Exception e)
             {
@@ -265,10 +231,7 @@ namespace CityTraveler.Services
             {
                 _logger.LogError("Error:{e}");
                 return 0;
-            }
-           
-
-           
+            } 
         }
     }
 }

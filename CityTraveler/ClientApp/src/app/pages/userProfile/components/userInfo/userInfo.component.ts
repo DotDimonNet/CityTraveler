@@ -5,7 +5,8 @@ import { UserManagementService } from 'src/app/services/userManagementService';
 
 @Component({
     selector: 'user-info',
-    templateUrl: './userInfo.component.html'
+    templateUrl: './userInfo.component.html',
+    styleUrls: ['./userInfo.component.css']
 })
 export class UserInfoComponent {
     public users: IUserProfile[] = [];

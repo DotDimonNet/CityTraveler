@@ -31,12 +31,12 @@ namespace CityTraveler.Infrastucture.Data
         public DbSet<StreetModel> Streets { get; set; }
         public DbSet<TripModel> Trips { get; set; }
         public DbSet<PriceModel> Prices { get; set; }
-        public DbSet<TripStatus> Statuses { get; set; }
+        //public DbSet<TripStatus> Statuses { get; set; }
         // enums tables
 
         //public DbSet<CommentStatus> CommentStatuses { get; set; }S
 
-        public DbSet<TripStatus> TripStatuses { get; set; }
+        //public DbSet<TripStatus> TripStatuses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -58,7 +58,7 @@ namespace CityTraveler.Infrastucture.Data
             builder.Entity<TripModel>().HasMany(x => x.Images).WithOne(x => x.Trip).HasForeignKey(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasOne(x => x.Price).WithOne(x => x.Trip).HasForeignKey<TripPriceModel>(x => x.TripId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TripModel>().HasMany(x => x.Entertaiments).WithMany(x => x.Trips);
-            builder.Entity<TripStatus>().HasKey(x => x.ValueId).HasName("PK_TripStatus");
+           // builder.Entity<TripStatus>().HasKey(x => x.ValueId).HasName("PK_TripStatus");
             base.OnModelCreating(builder);
         }
 
