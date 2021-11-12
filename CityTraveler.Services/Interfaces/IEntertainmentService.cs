@@ -11,7 +11,8 @@ namespace CityTraveler.Services.Interfaces
 {
     public interface IEntertainmentService
     {
-        public IEnumerable<EntertainmentShowDTO> GetAllDTO(EntertainmentType typeId = EntertainmentType.All);
+        public IEnumerable<EntertainmentType> GetTypes();
+        public IEnumerable<EntertainmentPreviewDTO> GetAllDTO(EntertainmentType typeId = EntertainmentType.All);
         public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByTitle(string title, EntertainmentType typeId = EntertainmentType.All);
         public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> guids, EntertainmentType typeId = EntertainmentType.All);
         public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, EntertainmentType typeId = EntertainmentType.All);

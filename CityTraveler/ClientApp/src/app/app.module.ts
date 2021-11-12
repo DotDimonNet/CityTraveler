@@ -9,8 +9,8 @@ import { HomeComponent } from './home/home.component';
 import { ComComponent } from './com/com.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { UserProfilePageComponent } from './pages/userProfile/components/userProfilePage/userProfilePage.component';
-import { EntertainmentComponent } from './pages/entertainment/entertainment.component';
+import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
+import { EntertainmentModule } from './pages/Entertainment/entertainment.module';
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
@@ -51,7 +51,6 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     UserProfilePageComponent,
     UserInfoComponent,
     AdminComponent,
-    EntertainmentComponent,
     DefaultTripPageComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
@@ -65,11 +64,11 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    EntertainmentModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
-      { path: 'entertainment', component: EntertainmentComponent, pathMatch: 'full' },
-      { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
+      { path: 'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
@@ -90,8 +89,6 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     StatisticService,
     AdminDataService,
     AdminService,
-    EntertainmentDataService,
-    EntertainmentService,
     TripService,
     TripDataService,
     SocialMediaDataService,

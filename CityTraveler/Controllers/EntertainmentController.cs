@@ -24,19 +24,19 @@ namespace CityTraveler.Controllers
             _logger = logger;
         }
 
-        [HttpGet("get")]
+        [HttpGet("all")]
         public IActionResult GetAll(EntertainmentType type = EntertainmentType.All)
         {
             return Json(_service.GetAllDTO(type));
         }
 
-        [HttpGet("get-by-title")]
+        [HttpGet("title")]
         public IActionResult GetEntertainmentByTitle([FromQuery] string title, EntertainmentType type = EntertainmentType.All)
         {
             return Json(_service.GetEntertainmentsDTOByTitle(title, type));
         }
 
-        [HttpGet("get-by-ids")]
+        [HttpGet("ids")]
         public IActionResult GetEntertainments([FromQuery] IEnumerable<Guid> ids, EntertainmentType type = EntertainmentType.All)
         {
             return Json(_service.GetEntertainmentsDTO(ids, type));
@@ -48,22 +48,28 @@ namespace CityTraveler.Controllers
             return Json(_service.GetEntertainmentsDTOByStreet(streetTitle, type));
         }
 
-        [HttpGet("get-by-coordinates")]
+        [HttpGet("coordinates")]
         public IActionResult GetEntertainmentsByCoordinates([FromQuery] CoordinatesDTO coordinatesDto, EntertainmentType type = EntertainmentType.All)
         {
             return Json(_service.GetEntertainmentsDTOByCoordinates(coordinatesDto, type));
         }
 
-        [HttpGet("get-by-id")]
+        [HttpGet("id")]
         public async Task<IActionResult> GetEntertainmentById([FromQuery] Guid id, EntertainmentType type = EntertainmentType.All)
         {
             return Json(await _service.GetEntertainmentDTOByIdAsync(id, type));
         }
 
-        [HttpGet("get-by-address")]
+        [HttpGet("address")]
         public async Task<IActionResult> GetEntertainmentByAddress([FromQuery] AddressGetDTO addressDto, EntertainmentType type = EntertainmentType.All)
         {
             return Json(await _service.GetEntertainmentDTOByAddressAsync(addressDto, type));
+        }
+
+        [HttpGet("types")]
+        public IActionResult GetTypes()
+        {
+            return Json();
         }
     }
 }

@@ -27,12 +27,12 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetAllDTO(EntertainmentType typeId = EntertainmentType.All)
+        public IEnumerable<EntertainmentPreviewDTO> GetAllDTO(EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
                 case EntertainmentType.All:
-                    return _context.Entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                    return _context.Entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
 
                 case EntertainmentType.Landscape:
                 case EntertainmentType.Institution:
@@ -40,12 +40,12 @@ namespace CityTraveler.Services
                     var entertainments = _context.Entertaiments.Where(x => x.Type == typeId);
 
                     return entertainments.Any()
-                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x))
-                        : new List<EntertainmentShowDTO>();
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x))
+                        : new List<EntertainmentPreviewDTO>();
 
                 default:
                     _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return new List<EntertainmentShowDTO>();
+                    return new List<EntertainmentPreviewDTO>();
             }
         }
 
@@ -218,6 +218,11 @@ namespace CityTraveler.Services
             {
                 return 0;
             }
+        }
+
+        public IEnumerable<EntertainmentType> GetTypes()
+        {
+            throw new NotImplementedException();
         }
     }
 }

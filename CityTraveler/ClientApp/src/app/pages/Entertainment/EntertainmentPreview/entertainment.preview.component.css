@@ -1,0 +1,22 @@
+.title {
+  font-size: larger;
+  font-weight: bold;
+  color: rgb(0, 145, 48);
+}
+
+.btn-primary {
+  height: 37px;
+}
+
+.panel {
+  padding: 10px;
+}
+
+.comboBox {
+  height: 37px;
+}
+
+.entertainment-review {
+  margin-left: 20px;
+  margin-right: 20px;
+}
