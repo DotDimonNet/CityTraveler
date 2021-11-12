@@ -1,4 +1,4 @@
-export interface IEntertainment {
+export interface IEntertainmentShow {
     id: string,
     title: string,
     type: string,

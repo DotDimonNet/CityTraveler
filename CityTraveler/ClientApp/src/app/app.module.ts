@@ -10,7 +10,7 @@ import { ComComponent } from './com/com.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
-import { EntertainmentComponent } from './pages/entertainment/entertainment.component';
+import { EntertainmentModule } from './pages/Entertainment/entertainment.module';
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
@@ -44,7 +44,6 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     UserProfilePageComponent,
     UserInfoComponent,
     AdminComponent,
-    EntertainmentComponent,
     DefaultTripPageComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
@@ -55,11 +54,11 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    EntertainmentModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
-      { path: 'entertainment', component: EntertainmentComponent, pathMatch: 'full' },
-      { path:'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
+      { path: 'default-trip', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
@@ -77,13 +76,10 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     StatisticService,
     AdminDataService,
     AdminService,
-    EntertainmentDataService,
-    EntertainmentService,
     TripService,
     TripDataService,
     SocialMediaDataService,
     SocialMediaService
-
   ],
   bootstrap: [AppComponent]
 })

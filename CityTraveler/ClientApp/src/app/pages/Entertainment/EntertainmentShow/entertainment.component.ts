@@ -3,7 +3,7 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
 import { Component, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { IEntertainment } from 'src/app/models/entertainment.model';
+import { IEntertainmentShow } from 'src/app/models/entertainment.show.model';
 import { IUserProfile } from 'src/app/models/user.model';
 import { EntertainmentService } from 'src/app/services/entertainmentService';
 import { isIdentifierStart } from 'typescript';
@@ -13,8 +13,8 @@ import { isIdentifierStart } from 'typescript';
   templateUrl: './entertainment.component.html',
   styleUrls: ['./entertainment.component.css']
 })
-export class EntertainmentComponent implements OnInit{
-  public entertainmentInfo: IEntertainment = {
+export class EntertainmentShowComponent implements OnInit{
+  public entertainmentInfo: IEntertainmentShow = {
       id: "",
       title: "",
       type: "",
@@ -26,7 +26,7 @@ export class EntertainmentComponent implements OnInit{
         apartmentNumber: "",
       },
       description: ""
-  } as IEntertainment;
+  } as IEntertainmentShow;
 
   constructor(private service: EntertainmentService) { }
 
@@ -37,11 +37,11 @@ export class EntertainmentComponent implements OnInit{
 
   getById(){
     this.service.getEntertainment(this.id)
-    .subscribe((res: IEntertainment) => this.entertainmentInfo = res);
+    .subscribe((res: IEntertainmentShow) => this.entertainmentInfo = res);
   }
 
   add() {
-    var entertainment : IEntertainment = this.entertainmentInfo;
+    var entertainment : IEntertainmentShow = this.entertainmentInfo;
     this.saved.push(entertainment);
   }
 

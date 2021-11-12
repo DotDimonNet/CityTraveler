@@ -31,7 +31,7 @@
 </div>
 <div *ngFor="let info of saved" class="active-entertainment">
   <div [hidden]="!entertainmentInfo.title" class="entertainment-data">
-    {{entertainment.title}}
+    {{info.title}}
   </div>
   <div [hidden]="!entertainmentInfo.id" class="id">
     ID : {{entertainment.id}}
