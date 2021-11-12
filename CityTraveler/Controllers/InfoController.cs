@@ -14,13 +14,11 @@ namespace CityTraveler.Controllers
     [Route("api/info")]
     public class InfoController : Controller
     {
-        private readonly ILogger<InfoController> _logger;
         private readonly IInfoService _service;
 
-        public InfoController(ILogger<InfoController> logger, IInfoService infoService)
+        public InfoController(IInfoService infoService)
         {
             _service = infoService;
-            _logger = logger;
         }
 
         [HttpGet("user/popular-entertaiment")]
@@ -106,11 +104,6 @@ namespace CityTraveler.Controllers
             var tripsCount = _service.GetTripsCreatedByPeriodAsync(start, end);
             return Json(tripsCount);
         }
-
-
-
-
-
 
 
     }
