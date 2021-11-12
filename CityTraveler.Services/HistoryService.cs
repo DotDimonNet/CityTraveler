@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using CityTraveler.Domain.DTO;
+using CityTraveler.Domain.Enums;
 
 namespace CityTraveler.Services 
 {
@@ -75,7 +76,7 @@ namespace CityTraveler.Services
         {
             try
             {
-                return _mapper.Map<TripModel, TripPrewievDTO>(_context.Trips.LastOrDefault(x => x.TripStatus.Id == 3));
+                return _mapper.Map<TripModel, TripPrewievDTO>(_context.Trips.LastOrDefault(x => x.TripStatus == (TripStatus)3));
             }
             catch (Exception e)
             {
@@ -90,7 +91,7 @@ namespace CityTraveler.Services
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
                 return passed 
-                    ? _mapper.Map<TripModel, TripPrewievDTO>(user.Trips.LastOrDefault(x => x.TripStatus.Id == 3))
+                    ? _mapper.Map<TripModel, TripPrewievDTO>(user.Trips.LastOrDefault(x => x.TripStatus == (TripStatus)3))
                     : _mapper.Map<TripModel, TripPrewievDTO>(user.Trips.LastOrDefault());
             }
             catch (Exception e)

@@ -71,7 +71,7 @@ namespace CityTraveler.Tests
         {
             var trips = await _service.FilterTrips(new FilterTrips
             {
-                TripStatus = TripStatus.Passed.Id,
+                TripStatus = 1,
                 TripEnd = DateTime.Now.AddYears(-2),
                 TripStart = DateTime.Now.AddYears(-3),
                 Title = "title",
@@ -90,7 +90,6 @@ namespace CityTraveler.Tests
 
             foreach (var trip in trips)
             {
-                //Assert.AreEqual(trip.TripStatus, TripStatus.Passed);
                 Assert.True(trip.Title.Contains("title"));
                 Assert.True(trip.Description.Contains("description"));
                 Assert.AreEqual(trip.RealSpent, TimeSpan.FromHours(2));
@@ -159,9 +158,6 @@ namespace CityTraveler.Tests
             {
                 Assert.True(entertainment.Title.Contains("title"));
                 Assert.AreEqual(entertainment.Type, EntertainmentType.Event);
-                /*Assert.True(entertainment.AverageRating > 1);
-                Assert.True(entertainment.AverageRating < 3);*/
-                //Assert.True(entertainment.Address.Street.Title.Contains("a"));
                 Assert.True(entertainment.Address.HouseNumber.Contains("2a"));
                 Assert.True(entertainment.AveragePrice.Value > 100);
                 Assert.True(entertainment.AveragePrice.Value < 200);

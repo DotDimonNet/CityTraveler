@@ -15,6 +15,7 @@ export class SocialMediaDataService {
             return res as IReviewModel;
         }));
     }
+
     getReviewByDescription(reviewDescription: string) : Observable<IReviewModel> {
         return this.client.get(`/api/socialmedia/by-description?description=${reviewDescription}`)
         .pipe(first(), map((res: any) => {
@@ -27,23 +28,42 @@ export class SocialMediaDataService {
             return res as IReviewModel;
         }));
     }
-    addReviewTrip(review:IReviewModel, tripId: string):Observable<IReviewModel>
+
+    addReviewTrip(review: IReviewModel, tripId: string):Observable<IReviewModel>
     {
-        return this.client.get(`/api/socialmedia/review-trip?review=${review}`)
+        return this.client.get(`/api/socialmedia/review-trip?review=${review}&tripId=${tripId}`)
         .pipe(first(), map((res: any) => {
             return res as IReviewModel;
         }));
     }
-    deleteReview(reviewId:string):Observable<boolean>
+
+    addReviewEntertainment(review: IReviewModel, enterteinmentId: string):Observable<IReviewModel>
+    {
+        return this.client.get(`/api/socialmedia/review-trip?review=${review}&enterteinmentId=${enterteinmentId}`)
+        .pipe(first(), map((res: any) => {
+            return res as IReviewModel;
+        }));
+    }
+
+    deleteReview(reviewId: string):Observable<boolean>
     {
         return this.client.delete(`/api/socialmedia/review?reviewId=${reviewId}`)
         .pipe(first(), map((res: any) => {
             return res as boolean;
         }));
     }
-    deleteComment(commentId:string):Observable<boolean>
+
+    deleteComment(commentId: string):Observable<boolean>
     {
-        return this.client.delete(`/api/socialmedia/review?reviewId=${commentId}`)
+        return this.client.delete(`/api/socialmedia/comment?commenrId=${commentId}`)
+        .pipe(first(), map((res: any) => {
+            return res as boolean;
+        }));
+    }
+
+    deleteImage(imageId: string):Observable<boolean>
+    {
+        return this.client.delete(`/api/socialmedia/image?imageId=${imageId}`)
         .pipe(first(), map((res: any) => {
             return res as boolean;
         }));

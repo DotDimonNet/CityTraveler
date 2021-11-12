@@ -18,7 +18,7 @@ namespace CityTraveler.Services
         private readonly ILogger<SearchService> _logger;
         private readonly IMapper _mapper;
 
-        public SearchService(ApplicationContext dbContext, IMapper mapper, ILogger<SearchService> logger, IEntertainmentService entertainmentService)
+        public SearchService(ApplicationContext dbContext, IMapper mapper, ILogger<SearchService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -27,54 +27,38 @@ namespace CityTraveler.Services
 
         public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
         {
-            if (filter.PriceLess < filter.PriceMore)
+            switch (filter)
             {
-                _logger.LogWarning("PriceMore can`t be more than priceLess.");
-                return Enumerable.Empty<EntertainmentGetDTO>();
-            }
-            if (filter.RatingLess < filter.RatingMore)
-            {
-                _logger.LogWarning("RatingMore can`t be more than ratingLess.");
-                return Enumerable.Empty<EntertainmentGetDTO>();
-            }
-            if (filter.RatingLess < 0)
-            {
-                _logger.LogWarning("RatingLess can`t be less than 0.");
-                return Enumerable.Empty<EntertainmentGetDTO>();
-            }
-            if (filter.RatingMore < 0)
-            {
-                _logger.LogWarning("RatingMore can`t be less than 0.");
-                return Enumerable.Empty<EntertainmentGetDTO>();
-            }
-            if (filter.PriceLess < 0)
-            {
-                _logger.LogWarning("PriceLess can`t be less than 0.");
-                return Enumerable.Empty<EntertainmentGetDTO>();
-            }
-            if (filter.PriceMore < 0)
-            {
-                _logger.LogWarning("PriceMore can`t be less than 0.");
-                return Enumerable.Empty<EntertainmentGetDTO>();
+                case var fil when fil.PriceLess < fil.PriceMore:
+                    _logger.LogWarning("PriceMore can`t be more than priceLess.");
+                    return Enumerable.Empty<EntertainmentGetDTO>();
+                case var fil when fil.RatingLess < fil.RatingMore:
+                    _logger.LogWarning("RatingMore can`t be more than ratingLess.");
+                    return Enumerable.Empty<EntertainmentGetDTO>();
+                case var fil when fil.RatingLess < 0:
+                    _logger.LogWarning("RatingLess can`t be less than 0.");
+                    return Enumerable.Empty<EntertainmentGetDTO>();
+                case var fil when fil.RatingMore < 0:
+                    _logger.LogWarning("RatingMore can`t be less than 0.");
+                    return Enumerable.Empty<EntertainmentGetDTO>();
+                case var fil when fil.PriceLess < 0:
+                    _logger.LogWarning("PriceLess can`t be less than 0.");
+                    return Enumerable.Empty<EntertainmentGetDTO>();
+                case var fil when fil.PriceMore < 0:
+                    _logger.LogWarning("PriceMore can`t be less than 0.");
+                    return Enumerable.Empty<EntertainmentGetDTO>();
+                default:
+                    break;
             }
             try
             {
-                var tripIds = _dbContext.Trips.Where(x => x.Title.Contains(filter.TripName)).Select(x=>x.Id);
-                var result = await Task.Run(() => filter.Type != -1 ?
-                              _dbContext.Entertaiments.Where(x =>
+                var isEntetainmentType = (filter.Type == -1);
+                var tripIds = _dbContext.Trips.Where(x => x.Title.Contains(filter.TripName)).Select(x => x.Id);
+                var result = await Task.Run(()=>_dbContext.Entertaiments.Where(x =>
                                x.Title.Contains(filter.Title)
                             && x.Address.Street.Title.Contains(filter.StreetName)
                             && x.Address.HouseNumber.Contains(filter.HouseNumber)
-                            && x.Type == (EntertainmentType)filter.Type
-                            && x.Trips.Any(x => tripIds.Contains(x.Id))
-                            && x.AveragePrice.Value >= filter.PriceMore
-                            && x.AveragePrice.Value <= filter.PriceLess
-                            && x.AverageRating >= filter.RatingMore
-                            && x.AverageRating <= filter.RatingLess) :
-                            _dbContext.Entertaiments.Where(x => 
-                            x.Title.Contains(filter.Title)
-                            && x.Address.Street.Title.Contains(filter.StreetName)
-                            && x.Address.HouseNumber.Contains(filter.HouseNumber)
+                            && ( isEntetainmentType || (EntertainmentType) filter.Type == x.Type)
                             && x.Trips.Any(x => tripIds.Contains(x.Id))
                             && x.AveragePrice.Value >= filter.PriceMore
                             && x.AveragePrice.Value <= filter.PriceLess
@@ -91,61 +75,39 @@ namespace CityTraveler.Services
 
         public async Task<IEnumerable<TripDTO>> FilterTrips(FilterTrips filter)
         {
-            if (filter.PriceLess < filter.PriceMore)
+            switch (filter)
             {
-                _logger.LogWarning("PriceMore can`t be more than priceLess. ");
-                return Enumerable.Empty<TripDTO>();
+                case var fil when fil.PriceLess < fil.PriceMore:
+                    _logger.LogWarning("PriceMore can`t be more than priceLess. ");
+                    return Enumerable.Empty<TripDTO>();
+                case var fil when fil.AverageRatingLess < fil.AverageRatingMore:
+                    _logger.LogWarning("RatingMore can`t be more than ratingLess.");
+                    return Enumerable.Empty<TripDTO>();
+                case var fil when fil.AverageRatingLess < 0:
+                    _logger.LogWarning("AverageRatingLess can`t be less than 0.");
+                    return Enumerable.Empty<TripDTO>();
+                case var fil when fil.AverageRatingMore < 0:
+                    _logger.LogWarning("AverageRatingMore can`t be less than 0.");
+                    return Enumerable.Empty<TripDTO>();
+                case var fil when fil.PriceLess < 0:
+                    _logger.LogWarning("PriceLess can`t be less than 0.");
+                    return Enumerable.Empty<TripDTO>();
+                case var fil when filter.PriceMore < 0:
+                    _logger.LogWarning("PriceMore can`t be less than 0.");
+                    return Enumerable.Empty<TripDTO>();
+                default:
+                    break;
             }
-            if (filter.AverageRatingLess < filter.AverageRatingMore)
-            {
-                _logger.LogWarning("RatingMore can`t be more than ratingLess.");
-                return Enumerable.Empty<TripDTO>();
-            }
-
-            if (filter.AverageRatingLess < 0)
-            {
-                _logger.LogWarning("AverageRatingLess can`t be less than 0.");
-                return Enumerable.Empty<TripDTO>();
-            }
-            if (filter.AverageRatingMore < 0)
-            {
-                _logger.LogWarning("AverageRatingMore can`t be less than 0.");
-                return Enumerable.Empty<TripDTO>();
-            }
-            if (filter.PriceLess < 0)
-            {
-                _logger.LogWarning("PriceLess can`t be less than 0.");
-                return Enumerable.Empty<TripDTO>();
-            }
-            if (filter.PriceMore < 0)
-            {
-                _logger.LogWarning("PriceMore can`t be less than 0.");
-                return Enumerable.Empty<TripDTO>();
-            }
-
             try
             {
-                var result = await Task.Run(() => filter.TripStatus != -1 ?
-                    _dbContext.Trips.Where(x =>
+                bool isTripStatus = filter.TripStatus == -1;
+                var result = await Task.Run(()=>_dbContext.Trips.Where(x =>
                     x.Description.Contains(filter.Description)
                     && x.TripEnd >= filter.TripEnd
                     && x.TripStart >= filter.TripStart
                     && x.RealSpent >= filter.RealSpent
                     && x.OptimalSpent >= filter.OptimalSpent
-                    && x.TripStatus.Id == filter.TripStatus
-                    && x.Users.Any(x => x.Profile.Name.StartsWith(filter.User))
-                    && x.Entertaiments.Any(x => x.Title.StartsWith(filter.EntertaimentName))
-                    && x.Title.Contains(filter.Title)
-                    && x.Price.Value >= filter.PriceMore
-                    && x.Price.Value <= filter.PriceLess
-                    && x.AverageRating >= filter.AverageRatingMore
-                    && x.AverageRating <= filter.AverageRatingLess)
-                : _dbContext.Trips.Where(x =>
-                    x.Description.Contains(filter.Description)
-                    && x.TripEnd >= filter.TripEnd
-                    && x.TripStart >= filter.TripStart
-                    && x.RealSpent >= filter.RealSpent
-                    && x.OptimalSpent >= filter.OptimalSpent
+                    && ( isTripStatus || (TripStatus)filter.TripStatus == x.TripStatus)
                     && x.Users.Any(x => x.Profile.Name.StartsWith(filter.User))
                     && x.Entertaiments.Any(x => x.Title.StartsWith(filter.EntertaimentName))
                     && x.Title.Contains(filter.Title)
@@ -171,12 +133,12 @@ namespace CityTraveler.Services
                     .SelectMany(x => x.Trips)
                     .Select(x => x.Id);
 
-                var result = await Task.Run(() => tripsIds.Any()
-                    ? _dbContext.Users.Where(x =>
+                var isAnyTrips = tripsIds.Any();
+
+                var result = await Task.Run(() => _dbContext.Users.Where(x =>
                         x.UserName.Contains(filter.UserName)
                         && x.Profile.Gender.Contains(filter.Gender)
-                        && x.Trips.Where(x => tripsIds.Contains(x.Id)).Any())
-                    : Enumerable.Empty<ApplicationUserModel>());
+                        && (isAnyTrips || x.Trips.Where(x => tripsIds.Contains(x.Id)).Any())));
 
                 return _mapper.Map<IEnumerable<UserDTO>>(result);
             }
@@ -184,32 +146,6 @@ namespace CityTraveler.Services
             {
                 _logger.LogWarning($"Failed to filter users {e.Message}");
                 return Enumerable.Empty<UserDTO>();
-            }
-        }
-
-        public async Task<IEnumerable<ApplicationUserModel>> GetUsersByName(string name = "")
-        {
-            try
-            {
-                return await Task.Run(() => _dbContext.Users.Where(x => x.Profile.Name.Contains(name)));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Failed to get users by name {e.Message}");
-                return Enumerable.Empty<ApplicationUserModel>();
-            }
-        }
-
-        public async Task<IEnumerable<TripModel>> GetTripByName(string name = "")
-        {
-            try
-            {
-                return await Task.Run(() => _dbContext.Trips.Where(x => x.Title.Contains(name)));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Failed to get trips by name {e.Message}");
-                return Enumerable.Empty<TripModel>();
             }
         }
     }
