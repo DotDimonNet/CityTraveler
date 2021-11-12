@@ -12,6 +12,7 @@ using NUnit.Framework;
 
 namespace CityTraveler.Tests
 {
+    
     public class StatisticServiceTest
     {
         private Mock<ILogger<StatisticService>> _loggerMock;

@@ -15,13 +15,11 @@ namespace CityTraveler.Controllers
     [Route("api/user")]
     public class UserManagementController : Controller
     {
-        private readonly ILogger<UserManagementController> _logger;
         private readonly IUserManagementService _service;
 
-        public UserManagementController(ILogger<UserManagementController> logger, IUserManagementService userService)
+        public UserManagementController(IUserManagementService userService)
         {
             _service = userService;
-            _logger = logger;
         }
 
         [HttpGet("id")]
@@ -30,7 +28,6 @@ namespace CityTraveler.Controllers
             var user = await _service.GetUserByIdAsync(userId);
             return Json(user);
         }
-
 
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers([FromQuery] int skip = 0, [FromQuery] int take = 10)

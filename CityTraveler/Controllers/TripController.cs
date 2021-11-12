@@ -34,7 +34,7 @@ namespace CityTraveler.Controllers
             return Json(_service.GetTrips(title, rating, optimalSpent, price, tag, skip, take));
         }
 
-        [HttpGet("get-by-id")]
+        [HttpGet("id")]
         public IActionResult GetTripById(Guid tripId)
         { 
             if (tripId == Guid.Empty)
@@ -59,13 +59,13 @@ namespace CityTraveler.Controllers
             return Json(await _service.DeleteTripAsync(tripId));                
         }
 
-        [HttpPut("entertainment-to-trip")]
+        [HttpPut("entertainment")]
         public async Task<IActionResult> AddEntertainmentToTrip([FromQuery] Guid tripId, [FromBody] EntertainmentGetDTO entertainment)
         {
            return Json(await _service.AddEntertainmetToTripAsync(tripId, entertainment));       
         }
 
-        [HttpDelete("entertainment-from-trip")]
+        [HttpDelete("entertainment")]
         public async Task<IActionResult> DeleteEntertainmentFromTrip([FromQuery] Guid tripId, [FromQuery] Guid entertainmentId)
         {
            return Json(await _service.DeleteEntertainmentFromTrip(tripId, entertainmentId));          
@@ -77,7 +77,7 @@ namespace CityTraveler.Controllers
             return Json(_service.GetDefaultTrips(skip, take));
         }
     
-        [HttpGet("default-trip-by-id")]
+        [HttpGet("default-trip")]
         public IActionResult GetDefaulttripById([FromQuery] Guid defaultTripId)
         {
             return Json(_service.GetDefaultTripById(defaultTripId));
