@@ -55,11 +55,11 @@ namespace CityTraveler.Services
                 var isEntetainmentType = (filter.Type == -1);
                 var tripIds = _dbContext.Trips.Where(x => x.Title.Contains(filter.TripName)).Select(x => x.Id);
                 var result = await Task.Run(()=>_dbContext.Entertaiments.Where(x =>
-                               x.Title.Contains(filter.Title)
-                            && x.Address.Street.Title.Contains(filter.StreetName)
-                            && x.Address.HouseNumber.Contains(filter.HouseNumber)
+                               x.Title.Contains(filter.Title ?? "")
+                            && x.Address.Street.Title.Contains(filter.StreetName ?? "")
+                            && x.Address.HouseNumber.Contains(filter.HouseNumber ?? "")
                             && ( isEntetainmentType || (EntertainmentType) filter.Type == x.Type)
-                            && x.Trips.Any(x => tripIds.Contains(x.Id))
+                            //&& x.Trips.Any(x => tripIds.Contains(x.Id))
                             && x.AveragePrice.Value >= filter.PriceMore
                             && x.AveragePrice.Value <= filter.PriceLess
                             && x.AverageRating >= filter.RatingMore

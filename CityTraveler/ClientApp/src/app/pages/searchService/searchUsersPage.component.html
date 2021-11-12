@@ -1,0 +1,26 @@
+<div class="class-form">
+    <h3>Search users</h3>
+    <p>Input parameters by which you want to find user</p>
+</div>
+<div class="container">
+    <div class="search-input">
+        <span>Name</span>
+        <input type="text" name="Name" [(ngModel)]="props.name" />
+    </div>
+    <div class="search-input">
+        <span>Gender</span>
+        <input type="text" name="Gender" [(ngModel)]="props.gender" />
+    </div>
+    <div class="search-input">
+        <span>Entertainment name</span>
+        <input type="text" name="Entertainment name" [(ngModel)]="props.entertainmentName" />
+    </div>
+    <button (click)="submitUsers()">Search</button>
+</div>
+<div>
+    <div *ngFor="let userInfo of users">
+        <div>Name: {{userInfo.name}}</div>
+        <div>Email: {{userInfo.email}}</div>
+        <div>Gender: {{userInfo.gender}}</div>
+    </div>
+</div>

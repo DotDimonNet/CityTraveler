@@ -33,6 +33,11 @@ import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.
 import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
 import { InfoDataService } from './services/InfoService.data';
 import { InfoService } from './services/InfoService';
+import { SearchDataService } from './services/searchService.data';
+import { SearchService } from './services/searchService';
+import { SearchServiceComponent } from './pages/searchService/searchService.component';
+import { SearchUsersComponent } from './pages/searchService/searchUsersPage.component';
+import { SearchTripsComponent } from './pages/searchService/searchTrips.component';
 
 
 @NgModule({
@@ -51,7 +56,10 @@ import { InfoService } from './services/InfoService';
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
-    DeleteCommentPageComponent
+    DeleteCommentPageComponent,
+    SearchServiceComponent,
+    SearchTripsComponent,
+    SearchUsersComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -69,7 +77,10 @@ import { InfoService } from './services/InfoService';
       { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
       { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
       { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
+      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' },
+      { path: 'search-entertainments', component: SearchServiceComponent, pathMatch: 'full' },
+      { path: 'search-users', component: SearchUsersComponent, pathMatch: 'full' },
+      { path: 'search-trips', component: SearchTripsComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -84,8 +95,9 @@ import { InfoService } from './services/InfoService';
     TripService,
     TripDataService,
     SocialMediaDataService,
-    SocialMediaService
-
+    SocialMediaService,
+    SearchDataService,
+    SearchService
   ],
   bootstrap: [AppComponent]
 })
