@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { SocialMediaService } from 'src/app/services/socialMediaService';
 @Component({
   selector: 'delete-review',

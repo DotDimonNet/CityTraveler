@@ -16,11 +16,28 @@ export class SocialMediaPageComponent implements OnInit {
       comments: new Array(),
       images: new Array()
   } as IReviewModel;
+  public reviewToAdd: IReviewModel = {
+    userId: "",
+    description: "",
+    title: "",
+    enterteinmentId: "",
+    tripId: "",
+    ratingId: "",
+    comments: new Array(),
+    images: new Array()
+} as IReviewModel;
 
   constructor(private service: SocialMediaService) {}
 
     ngOnInit() {
         this.service.getReview('12560264-8E8C-429F-FBFC-08D9A457DA34')
+        .subscribe((res: IReviewModel) => {
+            this.reviewInfo = res;
+        });
+    }
+    submit()
+    {
+      this.service.addReviewEnetrtainment(this.reviewToAdd, this.reviewToAdd.enterteinmentId)
         .subscribe((res: IReviewModel) => {
             this.reviewInfo = res;
         });

@@ -1,49 +1,87 @@
-  <h2>
-    Review:
-  </h2>
-  <h6>
-    Review user Id: 
-  </h6>
-  <div>
-    {{reviewInfo.userId}}
-  </div>
-  <h6>
-    Review description: 
-  </h6>
-  <div>
-    {{reviewInfo.description}}
-  </div>
-  <h6>
-    Review title: 
-  </h6>
-  <div>
-    {{reviewInfo.title}}
-  </div>
-  <h6>
-    Review ratingId Id: 
-  </h6>
-  <div>
-    {{reviewInfo.ratingId}}
-  </div>
-  <h6>
-    Review entertainment Id: 
-  </h6>
-  <div>
-    {{reviewInfo.entertainmentId}}
-  </div>
-  <h6>
-    Review trip Id: 
-  </h6>
-  <div>
-    {{reviewInfo.tripId}}
-  </div>
-  <a href="https://localhost:44300/add-review-trip">
-    <button>Add review to trip</button>
-  </a>
-  <a href="https://localhost:44300/delete-review">
-    <button>Delete review</button>
-  </a>
-  <a href="https://localhost:44300/delete-comment">
-    <button>Delete comment</button>
-  </a>
-  
+<h2>
+  Review:
+</h2>
+<h6>
+  Review user Id: 
+</h6>
+<div>
+  {{reviewInfo.userId}}
+</div>
+<h6>
+  Review description: 
+</h6>
+<div>
+  {{reviewInfo.description}}
+</div>
+<h6>
+  Review title: 
+</h6>
+<div>
+  {{reviewInfo.title}}
+</div>
+<h6>
+  Review ratingId Id: 
+</h6>
+<div>
+  {{reviewInfo.ratingId}}
+</div>
+<h6>
+  Review entertainment Id: 
+</h6>
+<div>
+  {{reviewInfo.entertainmentId}}
+</div>
+<h6>
+  Review trip Id: 
+</h6>
+<div>
+  {{reviewInfo.tripId}}
+</div>
+<a [routerLink]="['/add-review-trip']">
+  <button>Add review to trip</button>
+</a>
+<a [routerLink]="['/delete-review']">
+  <button>Delete review</button>
+</a>
+<a [routerLink]="['/delete-comment']">
+  <button>Delete comment</button>
+</a>
+<h2>
+  Add review to entertainment:
+</h2>
+<h6> 
+  Review user Id: 
+</h6>
+<div>
+  <input [ngModel]="reviewInfo.userId"/>
+  {{reviewToAdd.userId}}
+</div>
+<h6>
+  Review description: 
+</h6>
+<div>
+  <input [ngModel]="reviewInfo.description"/>
+  {{reviewToAdd.description}}
+</div>
+<h6>
+  Review title: 
+</h6>
+<div>
+  <input [ngModel]="reviewInfo.title"/>
+  {{reviewToAdd.title}}
+</div>
+<h6>
+  Review ratingId Id: 
+</h6>
+<div>
+  <input [ngModel]="reviewToAdd.ratingId"/>
+  {{reviewToAdd.ratingId}}
+</div>
+<h6>
+  Review entertainment Id: 
+</h6>
+<div>
+  <input [ngModel]="reviewToAdd.entertainmentId"/>
+  {{reviewToAdd.enterteinmentId}}
+</div>
+<button (click) = "submit()"> Submit </button>
