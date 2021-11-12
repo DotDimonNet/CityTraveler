@@ -24,6 +24,7 @@ export class SocialMediaService {
     {
         return this.dataService.addReviewTrip(review,trip);   
     }
+    
     addReviewEnetrtainment(review: IReviewModel, entertainment:string) : Observable<IReviewModel>
     {
         return this.dataService.addReviewEntertainment(review,entertainment);   
@@ -38,6 +39,7 @@ export class SocialMediaService {
     {
         return this.dataService.deleteReview(commentId);
     }
+
     deleteImage(imageId: string):Observable<boolean>
     {
         return this.dataService.deleteReview(imageId);   

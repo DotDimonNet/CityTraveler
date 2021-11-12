@@ -22,6 +22,7 @@ export class SocialMediaDataService {
             return res as IReviewModel;
         }));
     }
+    
     getReviewByTitle(reviewTitle: string) : Observable<IReviewModel> {
         return this.client.get(`/api/socialmedia/by-description?title=${reviewTitle}`)
         .pipe(first(), map((res: any) => {
