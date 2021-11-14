@@ -1,0 +1,37 @@
+
+<div> 
+  <select name="type" id="type" class="comboBox" [(ngModel)]="type" autofocus=4>
+    <option value=1>Landscape</option>
+    <option value=2>Institution</option>
+    <option value=3>Event</option>
+    <option value=4>All</option>
+  </select>
+  <button class="btn btn-primary" (click)="getAll()">Show</button>
+</div>
+<hr>
+<div *ngFor="let entertainment of response" class="entertainment-preview">
+  <div class="title">
+    {{entertainment.title}}
+  </div>
+  <div *ngIf="entertainment.type" class="type">
+    {{entertainment.type}}
+  </div>
+  <div class="address">
+    {{entertainment.address.street.title}}, {{entertainment.address.houseNumber}}, {{entertainment.address.apartmentNumber}}
+  </div>
+  <div [hidden]="!entertainment.description" class="description">
+    {{entertainment.description}}
+  </div>
+  <div class="t-r-count">
+    Trips : {{entertainment.tripsCount}} Reviews : {{entertainment.reviewsCount}}
+  </div>
+  <div>
+    <i class="bi bi-star-fill"></i> 
+    <i class="bi bi-star-fill"></i>
+    <i class="bi bi-star-fill"></i>
+    <i class="bi bi-star-half"></i>
+    <i class="bi bi-star"></i>
+    {{entertainment.averageRating}}
+  </div>
+  <hr>
+</div>

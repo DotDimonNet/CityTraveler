@@ -27,36 +27,40 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetAllDTO(int typeId = 0)
+        public IEnumerable<EntertainmentPreviewDTO> GetAllDTO(EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
-                    return _context.Entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
+                case EntertainmentType.All:
+                    return _context.Entertaiments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
 
-                case var n when n > 0 && n < 4:
-                    var entertainments = _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId);
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId);
 
                     return entertainments.Any()
-                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x))
-                        : new List<EntertainmentShowDTO>();
+                        ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x))
+                        : new List<EntertainmentPreviewDTO>();
 
                 default:
                     _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
-                    return new List<EntertainmentShowDTO>();
+                    return new List<EntertainmentPreviewDTO>();
             }
         }
 
-        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByTitle(string title, int typeId = 0)
+        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByTitle(string title, EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
+                case EntertainmentType.All:
                     return _context.Entertaiments.Where(x => x.Title.Contains(title))
                         .Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
 
-                case var n when n > 0 && n < 4:
-                    var entertainments = _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
                         && x.Title.Contains(title));
 
                     return entertainments.Any()
@@ -69,16 +73,18 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> ids, int typeId = 0)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTO(IEnumerable<Guid> ids, EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
+                case EntertainmentType.All:
                     return _context.Entertaiments.Where(x => ids.Contains(x.Id))
                         .Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
 
-                case var n when n > 0 && n < 4:
-                    var entertainments = _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
                         && ids.Contains(x.Id));
 
                     return entertainments.Any()
@@ -91,16 +97,18 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, int typeId = 0)
+        public IEnumerable<EntertainmentPreviewDTO> GetEntertainmentsDTOByStreet(string streetTitle, EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
+                case EntertainmentType.All:
                     return _context.Entertaiments.Where(x => x.Address.Street.Title.Contains(streetTitle))
                         .Select(x => _mapper.Map<EntertaimentModel, EntertainmentPreviewDTO>(x));
 
-                case var n when n > 0 && n < 4:
-                    var entertainments = _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
                         && x.Address.Street.Title.Contains(streetTitle));
 
                     return entertainments.Any()
@@ -113,41 +121,44 @@ namespace CityTraveler.Services
             }
         }
 
-        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinatesDto, int typeId = 0)
+        public IEnumerable<EntertainmentShowDTO> GetEntertainmentsDTOByCoordinates(CoordinatesDTO coordinatesDto, EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
+                case EntertainmentType.All:
                     return _context.Entertaiments.Where(x => x.Address.Coordinates.Latitude == coordinatesDto.Latitude
                         && x.Address.Coordinates.Longitude == coordinatesDto.Longitude)
                         .Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x));
 
-                case var n when n > 0 && n < 4:
-                    var entertainments = _context.Entertaiments.Where(x => x.Type == (EntertainmentType)typeId
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
+                    var entertainments = _context.Entertaiments.Where(x => x.Type == typeId
                     && x.Address.Coordinates.Latitude == coordinatesDto.Latitude
                     && x.Address.Coordinates.Longitude == coordinatesDto.Longitude);
 
                     return entertainments.Any()
                         ? entertainments.Select(x => _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(x))
                         : new List<EntertainmentShowDTO>();
-
                 default:
                     _logger.LogWarning("Warning: Type's ID isn't correct. Type's ID is negative or more than 3");
                     return new List<EntertainmentShowDTO>();
             }
         }
 
-        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByIdAsync(Guid id, int typeId = 0)
+        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByIdAsync(Guid id, EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
+                case EntertainmentType.All:
                     return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>
                         (await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id));
 
-                case var n when n > 0 && n < 4:
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
                     var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Id == id
-                        && x.Type == (EntertainmentType)typeId);
+                        && x.Type == typeId);
 
                     return entertainment != null
                         ? _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment)
@@ -159,11 +170,11 @@ namespace CityTraveler.Services
             }
         }
 
-        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByAddressAsync(AddressGetDTO addressDto, int typeId = 0)
+        public async Task<EntertainmentShowDTO> GetEntertainmentDTOByAddressAsync(AddressGetDTO addressDto, EntertainmentType typeId = EntertainmentType.All)
         {
             switch (typeId)
             {
-                case 0:
+                case EntertainmentType.All:
                     return _mapper.Map<EntertaimentModel, EntertainmentShowDTO>
                         (await _context.Entertaiments
                         .FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
@@ -171,12 +182,14 @@ namespace CityTraveler.Services
                         && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
                         && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude));
 
-                case var n when n > 0 && n < 4:
+                case EntertainmentType.Landscape:
+                case EntertainmentType.Institution:
+                case EntertainmentType.Event:
                     var entertainment = await _context.Entertaiments.FirstOrDefaultAsync(x => x.Address.ApartmentNumber == addressDto.ApartmentNumber
                         && x.Address.HouseNumber == addressDto.HouseNumber
                         && x.Address.Coordinates.Latitude == addressDto.Coordinates.Latitude
                         && x.Address.Coordinates.Longitude == addressDto.Coordinates.Longitude
-                        && x.Type == (EntertainmentType)typeId);
+                        && x.Type == typeId);
 
                     return entertainment != null
                         ? _mapper.Map<EntertaimentModel, EntertainmentShowDTO>(entertainment)
@@ -205,6 +218,11 @@ namespace CityTraveler.Services
             {
                 return 0;
             }
+        }
+
+        public IEnumerable<EntertainmentType> GetTypes()
+        {
+            throw new NotImplementedException();
         }
     }
 }

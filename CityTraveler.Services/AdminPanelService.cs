@@ -99,7 +99,7 @@ namespace CityTraveler.Services
                         && x.Price.Value < filter.PriceLess
                         && x.AverageRating > filter.AverageRatingMore
                         && x.AverageRating < filter.AverageRatingLess);
-                trips = filter.TripStatus != -1 ? trips.Where(x => x.TripStatus.Id == filter.TripStatus) : trips;
+                trips = filter.TripStatus != -1 ? trips.Where(x => x.TripStatus == (TripStatus)filter.TripStatus) : trips;
 
                 return trips.Select(x => _mapper.Map<TripModel, TripDTO>(x));
             }

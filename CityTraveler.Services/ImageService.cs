@@ -62,7 +62,7 @@ namespace CityTraveler.Services
             {
                 if (!imagesDTO.Any())
                 {
-                    _logger.LogWarning($"Problem with adding range of images! {imagesDTO} are null!");
+                    _logger.LogWarning($"Problem with adding range of images!");
                     return false;
                 }
 

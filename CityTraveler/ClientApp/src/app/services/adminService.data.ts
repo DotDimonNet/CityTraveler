@@ -14,6 +14,6 @@ export class AdminDataService {
     constructor(private client: HttpClient) {}
 
     GetAddressStreets(filterAdminStreet) : Observable<IAdminAddress[]> {
-        return this.client.get<IAdminAddress[]>(`https://localhost:44300/api/admin/get-streets`);
+        return this.client.get<IAdminAddress[]>(`https://localhost:44300/api/admin/streets`);
     }
 }
