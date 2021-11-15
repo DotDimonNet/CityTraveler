@@ -3,7 +3,7 @@ import { Timestamp } from "rxjs/internal/operators/timestamp";
 import { Identifier } from "typescript";
 
 export interface IDefaultTrip{
-    Id:string
+    id:string
     title: string,
     description: string,
     tagString: string,

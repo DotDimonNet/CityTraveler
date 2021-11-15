@@ -1,0 +1,26 @@
+<div class="wrap">
+    <h1>Default Trips</h1>
+
+    <div *ngFor="let trip of trips" class="default-trips">
+        <div class="default-trips-element">
+            <div class="default-trip-preview-description">
+                <p>Id: {{trip.id}}</p>
+                <a [routerLink]="['default-trip', trip.id]" routerLinkActive="active-link"><h3>{{trip.title}}</h3></a>
+                <router-outlet></router-outlet>
+
+                <p>Tags: {{trip.tagString}}</p>
+                <p>Optimal spent: {{trip.optimalSpent}}</p>
+                <div>
+                    <h3>Description</h3>
+                    <p>{{trip.description}} Lorem ipsum, dolor sit amet consectetur adipisicing elit. Id, amet accusamus. Ut, tempore blanditiis. Qui dolorem neque unde sed quo iure quae tempora, aperiam est autem! Aut cupiditate delectus magnam.</p>
+                </div>
+            </div>
+            <div class="default-trips-element-image">
+                area for trip's main image
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+

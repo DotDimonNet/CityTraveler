@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AdminDataService } from "./AdminService.data";
+import { AdminDataService } from "./adminDataService";
 import { IAdminAddress } from "../models/adminAddress.model";
 
 

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import {Observable} from 'rxjs';
 import { IDefaultTrip } from "src/app/models/defaultTrip.model";
 import { TripService } from "src/app/services/tripService";
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: "default-trip",
@@ -11,7 +13,7 @@ import { TripService } from "src/app/services/tripService";
 
 export class DefaultTripPageComponent implements OnInit{
     public defaultTrip: IDefaultTrip = {
-        Id: "",
+        id: "",
         title: "",
         description: "",
         tagString: "",
@@ -20,11 +22,17 @@ export class DefaultTripPageComponent implements OnInit{
         optimalSpent: new Date()
     } as IDefaultTrip;
 
-    constructor(private service: TripService){}
-
+    private subscription: Subscription;
+    constructor(private service: TripService, private activeRoute: ActivatedRoute){
+        this.subscription = activeRoute.params.subscribe(params=>this.defaultTrip.id=params['id']);
+    }
+    
+    trip:any;
     ngOnInit(){
-        this.service.getDefaultTripById("9A5A3FE9-8F52-4F64-FB22-08D9A4576885").subscribe((res: IDefaultTrip) => {
-            this.defaultTrip = res;
+        this.activeRoute.paramMap.subscribe(params =>{
+            this.service.getDefaultTripById(params.get('id')).subscribe(c=>{
+                this.trip = c;
+            })
         })
     }
     
