@@ -25,7 +25,7 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        /*public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
+        public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
         {
             switch (filter)
             {
