@@ -5,7 +5,9 @@
         <div class="default-trips-element">
             <div class="default-trip-preview-description">
                 <p>Id: {{trip.id}}</p>
-                <a [routerLink]="['default-trip, 'trip.id']"><h3>{{trip.title}}</h3></a>
+                <a [routerLink]="['default-trip', trip.id]" routerLinkActive="active-link"><h3>{{trip.title}}</h3></a>
+                <router-outlet></router-outlet>
+
                 <p>Tags: {{trip.tagString}}</p>
                 <p>Optimal spent: {{trip.optimalSpent}}</p>
                 <div>
@@ -18,7 +20,6 @@
             </div>
         </div>
         
-       
     </div>
 
 </div>

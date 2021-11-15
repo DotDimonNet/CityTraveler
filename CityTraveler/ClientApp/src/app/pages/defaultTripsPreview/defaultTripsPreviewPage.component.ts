@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import {Observable} from 'rxjs';
 import { IDefaultTripPreview } from 'src/app/models/defaultTripPreviewModel';
 import { TripService } from "src/app/services/tripService";
