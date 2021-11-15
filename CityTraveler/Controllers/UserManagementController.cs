@@ -30,28 +30,31 @@ namespace CityTraveler.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<IActionResult> GetUsers([FromQuery] int skip = 0, [FromQuery] int take = 10)
+        public IActionResult GetUsers([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            var users = await _service.GetUsersRangeAsync(skip, take);
+            var users = _service.GetUsersRangeAsync(skip, take);
             return Json(users);
         }
              
 
         [HttpGet("users-by-id")]
-        public async Task<IActionResult> GetUsers([FromQuery] IEnumerable<Guid> guids)
+        public IActionResult GetUsers ([FromQuery] IEnumerable<Guid> guids)
         {
-            var users = await _service.GetUsersAsync(guids);
+            var users = _service.GetUsersAsync(guids);
             return Json(users);
         }
 
-        [HttpGet("users-search")]
-        public async Task<IActionResult> GetUsersByPropeties(
-            [FromQuery] string name, 
-            [FromQuery] string email, 
-            [FromQuery] string gender)
+        [HttpGet("users-name-email-gender-birthday")]
+
+        public IActionResult GetUsersByPropeties(
+            [FromQuery] string name = "", 
+            [FromQuery] string email = "", 
+            [FromQuery] string gender = "", 
+            [FromQuery] DateTime birthday = default)
         {
-            var users = await _service.GetUsersByPropetiesAsync(name ?? "", email ?? "", gender ?? "");
+            var users = _service.GetUsersByPropetiesAsync(name, email, gender, birthday);
             return Json(users);
         }
+
     }
 }

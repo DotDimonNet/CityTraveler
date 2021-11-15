@@ -27,9 +27,12 @@ namespace CityTraveler.Infrastucture.Data
 
         public async Task Initialize()
         {
+            /*_context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
             IdentityResult result;
+
+            InitialData.SetupEnums(_context);
 
             if (!_context.Roles.Any(r => r.Name == Roles.Admin))
             {
@@ -85,7 +88,9 @@ namespace CityTraveler.Infrastucture.Data
                 if (!result.Succeeded) throw new DbInitializationException(result.Errors.Select(x => x.Description).Aggregate((x, y) => $"{x} {y}"));
 
                 _context.SaveChanges();
-            }
+
+                InitialData.SetupData(_context);
+            }*/
         }
     }
 
