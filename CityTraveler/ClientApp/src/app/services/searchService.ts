@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { IDefaultTrip } from "../models/defaultTrip.model";
-import { IEntertainment } from "../models/entertainment.model";
+import { IEntertainmentShow } from "../models/entertainment.show.model";
 import { IFilterEntertainments } from "../models/filters/filtertEntertainments";
 import { IFilterTrips } from "../models/filters/filterTrips";
 import { IFiltertUsers } from "../models/filters/filterUsers";
@@ -18,7 +18,7 @@ export class SearchService {
     getTrips(props: IFilterTrips) : Observable<IDefaultTrip[]> {
         return this.dataService.getTrips(props);
     }
-    getEntertainments(props: IFilterEntertainments) : Observable<IEntertainment[]> {
+    getEntertainments(props: IFilterEntertainments) : Observable<IEntertainmentShow[]> {
         return this.dataService.getEntertainments(props);
     }
 }

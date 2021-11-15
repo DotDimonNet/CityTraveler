@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { title } from 'process';
 import { IAdminAddress } from 'src/app/models/adminAddress.model';
 import { IFilterAdminStreet } from 'src/app/models/filters/filterAdminStreet';
 import { AdminService } from 'src/app/services/adminService';
@@ -23,7 +22,9 @@ export class AdminComponent implements OnInit {
       this.getAddress();
   }
   getAddress() : void{
+    console.log(this.addresses);
     this.service.GetAddressStreets(this.filter).subscribe(res => this.addresses = res);
+    console.log(this.addresses);
   }
 
 }

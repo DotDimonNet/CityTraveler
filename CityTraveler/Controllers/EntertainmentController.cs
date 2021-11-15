@@ -66,10 +66,6 @@ namespace CityTraveler.Controllers
             return Json(await _service.GetEntertainmentDTOByAddressAsync(addressDto, type));
         }
 
-        [HttpGet("types")]
-        public IActionResult GetTypes()
-        {
-            return Json();
-        }
+     
     }
 }
