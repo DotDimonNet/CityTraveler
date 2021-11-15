@@ -40,6 +40,7 @@ import { SearchService } from './services/searchService';
 import { SearchServiceComponent } from './pages/searchService/searchService.component';
 import { SearchUsersComponent } from './pages/searchService/searchUsersPage.component';
 import { SearchTripsComponent } from './pages/searchService/searchTrips.component';
+import { AdminModule } from './pages/admin/admin.module';
 
 
 @NgModule({
@@ -51,9 +52,9 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     CounterComponent,
     FetchDataComponent,
     UserProfilePageComponent,
-    AdminComponent
-    EntertainmentComponent
-    DefaultTripPageComponent
+    UserInfoComponent,
+    AdminComponent,
+    DefaultTripPageComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
@@ -67,6 +68,7 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     HttpClientModule,
     FormsModule,
     EntertainmentModule,
+    AdminModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
@@ -74,11 +76,14 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'com', component: ComComponent },
-      { path: 'admin', component: AdminComponent}
-      {path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
-      {path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
-      {path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      {path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
+      { path: 'admin', component: AdminComponent, pathMatch:'full'},
+      { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
+      { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
+      { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
+      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' },
+      { path: 'search-entertainments', component: SearchServiceComponent, pathMatch: 'full' },
+      { path: 'search-users', component: SearchUsersComponent, pathMatch: 'full' },
+      { path: 'search-trips', component: SearchTripsComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -88,8 +93,6 @@ import { SearchTripsComponent } from './pages/searchService/searchTrips.componen
     StatisticService,
     AdminDataService,
     AdminService,
-    EntertainmentDataService,
-    EntertainmentService
     TripService,
     TripDataService,
     SocialMediaDataService,
