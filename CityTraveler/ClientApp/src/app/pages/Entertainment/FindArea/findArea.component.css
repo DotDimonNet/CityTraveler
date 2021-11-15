@@ -1,0 +1,10 @@
+.area{
+  border: rgb(57, 75, 162) 3px;
+  border-style: groove;
+}
+
+.btn-primary {
+  height: 37px;
+  background-color: rgb(57, 130, 157);
+  border-radius: 0;
+}

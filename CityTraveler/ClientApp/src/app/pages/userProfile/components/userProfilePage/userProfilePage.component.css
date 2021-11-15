@@ -1,0 +1,27 @@
+body {
+  width: 5px!important;
+}
+
+.user-data {
+  font-size: larger;
+  font-weight: bold;
+  color: gray;
+  margin: 10px;
+  text-align: right;
+}
+
+div {
+  margin: 15px;
+  padding: 5px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  flex-direction: row;
+}
+

@@ -74,13 +74,7 @@ namespace CityTraveler.Services
                 }
 
                 var users = await Task.Run(() => _context.Users.Skip(skip).Take(take));
-
-                if(users.Any())
-                {
-                    return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
-                }
-
-                throw new UserManagemenServiceException(messageExceptionObjectNull);
+                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
             }
             catch (Exception e)
             {
@@ -91,12 +85,17 @@ namespace CityTraveler.Services
         }
         public async Task<IEnumerable<UserDTO>> GetUsersAsync(IEnumerable<Guid> guids)
         {
-            var users = await Task.Run(() => _context.Users.Where(x => guids.Contains(x.Id)));
-            if (users.Any())
+            try
             {
+                var users = await Task.Run(() => _context.Users.Where(x => guids.Contains(x.Id)));
                 return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
             }
-            throw new UserManagemenServiceException(messageExceptionObjectNull);
+            catch (Exception e)
+            {
+                _logger.LogError($"Error: {e.Message}");
+                return Enumerable.Empty<UserDTO>();
+            }
+
         }
 
         public async Task<IEnumerable<UserDTO>> GetUsersByPropetiesAsync(string name = "", string email = "", string gender = "")
@@ -108,14 +107,12 @@ namespace CityTraveler.Services
                 .Contains(gender) && x.Email.Contains(email)));
 
                 return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
-
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error: {e.Message}");
                 return Enumerable.Empty<UserDTO>();
             }
-
         }
     }
 

@@ -10,7 +10,7 @@ import { ComComponent } from './com/com.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
-import { EntertainmentComponent } from './pages/entertainment/entertainment.component';
+import { EntertainmentModule } from './pages/Entertainment/entertainment.module';
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';
 import { UserManagementDataService } from './services/userManagementService.data';
@@ -31,6 +31,13 @@ import { SocialMediaService } from './services/socialMediaService';
 import { AddReviewTripPageComponent } from './pages/socialMedia/addReviewTripPage.component';
 import { DeleteReviewPageComponent } from './pages/socialMedia/deleteReviewPage.component';
 import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPage.component';
+import { InfoDataService } from './services/InfoService.data';
+import { InfoService } from './services/InfoService';
+import { SearchDataService } from './services/searchService.data';
+import { SearchService } from './services/searchService';
+import { SearchServiceComponent } from './pages/searchService/searchService.component';
+import { SearchUsersComponent } from './pages/searchService/searchUsersPage.component';
+import { SearchTripsComponent } from './pages/searchService/searchTrips.component';
 
 
 @NgModule({
@@ -44,21 +51,25 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     UserProfilePageComponent,
     UserInfoComponent,
     AdminComponent,
-    EntertainmentComponent,
     DefaultTripPageComponent,
     DefaultTripsPagePreviewComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,
     DeleteReviewPageComponent,
-    DeleteCommentPageComponent
+    DeleteCommentPageComponent,
+    SearchServiceComponent,
+    SearchTripsComponent,
+    SearchUsersComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    EntertainmentModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'user-profile', component: UserProfilePageComponent, pathMatch: 'full' },
+
       { path: 'entertainment', component: EntertainmentComponent, pathMatch: 'full' },
       { path: 'default-trip/:id', component:DefaultTripPageComponent, pathMatch:'full'},
       { path: 'default-trips-preview', component:DefaultTripsPagePreviewComponent, pathMatch:'full'},
@@ -69,7 +80,10 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
       { path: 'review-model', component: SocialMediaPageComponent, pathMatch: 'full' },
       { path: 'add-review-trip', component: AddReviewTripPageComponent, pathMatch: 'full' },
       { path: 'delete-review', component: DeleteReviewPageComponent, pathMatch: 'full' },
-      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' }
+      { path: 'delete-comment', component: DeleteCommentPageComponent, pathMatch: 'full' },
+      { path: 'search-entertainments', component: SearchServiceComponent, pathMatch: 'full' },
+      { path: 'search-users', component: SearchUsersComponent, pathMatch: 'full' },
+      { path: 'search-trips', component: SearchTripsComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -79,12 +93,13 @@ import { DeleteCommentPageComponent } from './pages/socialMedia/deleteCommentPag
     StatisticService,
     AdminDataService,
     AdminService,
-    EntertainmentDataService,
-    EntertainmentService,
     TripService,
     TripDataService,
     SocialMediaDataService,
-    SocialMediaService
+    SocialMediaService,
+    SearchDataService,
+    SearchService
+
   ],
   bootstrap: [AppComponent]
 })

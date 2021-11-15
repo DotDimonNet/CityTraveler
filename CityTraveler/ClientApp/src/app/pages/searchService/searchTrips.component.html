@@ -1,0 +1,76 @@
+<div class="class-form">
+    <h3>Search trips</h3>
+    <p>Input parameters by which you want to find trips</p>
+</div>
+<div class="container">
+    <div class="search-input">
+        <span>Trip start</span>
+        <input type="text" name="Trip start" [(ngModel)]="propsTrips.tripStart" />
+    </div>
+    <div class="search-input">
+        <span>Trip end</span>
+        <input type="text" name="Trip end" [(ngModel)]="propsTrips.tripEnd" />
+    </div>
+    <div class="search-input">
+        <span>Entertainment name</span>
+        <input type="text" name="Entertainment name" [(ngModel)]="propsTrips.entertainmentName" />
+    </div>
+    <div class="search-input">
+        <span>User</span>
+        <input type="text" name="User" [(ngModel)]="propsTrips.user" />
+    </div>
+    <div class="search-input">
+        <span>Price more</span>
+        <input type="text" name="Price more" [(ngModel)]="propsTrips.priceMore" />
+    </div>
+    <div class="search-input">
+        <span>Price Less</span>
+        <input type="text" name="Price less" [(ngModel)]="propsTrips.priceLess" />
+    </div>
+    <div class="search-input">
+        <span>Average rating more</span>
+        <input type="text" name="Average rating more" [(ngModel)]="propsTrips.averageRatingMore" />
+    </div>
+    <div class="search-input">
+        <span>Average rating less</span>
+        <input type="text" name="Average rating less" [(ngModel)]="propsTrips.averageRatingLess" />
+    </div>
+    <div class="search-input">
+        <span>Title</span>
+        <input type="text" name="Title" [(ngModel)]="propsTrips.title" />
+    </div>
+    <div class="search-input">
+        <span>Description</span>
+        <input type="text" name="Description" [(ngModel)]="propsTrips.description" />
+    </div>
+    <div class="search-input">
+        <span>Optimal spent</span>
+        <input type="text" name="Optimal spent" [(ngModel)]="propsTrips.optimalSpent" />
+    </div>
+    <div class="search-input">
+        <span>Real spent</span>
+        <input type="text" name="Real spent" [(ngModel)]="propsTrips.realSpent" />
+    </div>
+    <div class="search-input">
+        <span>Trip status</span>
+        <input type="text" name="Trip status" [(ngModel)]="propsTrips.tripStatus" />
+    </div>
+    <button (click)="submitTrips()">Search</button>
+</div>
+<div>
+    <div *ngFor="let tripInfo of trips">
+        <div>tripStart: {{tripInfo.tripStart}}</div>
+        <div>tripEnd: {{tripInfo.tripEnd}}</div>
+        <div>Entertainment name: {{tripInfo.entertainmentName}}</div>
+        <div>User: {{tripInfo.user}}</div>
+        <div>Price more: {{tripInfo.priceMore}}</div>
+        <div>Price less: {{tripInfo.priceLess}}</div>
+        <div>Average rating more: {{tripInfo.averageRatingMore}}</div>
+        <div>Average rating less: {{tripInfo.averageRatingLess}}</div>
+        <div>Title: {{tripInfo.title}}</div>
+        <div>Description {{tripInfo.description}}</div>
+        <div>Optimal spent {{tripInfo.optimalSpent}}</div>
+        <div>Real spent {{tripInfo.realSpent}}</div>
+        <div>Trip status {{tripInfo.tripStatus}}</div>
+    </div>
+</div>

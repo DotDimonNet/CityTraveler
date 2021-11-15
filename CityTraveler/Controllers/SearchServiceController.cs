@@ -26,21 +26,21 @@ namespace CityTraveler.Controllers
         public async Task<IActionResult> FilterUsers([FromQuery] FilterUsers user)
         {
             var users = await _service.FilterUsers(user);
-            return (Json(users));
+            return Json(users);
         }
 
         [HttpGet("trips")]
         public async Task<IActionResult> FilterTrips([FromQuery] FilterTrips trip)
         {
             var trips = await _service.FilterTrips(trip);
-            return (Json(trips));
+            return Json(trips);
         }
 
         [HttpGet("entertainments")]
         public async Task<IActionResult> FilterEntertainments([FromQuery] FilterEntertainment entertainment)
         {
             var entertainments = await _service.FilterEntertainments(entertainment);
-            return (Json(entertainments));
+            return Json(entertainments);
         }
     }
 }
