@@ -9,7 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { ComComponent } from './com/com.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { UserProfilePageComponent } from './pages/userProfile/userProfilePage.component';
+import { UserProfilePageComponent } from './pages/userProfile/components/userProfilePage/userProfilePage.component';
 import { EntertainmentModule } from './pages/Entertainment/entertainment.module';
 import { SocialMediaPageComponent } from './pages/socialMedia/socialMediaPage.component';
 import { UserManagementService } from './services/userManagementService';

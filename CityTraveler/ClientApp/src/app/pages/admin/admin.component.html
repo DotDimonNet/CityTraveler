@@ -1,7 +1,16 @@
 <p>admin works!</p>
 <h1>Address</h1>
-<ul class="address">
-    <li *ngFor="let IAdminAddress of addresses">
-        <span class="badge">{{IAdminAddress.id}}</span> {{IAdminAddress.houseNumber}}
-    </li>
-  </ul>
+
+<app-nav-admin></app-nav-admin>
+<div class = input-filter>
+    <input type="text" name="title" [(ngModel)]="filter.title" />
+    <input type="text" name="description" [(ngModel)]="filter.description" />
+</div>
+<div class = "btn" (click)="submit()"> Submit</div>
+<div>
+    <ul class="addresses">
+        <li *ngFor="let item of addresses">
+            <span class="badge">{{item.street.title}}</span> {{item.apartmentNumber}}
+        </li>
+      </ul>
+</div>

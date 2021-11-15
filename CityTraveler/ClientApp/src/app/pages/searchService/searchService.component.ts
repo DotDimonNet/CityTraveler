@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IEntertainment } from 'src/app/models/entertainment.model';
+import { IEntertainmentShow } from 'src/app/models/entertainment.show.model';
 import { IFilterEntertainments } from 'src/app/models/filters/filtertEntertainments';
 import { SearchService } from 'src/app/services/searchService';
 
@@ -10,13 +10,13 @@ import { SearchService } from 'src/app/services/searchService';
 })
 export class SearchServiceComponent {
   public propsEntertainments = propsEntertainment;
-  public entertainments: IEntertainment []  = [];
+  public entertainments: IEntertainmentShow []  = [];
 
   constructor(private service: SearchService) {
   }
 
   submitEntertainments() {
-    this.service.getEntertainments(this.propsEntertainments).subscribe((res: IEntertainment[]) => {
+    this.service.getEntertainments(this.propsEntertainments).subscribe((res: IEntertainmentShow[]) => {
       this.entertainments = res;
      });
   }

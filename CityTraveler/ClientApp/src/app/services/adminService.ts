@@ -4,7 +4,9 @@ import { AdminDataService } from "./AdminService.data";
 import { IAdminAddress } from "../models/adminAddress.model";
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+    })
 export class AdminService {
 
     constructor(private dataService: AdminDataService) {}
