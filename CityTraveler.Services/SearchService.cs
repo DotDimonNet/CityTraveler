@@ -25,7 +25,7 @@ namespace CityTraveler.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
+        /*public async Task<IEnumerable<EntertainmentGetDTO>> FilterEntertainments(FilterEntertainment filter)
         {
             switch (filter)
             {
@@ -71,6 +71,11 @@ namespace CityTraveler.Services
                 _logger.LogError($"Failed to filter entertainments {e.Message}");
                 return Enumerable.Empty<EntertainmentGetDTO>();
             }
+        }
+
+        private Task GetTripByName(string tripName)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<TripDTO>> FilterTrips(FilterTrips filter)

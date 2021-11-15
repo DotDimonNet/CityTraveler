@@ -44,7 +44,7 @@ namespace CityTraveler.Services
 
 
 
-        public async Task<UserDTO> GetUserByIdAsync(Guid userId)
+        public async Task<ApplicationUserModel> GetUserByIdAsync(Guid userId)
         {
             try
             { 
@@ -53,7 +53,7 @@ namespace CityTraveler.Services
                 if (userExist)
                 {
                     var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-                    return _mapper.Map<ApplicationUserModel, UserDTO>(user);
+                    return user;
                 }
                 throw new UserManagemenServiceException(messageExceptionObjectNull);
             }
@@ -98,13 +98,13 @@ namespace CityTraveler.Services
 
         }
 
-        public async Task<IEnumerable<UserDTO>> GetUsersByPropetiesAsync(string name = "", string email = "", string gender = "")
+        public async Task<IEnumerable<UserDTO>> GetUsersByPropetiesAsync(string name = "", string email = "", string gender = "", DateTime birthday = default)
         {
             try
             {
                 var users = await Task.Run(() =>  _context.Users
                 .Where(x => x.Profile.Name.Contains(name) && x.Profile.Gender
-                .Contains(gender) && x.Email.Contains(email)));
+                .Contains(gender) && x.Email.Contains(email) && x.Profile.Birthday.Date == birthday.Date));
 
                 return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
             }
