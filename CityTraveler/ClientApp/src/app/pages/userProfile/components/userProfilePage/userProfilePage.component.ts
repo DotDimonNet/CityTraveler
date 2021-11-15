@@ -19,10 +19,10 @@ export class UserProfilePageComponent {
 
   constructor(private service: UserManagementService) {}
 
-submit() {
+/*submit() {
     this.service.getUserProfile(this.userId)
     .subscribe((res: IUserProfile) => {
       this.userInfo = res;
     });
-  }
+  }*/
 }

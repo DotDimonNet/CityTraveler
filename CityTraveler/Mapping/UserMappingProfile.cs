@@ -20,6 +20,7 @@ namespace CityTraveler.Mapping
                 .ForMember(x => x.Gender, o => o.MapFrom(z => z.Profile.Gender))
                 .ForMember(x => x.Id, o => o.MapFrom(z => z.Id))
                 .ForMember(x => x.Birthday, o => o.MapFrom(z => z.Profile.Birthday));
+            CreateMap<ApplicationUserModel, UpdateUserDTO>();
             /*CreateMap<UserDTO, ApplicationUserModel>()
                 .ForMember(x => x.Profile.Name, o => o.MapFrom(z => z.Name))
                 .ForMember(x => x.Profile.AvatarSrc, o => o.MapFrom(z => z.AvatarSrc))

@@ -37,40 +37,14 @@ namespace CityTraveler.Services
         public DateTime Modified { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-
-        const string messageExceptionObjectNull = "User not found";
-        const string messageExceptionArgument = "Invalid arguments";
-
-
-
-
-        public async Task<UserDTO> GetUserByIdAsync(Guid userId)
-        {
-            try
-            { 
-                var userExist = await _context.Users.AnyAsync(x => x.Id == userId);
-
-                if (userExist)
-                {
-                    var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-                    return _mapper.Map<ApplicationUserModel, UserDTO>(user);
-                }
-                throw new UserManagemenServiceException(messageExceptionObjectNull);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error: {e.Message}");
-                 return null;
-            }
-        }
-                
+       
         public async Task<IEnumerable<UserDTO>> GetUsersRangeAsync(int skip = 0, int take = 10)
         {
             try
             {
                 if (skip < 0 || take < 0)
                 {
-                    throw new UserManagemenServiceException(messageExceptionArgument);
+                    return Enumerable.Empty<UserDTO>();
                 }
 
                 var users = await Task.Run(() => _context.Users.Skip(skip).Take(take));
@@ -80,24 +54,9 @@ namespace CityTraveler.Services
             {
                 _logger.LogError($"Error: {e.Message}");
                 return Enumerable.Empty<UserDTO>();
-            }
-           
+            }          
         }
-        public async Task<IEnumerable<UserDTO>> GetUsersAsync(IEnumerable<Guid> guids)
-        {
-            try
-            {
-                var users = await Task.Run(() => _context.Users.Where(x => guids.Contains(x.Id)));
-                return _mapper.Map<IEnumerable<ApplicationUserModel>, IEnumerable<UserDTO>>(users);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error: {e.Message}");
-                return Enumerable.Empty<UserDTO>();
-            }
-
-        }
-
+       
         public async Task<IEnumerable<UserDTO>> GetUsersByPropetiesAsync(string name = "", string email = "", string gender = "")
         {
             try
@@ -112,6 +71,45 @@ namespace CityTraveler.Services
             {
                 _logger.LogError($"Error: {e.Message}");
                 return Enumerable.Empty<UserDTO>();
+            }
+        }
+
+        public async Task<UpdateUserDTO> UpdateUser(UpdateUserDTO updateUser, string username)
+        {
+            try
+            {
+                var user = await _context.Users
+                        .FirstOrDefaultAsync(x => x.UserName == username);
+
+                user.Profile.Name = updateUser.Name;
+                user.Profile.AvatarSrc = updateUser.AvatarSrc;
+                user.Email = updateUser.Email;
+                user.PhoneNumber = updateUser.PhoneNumber;
+
+                _context.Update(user);
+                _context.SaveChanges();
+                return _mapper.Map<ApplicationUserModel, UpdateUserDTO>(user);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{e.Message}");
+                throw new Exception($"Failed to update user profile");
+            }
+        }
+
+        public async Task<bool> DeleteUser(string username)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == username);
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{e.Message}");
+                return false;
             }
         }
     }

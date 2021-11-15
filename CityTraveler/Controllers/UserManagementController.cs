@@ -22,25 +22,11 @@ namespace CityTraveler.Controllers
             _service = userService;
         }
 
-        [HttpGet("id")]
-        public async Task<IActionResult> GetUserById([FromQuery] Guid userId)
-        {
-            var user = await _service.GetUserByIdAsync(userId);
-            return Json(user);
-        }
 
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
             var users = await _service.GetUsersRangeAsync(skip, take);
-            return Json(users);
-        }
-             
-
-        [HttpGet("users-by-id")]
-        public async Task<IActionResult> GetUsers([FromQuery] IEnumerable<Guid> guids)
-        {
-            var users = await _service.GetUsersAsync(guids);
             return Json(users);
         }
 
@@ -52,6 +38,18 @@ namespace CityTraveler.Controllers
         {
             var users = await _service.GetUsersByPropetiesAsync(name ?? "", email ?? "", gender ?? "");
             return Json(users);
+        }
+
+        [HttpPut("user-update")]
+        public async Task<IActionResult> UpdateUser([FromQuery] UpdateUserDTO updateUser, string username)
+        {
+            return Json(await _service.UpdateUser(updateUser, username));
+        }
+
+        [HttpDelete("user-delete")]
+        public async Task<IActionResult> DeleteUser([FromQuery] string username)
+        {
+            return Json(await _service.DeleteUser(username));
         }
     }
 }

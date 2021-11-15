@@ -19,32 +19,6 @@ namespace CityTraveler.Tests
         }
 
         [Test]
-
-        public  async Task GetUserByIdTest()
-        {
-            var userModel =await ArrangeTests.ApplicationContext.Users
-                .FirstOrDefaultAsync();
-            var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var user = await service.GetUserByIdAsync(userModel.Id);
-
-            Assert.IsNotNull(user);
-            Assert.AreEqual(user.Id, userModel.Id);
-            Assert.AreEqual(user.Profile.Name, userModel.Profile.Name);
-            Assert.AreEqual(user.Email, userModel.Email);
-          }
-       
-        [Test]
-        public async Task GetUsersTests()
-        {
-            var usersGuids = ArrangeTests.ApplicationContext.Users
-                .Select(x => x.Id);
-            var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var users = await service.GetUsersAsync(usersGuids);
-            
-            Assert.IsNotEmpty(users);
-            Assert.AreEqual(users.Select(x => x.Id), usersGuids);
-        }
-        [Test]
         public async Task GetUsersRangeTests()
         {
             var usersRange = ArrangeTests.ApplicationContext.Users
@@ -63,7 +37,7 @@ namespace CityTraveler.Tests
             var userModel = ArrangeTests.ApplicationContext
                 .Users.LastOrDefault();
             var service = new UserManagementService(ArrangeTests.ApplicationContext, ArrangeTests.TestMapper);
-            var users = await service.GetUsersByPropetiesAsync(userModel.Profile.Name, "", "", default);
+            var users = await service.GetUsersByPropetiesAsync(userModel.Profile.Name, "", "");
 
             Assert.IsNotEmpty(users);
 
