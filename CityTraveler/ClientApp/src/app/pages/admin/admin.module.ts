@@ -26,7 +26,6 @@ import { SearchEntertaimentComponent } from './entertaimentfilter/search-enterta
 
 @NgModule({
   declarations: [
-    AdminComponent,
     NavAdminComponent,
     AddressfilterComponent,
     TripfilterComponent,
@@ -76,8 +75,7 @@ import { SearchEntertaimentComponent } from './entertaimentfilter/search-enterta
     SearchReviewComponent,
     SearchTripComponent,
     SearchUserComponent,
-    SearchEntertaimentComponent,
-    AdminComponent
+    SearchEntertaimentComponent
   ],
   bootstrap: [AdminComponent]
 })

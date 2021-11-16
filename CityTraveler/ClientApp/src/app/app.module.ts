@@ -60,7 +60,8 @@ import { AdminModule } from './pages/admin/admin.module';
     DeleteCommentPageComponent,
     SearchServiceComponent,
     SearchTripsComponent,
-    SearchUsersComponent
+    SearchUsersComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

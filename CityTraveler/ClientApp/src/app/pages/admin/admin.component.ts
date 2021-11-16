@@ -13,7 +13,6 @@ import { NavAdminComponent } from './nav-admin/nav-admin.component';
 export class AdminComponent  {
 
   active: string = "user";
-  @ViewChild(NavAdminComponent, { static: false })
   AddressSwitch(): string
   {
     console.log(this.active);
