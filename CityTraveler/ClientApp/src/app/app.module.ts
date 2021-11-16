@@ -53,7 +53,6 @@ import { AdminModule } from './pages/admin/admin.module';
     FetchDataComponent,
     UserProfilePageComponent,
     UserInfoComponent,
-    AdminComponent,
     DefaultTripPageComponent,
     SocialMediaPageComponent,
     AddReviewTripPageComponent,

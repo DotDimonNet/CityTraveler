@@ -3,7 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
+import { CommonModule } from '@angular/common';  
+
 import { AdminComponent } from './admin.component';
 import { AdminDataService } from 'src/app/services/AdminService.data';
 import { AdminService } from 'src/app/services/adminService';
@@ -14,13 +15,18 @@ import { StatisticComponent } from '../statistic/statistic.component';
 import { HistoryComponent } from '../history/history.component';
 import { UserfilterComponent } from './userfilter/userfilter.component';
 import { ReviewsfilterComponent } from './reviewsfilter/reviewsfilter.component';
-import {EntertaimentfilterComponent} from './entertaimentfilter/entertaimentfilter.component'
-import { SearchAddressComponent } from './search-address/search-address.component';
+import { EntertaimentfilterComponent} from './entertaimentfilter/entertaimentfilter.component'
+import { SearchAddressComponent } from './addressfilter/search-address/search-address.component';
+import { SearchReviewComponent } from './reviewsfilter/search-review/search-review.component';
+import { SearchTripComponent } from './tripfilter/search-trip/search-trip.component';
+import { SearchUserComponent } from './userfilter/search-user/search-user.component';
+import { SearchEntertaimentComponent } from './entertaimentfilter/search-entertaiment/search-entertaiment.component';
 
 
 
 @NgModule({
   declarations: [
+    AdminComponent,
     NavAdminComponent,
     AddressfilterComponent,
     TripfilterComponent,
@@ -29,21 +35,27 @@ import { SearchAddressComponent } from './search-address/search-address.componen
     UserfilterComponent,
     ReviewsfilterComponent,
     EntertaimentfilterComponent,
-    SearchAddressComponent
+    SearchAddressComponent,
+    SearchReviewComponent,
+    SearchTripComponent,
+    SearchUserComponent,
+    SearchEntertaimentComponent
+
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: AdminComponent, pathMatch: 'full' },
-      { path: 'users', component: UserfilterComponent, pathMatch: 'full' },
-      { path: 'address', component: AddressfilterComponent, pathMatch: 'full' },
-      { path: 'trips', component: TripfilterComponent, pathMatch: 'full' },
-      { path: 'reviews', component: ReviewsfilterComponent, pathMatch: 'full' },
-      { path: 'entertaiments', component: EntertaimentfilterComponent, pathMatch: 'full' },
-      { path: 'statistic', component: StatisticComponent, pathMatch: 'full' },
-      { path: 'history', component: HistoryComponent, pathMatch: 'full' }
+    CommonModule,
+    RouterModule.forChild([
+      { path: 'admin', component: AdminComponent, pathMatch: 'full' },
+      { path: 'admin/users', component: UserfilterComponent, pathMatch: 'full' },
+      { path: 'admin/address', component: AddressfilterComponent, pathMatch: 'full' },
+      { path: 'admin/trips', component: TripfilterComponent, pathMatch: 'full' },
+      { path: 'admin/reviews', component: ReviewsfilterComponent, pathMatch: 'full' },
+      { path: 'admin/entertaiments', component: EntertaimentfilterComponent, pathMatch: 'full' },
+      { path: 'admin/statistic', component: StatisticComponent, pathMatch: 'full' },
+      { path: 'admin/history', component: HistoryComponent, pathMatch: 'full' }
     ])
   ],
   providers: [
@@ -60,7 +72,12 @@ import { SearchAddressComponent } from './search-address/search-address.componen
     UserfilterComponent,
     ReviewsfilterComponent,
     EntertaimentfilterComponent,
-    SearchAddressComponent
+    SearchAddressComponent,
+    SearchReviewComponent,
+    SearchTripComponent,
+    SearchUserComponent,
+    SearchEntertaimentComponent,
+    AdminComponent
   ],
   bootstrap: [AdminComponent]
 })

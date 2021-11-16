@@ -88,7 +88,6 @@ namespace CityTraveler.Services.Extensions
             {
                 Title = defaultTripDTO.Title,
                 Description = defaultTripDTO.Description,
-                TagSting = defaultTripDTO.TagSting,
                 AverageRating = defaultTripDTO.AverageRating,
                 Price = new TripPriceModel(),
                 OptimalSpent = defaultTripDTO.OptimalSpent,

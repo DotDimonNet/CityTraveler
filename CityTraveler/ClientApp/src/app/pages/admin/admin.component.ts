@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IAdminAddress } from 'src/app/models/adminAddress.model';
 import { IFilterAdminStreet } from 'src/app/models/filters/filterAdminStreet';
 import { AdminService } from 'src/app/services/adminService';
+import { NavAdminComponent } from './nav-admin/nav-admin.component';
 
 @Component({
   selector: 'app-admin',
@@ -9,24 +10,17 @@ import { AdminService } from 'src/app/services/adminService';
   styleUrls: ['./admin.component.css'],
   providers:  [ AdminService ]
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent  {
 
-  filter: IFilterAdminStreet = 
-  { 
-    title : "",
-    description : ""
-  };
-  addresses: IAdminAddress[] = [];
-  pesp: any;
-  constructor(private service: AdminService) { }
-
-  ngOnInit() {
-      this.getAddress();
+  active: string = "user";
+  @ViewChild(NavAdminComponent, { static: false })
+  AddressSwitch(): string
+  {
+    console.log(this.active);
+    return this.active = "address";
   }
-  getAddress() : void{
-    console.log(this.addresses);
-    this.service.GetAddressStreets(this.filter).subscribe(res => this.addresses = res);
-    console.log(this.addresses);
+  CheckSwitch(): string
+  {
+    return this.active 
   }
-
 }

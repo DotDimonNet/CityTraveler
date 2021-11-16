@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
+import { AdminComponent } from '../admin.component';
 
 @Component({
   selector: 'app-nav-admin',
@@ -7,8 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavAdminComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(@Optional() private parent: AdminComponent) {
+  }
+  AddressSwith(){
+    this.parent.AddressSwitch();
+  }
   ngOnInit() {
   }
 

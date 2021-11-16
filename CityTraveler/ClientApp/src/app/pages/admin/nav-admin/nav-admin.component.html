@@ -1,7 +1,7 @@
 
 <div class="sidenav">
-    <a  [routerLinkActive]="['link-active']" [routerLink]="['/address']">Address</a>
-    <a  [routerLinkActive]="['link-active']" [routerLink]="['/users']">Users</a>
-    <a  [routerLinkActive]="['link-active']" [routerLink]="['/trips']">Trips</a>
-    <a  [routerLinkActive]="['link-active']" [routerLink]="['/reviews']">Reviews</a>
+    <a (click) = "AddressSwitch()">Address</a>
+    <a  [routerLinkActive]="['link-active']" [routerLink]="['/admin/users']">Users</a>
+    <a  [routerLinkActive]="['link-active']" [routerLink]="['/admin/trips']">Trips</a>
+    <a  [routerLinkActive]="['link-active']" [routerLink]="['/admin/reviews']">Reviews</a>
   </div>
