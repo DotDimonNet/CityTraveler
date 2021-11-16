@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-entertaimentfilter',
+  selector: 'entertaimentfilter',
   templateUrl: './entertaimentfilter.component.html',
   styleUrls: ['./entertaimentfilter.component.css']
 })

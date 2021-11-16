@@ -4,7 +4,7 @@ import { IFilterAdminStreet } from 'src/app/models/filters/filterAdminStreet';
 import { AdminService } from 'src/app/services/adminService';
 
 @Component({
-  selector: 'app-addressfilter',
+  selector: 'addressfilter',
   templateUrl: './addressfilter.component.html',
   styleUrls: ['./addressfilter.component.css'],
   providers:[ AdminService]

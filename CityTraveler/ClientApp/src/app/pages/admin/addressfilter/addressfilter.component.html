@@ -1,9 +1,12 @@
-<p>addressfilter works!</p>
-<app-search-address></app-search-address>
+<p class="title">Search</p>
+<search-address></search-address>
 <div>
     <ul class="addresses">
         <li *ngFor="let item of addresses">
-            <span class="badge">{{item.street.title}}</span> {{item.apartmentNumber}}
+            <div class="item">
+                <a class="title">{{item.street.title}}</a>
+                <p class="desc">Apartment {{item.apartmentNumber}}</p>
+            </div>
         </li>
       </ul>
 </div>

@@ -1,0 +1,15 @@
+.btn {
+    padding: 10px 15px;
+    background-color: rgb(19, 177, 66);
+    border-radius: 10px;
+}
+p {
+    color:rgb(255, 255, 255)
+}
+input[type="text"]{
+    color: #333; 
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 5px;
+}

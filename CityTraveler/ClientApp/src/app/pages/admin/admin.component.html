@@ -1,10 +1,14 @@
 
-<div><app-nav-admin></app-nav-admin></div>
+<div>
+  <nav-admin (onSelect)="onSelect($event)"></nav-admin>
+</div>
 <div class="container">
     <p>admin works!</p>
-    <router-outlet></router-outlet>
-  </div>
-  <div>
-    <app-addressfilter *ngIf="CheckSwitch() == 'address'"></app-addressfilter>
-    <app-userfilter *ngIf="CheckSwitch() == 'user'"></app-userfilter>
+</div>
+
+<div>
+    <addressfilter *ngIf="active === 'address'"></addressfilter>
+    <userfilter *ngIf="active === 'user'"></userfilter>
+    <tripfilter *ngIf="active === 'trip'"></tripfilter>
+    <reviewsfilter *ngIf="active === 'review'"></reviewsfilter>
 </div>

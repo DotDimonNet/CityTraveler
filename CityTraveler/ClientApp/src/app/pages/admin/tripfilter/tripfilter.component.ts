@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-tripfilter',
+  selector: 'tripfilter',
   templateUrl: './tripfilter.component.html',
   styleUrls: ['./tripfilter.component.css']
 })

@@ -1,0 +1,19 @@
+.item {
+    border: 2px solid rgb(2, 173, 145);
+    border-radius: 5px;
+    display: block;
+    background-color: rgb(212, 245, 234);
+    padding: 15px;
+}
+ul li {
+    list-style: none;
+    position: relative;
+    padding: 3px 0 2px 0px;
+ 
+}
+a {
+    text-decoration: none;
+}
+.title{
+    
+}

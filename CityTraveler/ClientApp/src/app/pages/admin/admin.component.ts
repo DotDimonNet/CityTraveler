@@ -1,25 +1,26 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { IAdminAddress } from 'src/app/models/adminAddress.model';
-import { IFilterAdminStreet } from 'src/app/models/filters/filterAdminStreet';
+import { Component } from '@angular/core';
 import { AdminService } from 'src/app/services/adminService';
-import { NavAdminComponent } from './nav-admin/nav-admin.component';
 
 @Component({
-  selector: 'app-admin',
+  selector: 'admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
   providers:  [ AdminService ]
 })
 export class AdminComponent  {
 
-  active: string = "user";
+  active: AdminTabs = "user";
   AddressSwitch(): string
   {
     console.log(this.active);
     return this.active = "address";
   }
-  CheckSwitch(): string
-  {
-    return this.active 
+
+  onSelect($event) {
+    console.log($event);
+    this.active = $event;
   }
 }
+
+
+export type AdminTabs = "user" | "address" | "review" | "trip"; 

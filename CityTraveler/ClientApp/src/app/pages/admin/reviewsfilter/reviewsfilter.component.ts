@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-reviewsfilter',
+  selector: 'reviewsfilter',
   templateUrl: './reviewsfilter.component.html',
   styleUrls: ['./reviewsfilter.component.css']
 })

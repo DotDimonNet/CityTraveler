@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-userfilter',
+  selector: 'userfilter',
   templateUrl: './userfilter.component.html',
   styleUrls: ['./userfilter.component.css']
 })
