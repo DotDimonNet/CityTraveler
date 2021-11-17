@@ -1,12 +1,12 @@
 <p class="title">Search</p>
 <search-address></search-address>
-<div>
-    <ul class="addresses">
-        <li *ngFor="let item of addresses">
+
+    <div class="addresses">
+        <div class="content" *ngFor="let item of addresses">
             <div class="item">
                 <a class="title">{{item.street.title}}</a>
                 <p class="desc">Apartment {{item.apartmentNumber}}</p>
             </div>
-        </li>
-      </ul>
-</div>
+        </div>
+
+    </div>

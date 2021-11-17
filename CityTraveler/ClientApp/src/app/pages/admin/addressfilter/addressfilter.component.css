@@ -1,9 +1,18 @@
 .item {
-    border: 2px solid rgb(2, 173, 145);
-    border-radius: 5px;
+
     display: block;
-    background-color: rgb(212, 245, 234);
     padding: 15px;
+    margin-top: 1em;
+    background: #ffffff;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0.3em 10px 5px #e6e6e6;
+
+}
+.content:hover
+{
+    box-shadow: 0 0 10px 5px #2bfd24;
 }
 ul li {
     list-style: none;
@@ -13,6 +22,7 @@ ul li {
 }
 a {
     text-decoration: none;
+    color: cadetblue;
 }
 .title{
     

@@ -1,14 +1,12 @@
 
-<div>
-  <nav-admin (onSelect)="onSelect($event)"></nav-admin>
-</div>
 <div class="container">
-    <p>admin works!</p>
-</div>
+  <nav-admin (onSelect)="onSelect($event)"></nav-admin>
 
-<div>
+  <div class="content">
     <addressfilter *ngIf="active === 'address'"></addressfilter>
     <userfilter *ngIf="active === 'user'"></userfilter>
     <tripfilter *ngIf="active === 'trip'"></tripfilter>
     <reviewsfilter *ngIf="active === 'review'"></reviewsfilter>
+  </div>
+
 </div>

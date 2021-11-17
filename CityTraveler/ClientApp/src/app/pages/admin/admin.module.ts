@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';  
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AdminComponent } from './admin.component';
 import { AdminDataService } from 'src/app/services/AdminService.data';
@@ -46,6 +47,7 @@ import { SearchEntertaimentComponent } from './entertaimentfilter/search-enterta
     HttpClientModule,
     FormsModule,
     CommonModule,
+    BrowserAnimationsModule,
     RouterModule.forChild([
       { path: 'admin', component: AdminComponent, pathMatch: 'full' },
       { path: 'admin/users', component: UserfilterComponent, pathMatch: 'full' },

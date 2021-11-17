@@ -1,4 +1,16 @@
-div {
-    display: flex;
+.container {
+    display:inline;
+    position: relative;
     
 }
+.content{
+
+    margin-left: 120px; 
+    font-size: 28px; 
+    padding: 0px 10px;
+  
+}
+@media screen and (max-height: 980px) {
+    .content{
+        margin-left: 24px; }
+  }

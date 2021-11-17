@@ -2,14 +2,24 @@
     padding: 10px 15px;
     background-color: rgb(19, 177, 66);
     border-radius: 10px;
+    margin-left: 5px;
+    color: #FFF;
 }
 p {
     color:rgb(255, 255, 255)
 }
 input[type="text"]{
-    color: #333; 
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px;
+    color: rgb(10, 51, 19); 
+    width: 60%;
+    height: 2em;
+    padding: 1em, 0.5em;
     margin: 5px;
+    border-radius: 1em;
+    border-color: darkcyan;
+}
+
+.input-filter{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 4em;
 }

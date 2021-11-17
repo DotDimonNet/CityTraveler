@@ -1,6 +1,6 @@
 
 <div class="sidenav">
-  <a style="cursor: pointer;"  *ngFor="let tab of tabs;" (click)="goTo(tab.tabName)">
+  <a   *ngFor="let tab of tabs;" (click)="goTo(tab.tabName)">
     {{tab.displayName}}
   </a>
 </div>
